@@ -1,4 +1,4 @@
-# Pernyataan Runga Lingkup Proyek
+# Pernyataan Ruang Lingkup Proyek
 
 ## Deskripsi Ruang Lingkup Produk
 
