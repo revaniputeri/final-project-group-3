@@ -1,4 +1,4 @@
-# Manajemen Ruang Lingkup
+# Pernyataan Runga Lingkup Proyek
 
 ## Deskripsi Ruang Lingkup Produk
 
