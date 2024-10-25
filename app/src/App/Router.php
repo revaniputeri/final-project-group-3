@@ -11,12 +11,14 @@ class Router
         string $path,
         string $controller,
         string $function,
-        string $middleware = []
+        array $dependencies = [],
+        string $middleware = [],
     ): void {
         self::$routes[] = [
             'method' => $method,
             'path' => $path,
             'controller' => $controller,
+            'dependencies' => $dependencies,
             'function' => $function,
             'middleware' => $middleware
         ];
@@ -42,7 +44,8 @@ class Router
                 }
 
                 $function = $route['function'];
-                $controller = new $route['controller'];
+                $controller = new $route['controller']($route['dependencies']);
+                call_user_func_array([$controller, $function], $variables);
             }
         }
     }
