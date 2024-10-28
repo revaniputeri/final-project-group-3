@@ -58,5 +58,23 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+//profile page
+Router::add(
+    method: "GET",
+    path: "/profile",
+    controller: AuthController::class,
+    function: "profile",
+    dependencies: ['db' => $connection]
+)
+
+//profile process
+Router::add(
+    method: "POST",
+    path: "/profile",
+    controller: AuthController::class,
+    function: "profileProcess",
+    dependencies: ['db' => $connection]
+)
+
 Router::run();
 
