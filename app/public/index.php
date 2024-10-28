@@ -57,22 +57,57 @@ Router::add(
     function: "loginProcess",
     dependencies: ['db' => $connection]
 );
-
-//profile page
+//leaderboard page
 Router::add(
     method: "GET",
-    path: "/profile",
-    controller: AuthController::class,
-    function: "profile",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboard",
+    dependencies: ['db' => $connection]
+)
+
+//leaderboard process
+Router::add(
+    method: "POST",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboardProcess",
+    dependencies: ['db' => $connection]
+)
+
+//dashboard page
+Router::add(
+    method: "GET",
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboard",
+    dependencies: ['db' => $connection]
+)
+
+//dashboard process
+Router::add(
+    method: "POST",
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboardProcess",
+    dependencies: ['db' => $connection]
+)
+
+// profile customization page
+Router::add(
+    method: "GET",
+    path: "/dashboard/profile-customization",
+    controller: IndexController::class,
+    function: "profileCustomization",
     dependencies: ['db' => $connection]
 );
 
-//profile process
+// profile customization process
 Router::add(
     method: "POST",
-    path: "/profile",
-    controller: AuthController::class,
-    function: "profileProcess",
+    path: "/dashboard/profile-customization",
+    controller: IndexController::class,
+    function: "profileCustomizationProcess",
     dependencies: ['db' => $connection]
 );
 
