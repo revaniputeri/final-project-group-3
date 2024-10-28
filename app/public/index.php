@@ -94,4 +94,22 @@ Router::add(
     dependencies: ['db' => $connection]
 )
 
+// achievement submission page
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission",
+    controller: AuthController::class,
+    function: "achievementSubmission",
+    dependencies: ['db' => $connection]
+);
+
+// achievement submission process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement-submission",
+    controller: AchievementController::class,
+    function: "achievementSubmissionProcess",
+    dependencies: ['db' => $connection]
+);
+
 Router::run();
