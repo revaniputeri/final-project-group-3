@@ -76,5 +76,121 @@ Router::add(
     dependencies: ['db' => $connection]
 )
 
+//leaderboard page
+Router::add(
+    method: "GET",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboard",
+    dependencies: ['db' => $connection]
+)
+
+//leaderboard process
+Router::add(
+    method: "POST",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboardProcess",
+    dependencies: ['db' => $connection]
+)
+
+//dashboard page
+Router::add(
+    method: "GET",
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboard",
+    dependencies: ['db' => $connection]
+)
+
+//dashboard process
+Router::add(
+    method: "POST",
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboardProcess",
+    dependencies: ['db' => $connection]
+)
+
+// home page within the dashboard
+Router::add(
+    method: "GET",
+    path: "/dashboard/home",
+    controller: IndexController::class,
+    function: "home",
+    dependencies: ['db' => $connection]
+);
+
+// profile customization page
+Router::add(
+    method: "GET",
+    path: "/dashboard/profile-customization",
+    controller: IndexController::class,
+    function: "profileCustomization",
+    dependencies: ['db' => $connection]
+);
+
+// profile customization process
+Router::add(
+    method: "POST",
+    path: "/dashboard/profile-customization",
+    controller: IndexController::class,
+    function: "profileCustomizationProcess",
+    dependencies: ['db' => $connection]
+);
+
+// achievement submission page
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission",
+    controller: AuthController::class,
+    function: "achievementSubmission",
+    dependencies: ['db' => $connection]
+);
+
+// achievement submission process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement-submission",
+    controller: AchievementController::class,
+    function: "achievementSubmissionProcess",
+    dependencies: ['db' => $connection]
+);
+
+// submission form within achievement submission
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission/form",
+    controller: AchievementController::class,
+    function: "submissionForm",
+    dependencies: ['db' => $connection]
+);
+
+// submission form process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement-submission/form",
+    controller: AchievementController::class,
+    function: "processSubmissionForm",
+    dependencies: ['db' => $connection]
+);
+
+// achievement history page
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission/history",
+    controller: AchievementController::class,
+    function: "achievementHistory",
+    dependencies: ['db' => $connection]
+);
+
+// info page within achievement submission
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission/info",
+    controller: AchievementController::class,
+    function: "achievementInfo",
+    dependencies: ['db' => $connection]
+);
 Router::run();
 
