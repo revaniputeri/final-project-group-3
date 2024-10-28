@@ -3,7 +3,7 @@ CREATE TABLE
 (
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [FullName]           VARCHAR(255) NOT NULL,
-    [Username]           VARCHAR(255) NOT NULL,
+    [Username]           VARCHAR(255) NOT NULL, --NIP, NIM, NIPD
     [Password]           VARCHAR(255) NOT NULL,
     [Email]              VARCHAR(255) NOT NULL,
     [Phone]              VARCHAR(255) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE
     [UserId]             INT          NOT NULL,
     [Name]               VARCHAR(255) NOT NULL,
     [Email]              VARCHAR(255) NOT NULL,
-    [RegistrationNumber] VARCHAR(255) NOT NULL,
+    [Username]           VARCHAR(255) NOT NULL, --NIP, NIM, NIPD
     [CreatedAt]          DATETIME     NOT NULL DEFAULT GETDATE(),
     [UpdatedAt]          DATETIME     NOT NULL DEFAULT GETDATE(),
     [DeletedAt]          DATETIME     NULL,
@@ -37,7 +37,7 @@ CREATE TABLE
     [UserId]             INT          NOT NULL,
     [Name]               VARCHAR(255) NOT NULL,
     [Email]              VARCHAR(255) NOT NULL,
-    [RegistrationNumber] VARCHAR(255) NOT NULL,
+    [Username]           VARCHAR(255) NOT NULL, --NIP, NIM, NIPD
     [CreatedAt]          DATETIME     NOT NULL DEFAULT GETDATE(),
     [UpdatedAt]          DATETIME     NOT NULL DEFAULT GETDATE(),
     [DeletedAt]          DATETIME     NULL,
