@@ -75,20 +75,87 @@ Router::add(
     function: "leaderboardProcess",
     dependencies: ['db' => $connection]
 );
-
+//leaderboard page
 Router::add(
     method: "GET",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboard",
+    dependencies: ['db' => $connection]
+)
+
+<<<<<<< ours
+||||||| ancestor
+//profile page
+=======
+//leaderboard process
+Router::add(
+    method: "POST",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboardProcess",
+    dependencies: ['db' => $connection]
+)
+
+//dashboard page
+>>>>>>> theirs
+Router::add(
+    method: "GET",
+<<<<<<< ours
     path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
     controller: AchievementController::class,
     function: "edit",
+||||||| ancestor
+    path: "/profile",
+    controller: AuthController::class,
+    function: "profile",
+=======
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboard",
+    dependencies: ['db' => $connection]
+)
+
+//dashboard process
+Router::add(
+    method: "POST",
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboardProcess",
+    dependencies: ['db' => $connection]
+)
+
+// profile customization page
+Router::add(
+    method: "GET",
+    path: "/dashboard/profile-customization",
+    controller: IndexController::class,
+    function: "profileCustomization",
+>>>>>>> theirs
     dependencies: ['db' => $connection]
 );
 
+<<<<<<< ours
+||||||| ancestor
+//profile process
+=======
+// profile customization process
+>>>>>>> theirs
 Router::add(
     method: "POST",
+<<<<<<< ours
     path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
     controller: AchievementController::class,
     function: "editFormProcess",
+||||||| ancestor
+    path: "/profile",
+    controller: AuthController::class,
+    function: "profileProcess",
+=======
+    path: "/dashboard/profile-customization",
+    controller: IndexController::class,
+    function: "profileCustomizationProcess",
+>>>>>>> theirs
     dependencies: ['db' => $connection]
 );
 
