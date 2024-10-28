@@ -74,6 +74,24 @@ Router::add(
     controller: AchievementController::class,
     function: "leaderboardProcess",
     dependencies: ['db' => $connection]
-);
+)
+
+//dashboard page
+Router::add(
+    method: "GET",
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboard",
+    dependencies: ['db' => $connection]
+)
+
+//dashboard process
+Router::add(
+    method: "POST",
+    path: "/dashboard",
+    controller: IndexController::class,
+    function: "dashboardProcess",
+    dependencies: ['db' => $connection]
+)
 
 Router::run();
