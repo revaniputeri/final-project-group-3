@@ -93,5 +93,13 @@ Router::add(
     function: "dashboardProcess",
     dependencies: ['db' => $connection]
 )
+// home page within the dashboard
+Router::add(
+    method: "GET",
+    path: "/dashboard/home",
+    controller: IndexController::class,
+    function: "home",
+    dependencies: ['db' => $connection]
+);
 
 Router::run();
