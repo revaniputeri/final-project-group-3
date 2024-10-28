@@ -58,23 +58,22 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//profile page
+//leaderboard page
 Router::add(
     method: "GET",
-    path: "/profile",
-    controller: AuthController::class,
-    function: "profile",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboard",
     dependencies: ['db' => $connection]
 );
 
-//profile process
+//leaderboard process
 Router::add(
     method: "POST",
-    path: "/profile",
-    controller: AuthController::class,
-    function: "profileProcess",
+    path: "/leaderboard",
+    controller: AchievementController::class,
+    function: "leaderboardProcess",
     dependencies: ['db' => $connection]
 );
 
 Router::run();
-
