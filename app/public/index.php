@@ -65,7 +65,7 @@ Router::add(
     controller: AuthController::class,
     function: "profile",
     dependencies: ['db' => $connection]
-)
+);
 
 //profile process
 Router::add(
@@ -74,7 +74,7 @@ Router::add(
     controller: AuthController::class,
     function: "profileProcess",
     dependencies: ['db' => $connection]
-)
+);
 
 Router::run();
 
