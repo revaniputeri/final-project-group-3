@@ -74,7 +74,6 @@ Router::add(
     controller: AchievementController::class,
     function: "leaderboardProcess",
     dependencies: ['db' => $connection]
-)
 
 //dashboard page
 Router::add(
@@ -93,6 +92,7 @@ Router::add(
     function: "dashboardProcess",
     dependencies: ['db' => $connection]
 )
+  
 // home page within the dashboard
 Router::add(
     method: "GET",
@@ -117,6 +117,24 @@ Router::add(
     path: "/dashboard/achievement-submission",
     controller: AchievementController::class,
     function: "achievementSubmissionProcess",
+    dependencies: ['db' => $connection]
+);
+
+// submission form within achievement submission
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission/form",
+    controller: AchievementController::class,
+    function: "submissionForm",
+    dependencies: ['db' => $connection]
+);
+
+// submission form process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement-submission/form",
+    controller: AchievementController::class,
+    function: "processSubmissionForm",
     dependencies: ['db' => $connection]
 );
 
