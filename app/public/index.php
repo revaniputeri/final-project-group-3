@@ -130,4 +130,12 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+// achievement history page
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission/history",
+    controller: AchievementController::class,
+    function: "achievementHistory",
+    dependencies: ['db' => $connection]
+);
 Router::run();
