@@ -2,7 +2,7 @@
 
 ## Deskripsi Ruang Lingkup Produk
 
-PrestaC merupakan sebuah aplikasi berbasis web yang menyediakan wadah bagi mahasiswa dan dosen untuk melakukan pencatatan prestasi yang diraih oleh mahasiswa. PrestaC memiliki fitur yang memungkinkan mahasiswa untuk mencatat data prestasi mereka, dan juga memungkinkan dosen untuk mencatat data prestasi mahasiswa bimbingannya. Setelah pencatatan dilakukan, maka data akan divalidasi oleh admin untuk diproses lebih lanjut.
+PrestaC merupakan sebuah aplikasi berbasis web yang menyediakan wadah bagi mahasiswa untuk melakukan pencatatan prestasi yang diraih. PrestaC memiliki fitur yang memungkinkan mahasiswa untuk mencatat data prestasi mereka. Setelah pencatatan dilakukan, maka data akan divalidasi oleh admin dan dosen pembimbing (dengan syarat dosen pembimbing hanya bisa melakukan validasi untuk mahasiswa bimbingannya) untuk diproses lebih lanjut.
 
 ## Kriteria Penerimaan Produk
 Proyek ini dianggap berhasil jika memenuhi kriteria berikut:

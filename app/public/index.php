@@ -22,24 +22,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//login page
-Router::add(
-    method: "GET",
-    path: "/login",
-    controller: AuthController::class,
-    function: "login",
-    dependencies: ['db' => $connection]
-);
-
-//login process
-Router::add(
-    method: "POST",
-    path: "/login",
-    controller: AuthController::class,
-    function: "prosesLogin",
-    dependencies: ['db' => $connection]
-);
-
 //register page
 Router::add(
     method: "GET",
@@ -54,7 +36,43 @@ Router::add(
     method: "POST",
     path: "/register",
     controller: AuthController::class,
-    function: "prosesRegister",
+    function: "registerProcess",
+    dependencies: ['db' => $connection]
+);
+
+//login page
+Router::add(
+    method: "GET",
+    path: "/login",
+    controller: AuthController::class,
+    function: "login",
+    dependencies: ['db' => $connection]
+);
+
+//login process
+Router::add(
+    method: "POST",
+    path: "/login",
+    controller: AuthController::class,
+    function: "loginProcess",
+    dependencies: ['db' => $connection]
+);
+
+//profile page
+Router::add(
+    method: "GET",
+    path: "/profile",
+    controller: AuthController::class,
+    function: "profile",
+    dependencies: ['db' => $connection]
+);
+
+//profile process
+Router::add(
+    method: "POST",
+    path: "/profile",
+    controller: AuthController::class,
+    function: "profileProcess",
     dependencies: ['db' => $connection]
 );
 
