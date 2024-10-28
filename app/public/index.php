@@ -112,4 +112,22 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+// submission form within achievement submission
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement-submission/form",
+    controller: AchievementController::class,
+    function: "submissionForm",
+    dependencies: ['db' => $connection]
+);
+
+// submission form process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement-submission/form",
+    controller: AchievementController::class,
+    function: "processSubmissionForm",
+    dependencies: ['db' => $connection]
+);
+
 Router::run();
