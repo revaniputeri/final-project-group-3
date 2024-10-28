@@ -30,7 +30,7 @@ Tujuan dari web ini adalah untuk memberikan transparansi informasi atas capaian 
 - Final Report of Project
 
 ## Project Milestone and Timeline
-
+![alt text](image-1.png)
 
 ## Project Risks 
 - Technical Challenge : Anggota tim tidak menyelesaikan tugas sesuai dengan tenggat waktu yang telah ditentukan. Selain itu, anggota tim tidak berpartisipasi dalam proses pengerjaan.
