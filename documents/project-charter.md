@@ -30,7 +30,7 @@ Tujuan dari web ini adalah untuk memberikan transparansi informasi atas capaian 
 - Final Report of Project
 
 ## Project Milestone and Timeline
-![alt text](image-1.png)
+![gantt-chart](gantt-chart.png)
 
 (Gambar Milestone Timeline Sistem PrestaC)
 
