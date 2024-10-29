@@ -3,7 +3,6 @@
 namespace PrestaC\App;
 
 use PDO;
-use PDOException;
 
 class Connection
 {
@@ -26,8 +25,7 @@ class Connection
 
 	private function connect()
 	{
-		$dbConnection = new PDO("sqlsrv:Server=$this->host;Database=$this->name", $this->username, $this->password);
-		$dbConnection->exec("set names utf8");
+		$dbConnection = new PDO("sqlsrv:server=$this->host;Database=$this->name", $this->username, $this->password);
 		$dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		return  $dbConnection;
 	}
