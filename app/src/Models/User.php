@@ -112,4 +112,31 @@ class User
 
         return array_map(fn($user) => self::fromArray($user), $results);
     }
+
+    public function update(PDO $db): void
+    {
+        $stmt = $db->prepare("
+            UPDATE [dbo].[User]
+            SET FullName = :fullName,
+                Username = :username,
+                Password = :password,
+                Email = :email,
+                Phone = :phone,
+                Avatar = :avatar,
+                Role = :role,
+                UpdatedAt = :updatedAt
+            WHERE Id = :id
+        ");
+        $row->execute([
+            'id' => $this->id,
+            'fullName' => $this->fullName,
+            'username' => $this->username,
+            'password' => $this->password,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'avatar' => $this->avatar,
+            'role' => $this->role,
+            'updatedAt' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
+    }
 }
