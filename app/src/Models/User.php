@@ -82,4 +82,8 @@ class User
 
         $row->execute();
     }
+
+    public static function getAll() {
+        
+    }
 }
