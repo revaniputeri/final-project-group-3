@@ -83,7 +83,10 @@ class User
         $row->execute();
     }
 
-    public static function getAll() {
-        
+    public static function getAll(PDO $db): array {
+        $row = $db->query("SELECT * FROM [dbo].[User]");
+        $results = $row->fetchAll();
+    
+        return array_map(fn($user) => self::fromArray($user), $results);
     }
 }
