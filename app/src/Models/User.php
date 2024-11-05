@@ -98,4 +98,18 @@ class User
 
         return $data ? self::fromArray($data) : null;
     }
+
+    public static function search(PDO $db, string $query): array
+    {
+        $row = $db->prepare("
+            SELECT * FROM [dbo].[User]
+            WHERE FullName LIKE :query OR
+                  Username LIKE :query OR
+                  Email LIKE :query
+        ");
+        $row->execute(['query' => '%' . $query . '%']);
+        $results = $row->fetchAll();
+
+        return array_map(fn($user) => self::fromArray($user), $results);
+    }
 }
