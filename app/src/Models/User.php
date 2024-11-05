@@ -89,4 +89,13 @@ class User
     
         return array_map(fn($user) => self::fromArray($user), $results);
     }
+
+    public static function getById(PDO $db, int $id): ?self
+    {
+        $row = $db->prepare("SELECT * FROM [dbo].[User] WHERE Id = :id");
+        $row->execute(['id' => $id]);
+        $data = $row->fetch();
+
+        return $data ? self::fromArray($data) : null;
+    }
 }
