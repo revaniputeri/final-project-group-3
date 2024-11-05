@@ -146,4 +146,9 @@ class User
         $row->execute(['id' => $id]);
     }
     
+    public static function getCount(PDO $db): int
+    {
+        $stmt = $db->query("SELECT COUNT(*) AS Count FROM [dbo].[User]");
+        return (int)$stmt->fetch()['Count'];
+    }
 }
