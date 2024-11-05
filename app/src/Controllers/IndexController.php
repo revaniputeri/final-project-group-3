@@ -10,4 +10,6 @@ class IndexController
     {
         View::render('dashboard', '');
     }
+
+    
 }
