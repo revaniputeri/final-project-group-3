@@ -30,6 +30,9 @@ CREATE TABLE
 (
     [Id]                         INT          NOT NULL IDENTITY (1, 1),
     [UserId]                     INT          NOT NULL,
+    [CompetitionType]            VARCHAR(50)  NOT NULL,
+    [CompetitionLevel]           VARCHAR(50)  NOT NULL,
+    [CompetitionPoints]          FLOAT        NOT NULL,
     [CompetitionTitle]           VARCHAR(255) NOT NULL,
     [CompetitionTitleEnglish]    VARCHAR(255) NOT NULL,
     [CompetitionPlace]           VARCHAR(255) NOT NULL,
@@ -40,7 +43,7 @@ CREATE TABLE
     -- number of institutions mean number of institution that participated in the competition
     [NumberOfInstitutions]       INT          NOT NULL,
     [NumberOfStudents]           INT          NOT NULL,
-    [LetterNumber]               INT          NOT NULL,
+    [LetterNumber]               VARCHAR(50)  NOT NULL,
     [LetterDate]                 DATETIME     NOT NULL,
     -- upload required file
     [LetterFile]                 VARCHAR(255) NOT NULL,
