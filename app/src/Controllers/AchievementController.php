@@ -15,21 +15,29 @@ class AchievementController
         $this->db = $dependencies['db']->getConnection();
     }
 
-    public function achievementSubmission () 
+    public function index()
     {
-        View::render('achievementSubmission', '');
+        View::render('achievements', '');
     }
 
-    public function submissionForm () 
+    public function achievementSubmission()
     {
-        View::render('achievementForm', '');
+        View::render('achievement-submission', '');
+    }
+
+    public function submissionForm()
+    {
+        View::render('achievement-form', '');
     }
 
     public function submissionFormProcess()
     {
         $userId = $_POST['userId'];
+        $competitionType = $_POST['competitionType'];
+        $competitionLevel = $_POST['competitionLevel'];
+        $competitionPoints = $_POST['competitionPoints'];
         $competitionTitle = $_POST['competitionTitle'];
-        $competitionTitleEnglish = $_POST['competitionTitleEnglish'];   
+        $competitionTitleEnglish = $_POST['competitionTitleEnglish'];
         $competitionPlace = $_POST['competitionPlace'];
         $competitionPlaceEnglish = $_POST['competitionPlaceEnglish'];
         $competitionUrl = $_POST['competitionUrl'];
@@ -46,6 +54,9 @@ class AchievementController
 
         $achievement = new Achievement(
             $userId,
+            $competitionType,
+            $competitionLevel,
+            $competitionPoints,
             $competitionTitle,
             $competitionTitleEnglish,
             $competitionPlace,
