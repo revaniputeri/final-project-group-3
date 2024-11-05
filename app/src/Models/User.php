@@ -139,4 +139,11 @@ class User
             'updatedAt' => (new DateTime())->format('Y-m-d H:i:s')
         ]);
     }
+
+    public static function delete(PDO $db, int $id): void
+    {
+        $row = $db->prepare("DELETE FROM [dbo].[User] WHERE Id = :id");
+        $row->execute(['id' => $id]);
+    }
+    
 }
