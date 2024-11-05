@@ -7,6 +7,7 @@ use PrestaC\App\Router;
 use PrestaC\Controllers\AchievementController;
 use PrestaC\Controllers\AuthController;
 use PrestaC\Controllers\IndexController;
+use PrestaC\Controllers\AssetsController;
 
 $connection = new Connection(
     host: "REVANIPUTERI",
@@ -130,6 +131,23 @@ Router::add(
 //     function: "achievementSubmissionProcess",
 //     dependencies: ['db' => $connection]
 // );
+// assets route
+Router::add(
+    method: "GET",
+    path: "/assets/(?<path>.*)",
+    controller: AssetsController::class,
+    function: "serve",
+    dependencies: []
+);
+
+// achievement index page
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement",
+    controller: AchievementController::class,
+    function: "index",
+    dependencies: ['db' => $connection]
+);
 
 // submission form within achievement submission
 Router::add(
