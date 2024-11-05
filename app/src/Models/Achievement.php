@@ -13,6 +13,9 @@ class Achievement
 
     public function __construct(
         public $userId,
+        public $competitionType,
+        public $competitionLevel,
+        public $competitionPoints,
         public $competitionTitle,
         public $competitionTitleEnglish,
         public $competitionPlace,
@@ -42,6 +45,9 @@ class Achievement
 
         $row = $db->prepare('INSERT INTO achievements (
             user_id,
+            competition_type,
+            competition_level,
+            competition_points,
             competition_title,
             competition_title_english,
             competition_place,
@@ -61,6 +67,9 @@ class Achievement
             updated_at
         ) VALUES (
             :userId,
+            :competitionType,
+            :competitionLevel,
+            :competitionPoints,
             :competitionTitle,
             :competitionTitleEnglish,
             :competitionPlace,
@@ -82,6 +91,9 @@ class Achievement
 
         $row->execute([
             ':userId' => $this->userId,
+            ':competitionType' => $this->competitionType,
+            ':competitionLevel' => $this->competitionLevel,
+            ':competitionPoints' => $this->competitionPoints,
             ':competitionTitle' => $this->competitionTitle,
             ':competitionTitleEnglish' => $this->competitionTitleEnglish,
             ':competitionPlace' => $this->competitionPlace,
@@ -153,6 +165,9 @@ class Achievement
 
         $stmt = $db->prepare('UPDATE achievements SET
             user_id = :userId,
+            competition_type = :competitionType,
+            competition_level = :competitionLevel,
+            competition_points = :competitionPoints,
             competition_title = :competitionTitle,
             competition_title_english = :competitionTitleEnglish,
             competition_place = :competitionPlace,
@@ -174,6 +189,9 @@ class Achievement
         return $stmt->execute([
             ':id' => $id,
             ':userId' => $this->userId,
+            ':competitionType' => $this->competitionType,
+            ':competitionLevel' => $this->competitionLevel,
+            ':competitionPoints' => $this->competitionPoints,
             ':competitionTitle' => $this->competitionTitle,
             ':competitionTitleEnglish' => $this->competitionTitleEnglish,
             ':competitionPlace' => $this->competitionPlace,
