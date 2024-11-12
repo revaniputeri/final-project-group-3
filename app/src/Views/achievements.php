@@ -10,7 +10,7 @@
               <p class="card-description">
                 Click here to submit a new achievement
               </p>
-              <a href="submit_achievement.php" class="btn btn-primary btn-lg btn-block">
+              <a href="/dashboard/achievement/form" class="btn btn-primary btn-lg btn-block">
                 <i class="ti-plus mr-2"></i>
                 New Submission
               </a>
