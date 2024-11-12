@@ -20,19 +20,16 @@ class AchievementController
         View::render('achievements', '');
     }
 
-    public function achievementSubmission()
-    {
-        View::render('achievement-submission', '');
-    }
-
     public function submissionForm()
     {
-        View::render('achievement-form', '');
+        session_start();
+        View::render('achievement-submission', '');
     }
 
     public function submissionFormProcess()
     {
-        $userId = $_POST['userId'];
+        session_start();
+        $userId = $_SESSION['user']['id'];
         $competitionType = $_POST['competitionType'];
         $competitionLevel = $_POST['competitionLevel'];
         $competitionPoints = $_POST['competitionPoints'];
@@ -80,13 +77,15 @@ class AchievementController
         try {
             $achievementId = $achievement->saveAchievement($this->db);
             $_SESSION['success'] = "Achievement saved successfully with ID: " . $achievementId;
-        } catch (\InvalidArgumentException $e) {
-            $_SESSION['error'] = $e->getMessage();
         } catch (\Exception $e) {
-            $_SESSION['error'] = "An error occurred while saving the achievement.";
+            $_SESSION['error'] = $e->getMessage();
         }
 
-        header('Location: /achievement/submission');
+        if (isset($_SESSION['error'])) {
+            header('Location: /dashboard/achievement/form');
+        } else {
+            header('Location: /dashboard/achievement');
+        }
         exit();
     }
 
