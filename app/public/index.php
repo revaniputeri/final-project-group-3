@@ -114,23 +114,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// achievement submission page
-Router::add(
-    method: "GET",
-    path: "/dashboard/achievement-submission",
-    controller: AchievementController::class,
-    function: "achievementSubmission",
-    dependencies: ['db' => $connection]
-);
-
-// achievement submission process
-// Router::add(
-//     method: "POST",
-//     path: "/dashboard/achievement-submission",
-//     controller: AchievementController::class,
-//     function: "achievementSubmissionProcess",
-//     dependencies: ['db' => $connection]
-// );
 // assets route
 Router::add(
     method: "GET",
@@ -152,7 +135,7 @@ Router::add(
 // submission form within achievement submission
 Router::add(
     method: "GET",
-    path: "/dashboard/achievement-submission/form",
+    path: "/dashboard/achievement/form",
     controller: AchievementController::class,
     function: "submissionForm",
     dependencies: ['db' => $connection]
@@ -161,7 +144,7 @@ Router::add(
 // submission form process
 Router::add(
     method: "POST",
-    path: "/dashboard/achievement-submission/form",
+    path: "/dashboard/achievement/form",
     controller: AchievementController::class,
     function: "submissionFormProcess",
     dependencies: ['db' => $connection]
@@ -170,7 +153,7 @@ Router::add(
 // achievement history page
 Router::add(
     method: "GET",
-    path: "/dashboard/achievement-submission/history",
+    path: "/dashboard/achievement/history",
     controller: AchievementController::class,
     function: "achievementHistory",
     dependencies: ['db' => $connection]
@@ -179,7 +162,7 @@ Router::add(
 // info page within achievement submission
 Router::add(
     method: "GET",
-    path: "/dashboard/achievement-submission/info",
+    path: "/dashboard/achievement/info",
     controller: AchievementController::class,
     function: "achievementInfo",
     dependencies: ['db' => $connection]
