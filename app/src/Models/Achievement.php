@@ -13,6 +13,9 @@ class Achievement
 
     public function __construct(
         public $userId,
+        public $competitionType,
+        public $competitionLevel,
+        public $competitionPoints,
         public $competitionTitle,
         public $competitionTitleEnglish,
         public $competitionPlace,
@@ -40,27 +43,33 @@ class Achievement
         $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
 
-        $row = $db->prepare('INSERT INTO achievements (
-            user_id,
-            competition_title,
-            competition_title_english,
-            competition_place,
-            competition_place_english,
-            competition_url,
-            competition_start_date,
-            competition_end_date,
-            number_of_institutions,
-            number_of_students,
-            letter_number,
-            letter_date,
-            letter_file,
-            certificate_file,
-            documentation_file,
-            poster_file,
-            created_at,
-            updated_at
+        $row = $db->prepare('INSERT INTO [dbo].[Achievement] (
+            UserId,
+            CompetitionType,
+            CompetitionLevel,
+            CompetitionPoints,
+            CompetitionTitle,
+            CompetitionTitleEnglish,
+            CompetitionPlace,
+            CompetitionPlaceEnglish,
+            CompetitionUrl,
+            CompetitionStartDate,
+            CompetitionEndDate,
+            NumberOfInstitutions,
+            NumberOfStudents,
+            LetterNumber,
+            LetterDate,
+            LetterFile,
+            CertificateFile,
+            DocumentationFile,
+            PosterFile,
+            CreatedAt,
+            UpdatedAt
         ) VALUES (
             :userId,
+            :competitionType,
+            :competitionLevel,
+            :competitionPoints,
             :competitionTitle,
             :competitionTitleEnglish,
             :competitionPlace,
@@ -82,6 +91,9 @@ class Achievement
 
         $row->execute([
             ':userId' => $this->userId,
+            ':competitionType' => $this->competitionType,
+            ':competitionLevel' => $this->competitionLevel,
+            ':competitionPoints' => $this->competitionPoints,
             ':competitionTitle' => $this->competitionTitle,
             ':competitionTitleEnglish' => $this->competitionTitleEnglish,
             ':competitionPlace' => $this->competitionPlace,
@@ -136,14 +148,14 @@ class Achievement
 
     public static function getAchievement(PDO $db, int $id)
     {
-        $stmt = $db->prepare('SELECT * FROM achievements WHERE id = :id AND deleted_at IS NULL');
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE id = :id AND deleted_at IS NULL');
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public static function getAllAchievements(PDO $db)
     {
-        $stmt = $db->query('SELECT * FROM achievements WHERE deleted_at IS NULL');
+        $stmt = $db->query('SELECT * FROM [dbo].[Achievement] WHERE deleted_at IS NULL');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -151,8 +163,10 @@ class Achievement
     {
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
 
-        $stmt = $db->prepare('UPDATE achievements SET
-            user_id = :userId,
+        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET
+            competition_type = :competitionType,
+            competition_level = :competitionLevel,
+            competition_points = :competitionPoints,
             competition_title = :competitionTitle,
             competition_title_english = :competitionTitleEnglish,
             competition_place = :competitionPlace,
@@ -174,6 +188,9 @@ class Achievement
         return $stmt->execute([
             ':id' => $id,
             ':userId' => $this->userId,
+            ':competitionType' => $this->competitionType,
+            ':competitionLevel' => $this->competitionLevel,
+            ':competitionPoints' => $this->competitionPoints,
             ':competitionTitle' => $this->competitionTitle,
             ':competitionTitleEnglish' => $this->competitionTitleEnglish,
             ':competitionPlace' => $this->competitionPlace,
@@ -196,7 +213,7 @@ class Achievement
     public static function deleteAchievement(PDO $db, int $id)
     {
         $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
-        $stmt = $db->prepare('UPDATE achievements SET deleted_at = :deletedAt WHERE id = :id AND deleted_at IS NULL');
+        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET deleted_at = :deletedAt WHERE id = :id AND deleted_at IS NULL');
         return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
     }
 }

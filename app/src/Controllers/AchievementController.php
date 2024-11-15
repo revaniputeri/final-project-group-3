@@ -15,21 +15,26 @@ class AchievementController
         $this->db = $dependencies['db']->getConnection();
     }
 
-    public function achievementSubmission () 
+    public function index()
     {
-        View::render('achievementSubmission', '');
+        View::render('achievements', '');
     }
 
-    public function submissionForm () 
+    public function submissionForm()
     {
-        View::render('achievementForm', '');
+        session_start();
+        View::render('achievement-submission', '');
     }
 
     public function submissionFormProcess()
     {
-        $userId = $_POST['userId'];
+        session_start();
+        $userId = $_SESSION['user']['id'];
+        $competitionType = $_POST['competitionType'];
+        $competitionLevel = $_POST['competitionLevel'];
+        $competitionPoints = $_POST['competitionPoints'];
         $competitionTitle = $_POST['competitionTitle'];
-        $competitionTitleEnglish = $_POST['competitionTitleEnglish'];   
+        $competitionTitleEnglish = $_POST['competitionTitleEnglish'];
         $competitionPlace = $_POST['competitionPlace'];
         $competitionPlaceEnglish = $_POST['competitionPlaceEnglish'];
         $competitionUrl = $_POST['competitionUrl'];
@@ -46,6 +51,9 @@ class AchievementController
 
         $achievement = new Achievement(
             $userId,
+            $competitionType,
+            $competitionLevel,
+            $competitionPoints,
             $competitionTitle,
             $competitionTitleEnglish,
             $competitionPlace,
@@ -69,13 +77,15 @@ class AchievementController
         try {
             $achievementId = $achievement->saveAchievement($this->db);
             $_SESSION['success'] = "Achievement saved successfully with ID: " . $achievementId;
-        } catch (\InvalidArgumentException $e) {
-            $_SESSION['error'] = $e->getMessage();
         } catch (\Exception $e) {
-            $_SESSION['error'] = "An error occurred while saving the achievement.";
+            $_SESSION['error'] = $e->getMessage();
         }
 
-        header('Location: /achievement/submission');
+        if (isset($_SESSION['error'])) {
+            header('Location: /dashboard/achievement/form');
+        } else {
+            header('Location: /dashboard/achievement');
+        }
         exit();
     }
 

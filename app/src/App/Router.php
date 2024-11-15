@@ -36,7 +36,6 @@ class Router
         foreach (self::$routes as $route) {
             $pattern = "#^" . $route['path'] . "$#";
             if (preg_match($pattern, $path, $variables) && $method == $route['method']) {
-
                 // call middleware  
                 foreach ($route['middleware'] as $middleware) {
                     $instance = new $middleware;
@@ -45,7 +44,12 @@ class Router
 
                 $function = $route['function'];
                 $controller = new $route['controller']($route['dependencies']);
-                call_user_func_array([$controller, $function], $variables);
+
+                // Remove the full match from variables
+                array_shift($variables);
+
+                // Convert indexed array to associative array if there are parameters
+                call_user_func([$controller, $function], $variables);
             }
         }
     }

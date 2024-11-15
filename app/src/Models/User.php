@@ -82,4 +82,74 @@ class User
 
         $row->execute();
     }
+
+    public static function getAll(PDO $db): array
+    {
+        $row = $db->query("SELECT * FROM [dbo].[User]");
+        $results = $row->fetchAll();
+
+        return array_map(fn($user) => self::fromArray($user), $results);
+    }
+
+    public static function getById(PDO $db, int $id): ?self
+    {
+        $row = $db->prepare("SELECT * FROM [dbo].[User] WHERE Id = :id");
+        $row->execute(['id' => $id]);
+        $data = $row->fetch();
+
+        return $data ? self::fromArray($data) : null;
+    }
+
+    public static function search(PDO $db, string $query): array
+    {
+        $row = $db->prepare("
+            SELECT * FROM [dbo].[User]
+            WHERE FullName LIKE :query OR
+                  Username LIKE :query OR
+                  Email LIKE :query
+        ");
+        $row->execute(['query' => '%' . $query . '%']);
+        $results = $row->fetchAll();
+
+        return array_map(fn($user) => self::fromArray($user), $results);
+    }
+
+    public function update(PDO $db): void
+    {
+        $stmt = $db->prepare("
+            UPDATE [dbo].[User]
+            SET FullName = :fullName,
+                Username = :username,
+                Password = :password,
+                Email = :email,
+                Phone = :phone,
+                Avatar = :avatar,
+                Role = :role,
+                UpdatedAt = :updatedAt
+            WHERE Id = :id
+        ");
+        $row->execute([
+            'id' => $this->id,
+            'fullName' => $this->fullName,
+            'username' => $this->username,
+            'password' => $this->password,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'avatar' => $this->avatar,
+            'role' => $this->role,
+            'updatedAt' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    public static function delete(PDO $db, int $id): void
+    {
+        $row = $db->prepare("DELETE FROM [dbo].[User] WHERE Id = :id");
+        $row->execute(['id' => $id]);
+    }
+    
+    public static function getCount(PDO $db): int
+    {
+        $stmt = $db->query("SELECT COUNT(*) AS Count FROM [dbo].[User]");
+        return (int)$stmt->fetch()['Count'];
+    }
 }
