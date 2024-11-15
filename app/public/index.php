@@ -9,11 +9,12 @@ use PrestaC\Controllers\AuthController;
 use PrestaC\Controllers\IndexController;
 use PrestaC\Controllers\AssetsController;
 
+$config = require __DIR__ . '/../config.php';
 $connection = new Connection(
-    host: "REVANIPUTERI",
-    name: "prestac",
-    username: "",
-    password: ""
+    host: $config['host'],
+    name: $config['name'],
+    username: $config['username'],
+    password: $config['password']
 );
 
 Router::add(
