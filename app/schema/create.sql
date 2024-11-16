@@ -1,4 +1,16 @@
+<<<<<<< ours
 CREATE TABLE [dbo].[User] (
+||||||| ancestor
+CREATE TABLE
+    [dbo].[User]
+(
+=======
+USE prestac;
+
+CREATE TABLE
+    [dbo].[User]
+(
+>>>>>>> theirs
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [FullName]           VARCHAR(255) NOT NULL,
     [Username]           VARCHAR(255) NOT NULL, --NIP, NIM, NIPD
