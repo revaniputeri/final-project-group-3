@@ -169,4 +169,22 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+// Profile customization page
+Router::add(
+    method: "GET",
+    path: "/dashboard/profile/customize",
+    controller: IndexController::class,
+    function: "profileCustomization",
+    dependencies: ['db' => $connection]
+);
+
+// Profile customization process
+Router::add(
+    method: "POST",
+    path: "/dashboard/profile/customize",
+    controller: IndexController::class,
+    function: "profileCustomizationProcess",
+    dependencies: ['db' => $connection]
+);
+
 Router::run();
