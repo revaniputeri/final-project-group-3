@@ -31,6 +31,7 @@ class Achievement
         public $certificateFile,
         public $documentationFile,
         public $posterFile,
+        public $points,
         public DateTime $createdAt,
         public DateTime $updatedAt,
         public ?DateTime $deletedAt
@@ -42,6 +43,7 @@ class Achievement
 
         $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
+        $points = 
 
         $row = $db->prepare('INSERT INTO [dbo].[Achievement] (
             UserId,
@@ -63,6 +65,7 @@ class Achievement
             CertificateFile,
             DocumentationFile,
             PosterFile,
+            Points,
             CreatedAt,
             UpdatedAt
         ) VALUES (
@@ -85,6 +88,7 @@ class Achievement
             :certificateFile,
             :documentationFile,
             :posterFile,
+            :points,
             :createdAt,
             :updatedAt
         )');
@@ -109,6 +113,7 @@ class Achievement
             ':certificateFile' => $this->certificateFile,
             ':documentationFile' => $this->documentationFile,
             ':posterFile' => $this->posterFile,
+            ':points' => $this->points,
             ':createdAt' => $createdAt,
             ':updatedAt' => $updatedAt
         ]);

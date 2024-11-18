@@ -50,6 +50,7 @@ class AchievementController
         $posterFile = $_FILES['posterFile']['tmp_name'];
 
         $achievement = new Achievement(
+            null,
             $userId,
             $competitionType,
             $competitionLevel,
