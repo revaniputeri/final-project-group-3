@@ -8,6 +8,7 @@ use PrestaC\Controllers\AchievementController;
 use PrestaC\Controllers\AuthController;
 use PrestaC\Controllers\IndexController;
 use PrestaC\Controllers\AssetsController;
+use PrestaC\Middleware\AuthMiddleware;
 
 $config = require __DIR__ . '/../config.php';
 $connection = new Connection(
@@ -94,7 +95,8 @@ Router::add(
     path: "/dashboard",
     controller: IndexController::class,
     function: "dashboard",
-    dependencies: ['db' => $connection]
+    dependencies: ['db' => $connection],
+    middleware: [AuthMiddleware::class]
 );
 
 //dashboard process
@@ -130,7 +132,8 @@ Router::add(
     path: "/dashboard/achievement",
     controller: AchievementController::class,
     function: "index",
-    dependencies: ['db' => $connection]
+    dependencies: ['db' => $connection],
+    middleware: [AuthMiddleware::class]
 );
 
 // submission form within achievement submission
