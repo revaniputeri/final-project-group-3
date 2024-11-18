@@ -25,6 +25,7 @@ CREATE TABLE [dbo].[Lecturer] (
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [UserId]             INT          NOT NULL,
     [ExpertiseField]     VARCHAR(255) NOT NULL, -- EX: Computer Science, Mathematics, etc.
+    [Major]              VARCHAR(255) NOT NULL,
     CONSTRAINT [PK_Lecturer] PRIMARY KEY ([Id])
 );
 
