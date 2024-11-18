@@ -7,7 +7,6 @@ use PDO;
 
 class User
 {
-    // Constructor to initialize user properties
     public function __construct(
         public int $id,
         public string $fullName,
@@ -88,7 +87,7 @@ class User
         $row = $db->query("SELECT * FROM [dbo].[User]");
         $results = $row->fetchAll();
 
-        return array_map(fn($user) => self::fromArray($user), $results);
+        return array_map(fn($user) => User::fromArray($user), $results);
     }
 
     public static function getById(PDO $db, int $id): ?self
@@ -116,7 +115,7 @@ class User
 
     public function update(PDO $db): void
     {
-        $stmt = $db->prepare("
+        $row = $db->prepare("
             UPDATE [dbo].[User]
             SET FullName = :fullName,
                 Username = :username,
@@ -151,5 +150,22 @@ class User
     {
         $stmt = $db->query("SELECT COUNT(*) AS Count FROM [dbo].[User]");
         return (int)$stmt->fetch()['Count'];
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            id: $data['Id'],
+            fullName: $data['FullName'],
+            username: $data['Username'],
+            password: $data['Password'],
+            email: $data['Email'],
+            phone: $data['Phone'],
+            avatar: $data['Avatar'],
+            role: $data['Role'],
+            createdAt: DateTime::createFromFormat('Y-m-d H:i:s.u', $data['CreatedAt']),
+            updatedAt: DateTime::createFromFormat('Y-m-d H:i:s.u', $data['UpdatedAt']),
+            deletedAt: $data['DeletedAt'] ? DateTime::createFromFormat('Y-m-d H:i:s.u', $data['DeletedAt']) : null
+        );
     }
 }
