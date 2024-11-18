@@ -1,16 +1,6 @@
-<<<<<<< ours
-CREATE TABLE [dbo].[User] (
-||||||| ancestor
-CREATE TABLE
-    [dbo].[User]
-(
-=======
 USE prestac;
 
-CREATE TABLE
-    [dbo].[User]
-(
->>>>>>> theirs
+CREATE TABLE [dbo].[User] (
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [FullName]           VARCHAR(255) NOT NULL,
     [Username]           VARCHAR(255) NOT NULL, --NIP, NIM, NIPD
@@ -37,6 +27,7 @@ CREATE TABLE [dbo].[Lecturer] (
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [UserId]             INT          NOT NULL,
     [ExpertiseField]     VARCHAR(255) NOT NULL, -- EX: Computer Science, Mathematics, etc.
+    [Major]              VARCHAR(255) NOT NULL,
     CONSTRAINT [PK_Lecturer] PRIMARY KEY ([Id])
 );
 
