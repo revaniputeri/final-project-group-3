@@ -60,15 +60,23 @@ class AuthController
         
         session_start();
 
-        //username validation
+        // Validate username exists
         $user = User::findByUsername($this->db, $username);
-
-        $isPasswordCorrect = $user->validatePassword($password);
-
-        if (!$isPasswordCorrect) {
+        if (!$user) {
+            $_SESSION['error'] = "Invalid username or password";
             header('Location: /login');
             return;
         }
+
+        // Validate password
+        $isPasswordCorrect = $user->validatePassword($password);
+        if (!$isPasswordCorrect) {
+            $_SESSION['error'] = "Invalid username or password"; 
+            header('Location: /login');
+            return;
+        }
+
+        // Login successful
         $_SESSION['user'] = [
             'id' => $user->id,
             'fullName' => $user->fullName
