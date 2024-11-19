@@ -6,9 +6,9 @@ CREATE TABLE [dbo].[User] (
     [Username]           VARCHAR(255) NOT NULL, --NIP, NIM, NIPD
     [Password]           VARCHAR(255) NOT NULL,
     [Email]              VARCHAR(255) NOT NULL,
-    [Phone]              VARCHAR(255) NOT NULL,
+    [Phone]              VARCHAR(13)  NOT NULL,
     [Avatar]             VARCHAR(255) NOT NULL,
-    [Role]               VARCHAR(8)   NOT NULL, -- ADMIN, STUDENT, LECTURER
+    [Role]               INT          NOT NULL, -- ADMIN, STUDENT, LECTURER (enum)
     [CreatedAt]          DATETIME     NOT NULL DEFAULT GETDATE(),
     [UpdatedAt]          DATETIME     NOT NULL DEFAULT GETDATE(),
     [DeletedAt]          DATETIME     NULL,
@@ -18,25 +18,25 @@ CREATE TABLE [dbo].[User] (
 CREATE TABLE [dbo].[Student] (
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [UserId]             INT          NOT NULL,
-    [StudentMajor]       VARCHAR(255) NOT NULL,
-    [StudentStatus]      INT          NOT NULL,
+    [StudentMajor]       INT          NOT NULL, --enum
+    [StudentStatus]      INT          NOT NULL, --enum
     CONSTRAINT [PK_Student] PRIMARY KEY ([Id])
 );
 
 CREATE TABLE [dbo].[Lecturer] (
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [UserId]             INT          NOT NULL,
-    [ExpertiseField]     VARCHAR(255) NOT NULL, -- EX: Computer Science, Mathematics, etc.
-    [Major]              VARCHAR(255) NOT NULL,
+    [ExpertiseField]     VARCHAR(255) NOT NULL, -- EX: Computer Science, Mathematics, etc.(can add more)
+    [Major]              INT          NOT NULL, --enum
     CONSTRAINT [PK_Lecturer] PRIMARY KEY ([Id])
 );
 
 CREATE TABLE [dbo].[Achievement] (
     [Id]                         INT          NOT NULL IDENTITY (1, 1),
     [UserId]                     INT          NOT NULL,
-    [CompetitionType]            VARCHAR(50)  NOT NULL,
-    [CompetitionLevel]           VARCHAR(50)  NOT NULL,
-    [CompetitionPoints]          FLOAT        NOT NULL,
+    [CompetitionType]            VARCHAR(50)  NOT NULL, --can add more
+    [CompetitionLevel]           INT          NOT NULL, --enum
+    [CompetitionPoints]          DECIMAL      NOT NULL,
     [CompetitionTitle]           VARCHAR(255) NOT NULL,
     [CompetitionTitleEnglish]    VARCHAR(255) NOT NULL,
     [CompetitionPlace]           VARCHAR(255) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE [dbo].[Achievement] (
     [CompetitionUrl]             VARCHAR(255) NOT NULL,
     [CompetitionStartDate]       DATETIME     NOT NULL,
     [CompetitionEndDate]         DATETIME     NOT NULL,
-    [CompetitionRank]            VARCHAR(50)  NOT NULL, -- 1st, 2nd, 3rd, etc.
+    [CompetitionRank]            INT          NOT NULL, -- 1st, 2nd, 3rd, honorable mention, finalist (enum)
     -- number of institutions mean number of institution that participated in the competition
     [NumberOfInstitutions]       INT          NOT NULL,
     [NumberOfStudents]           INT          NOT NULL,
@@ -55,8 +55,7 @@ CREATE TABLE [dbo].[Achievement] (
     [CertificateFile]            VARCHAR(255) NOT NULL,
     [DocumentationFile]          VARCHAR(255) NOT NULL,
     [PosterFile]                 VARCHAR(255) NOT NULL,
-    [Points]                     FLOAT        NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank]
-    [SupervisorId]               INT          NULL,     -- NULL if no supervisor needed
+    [Points]                     DECIMAL      NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank]
     [SupervisorValidationStatus] VARCHAR(20)  NULL,     -- NULL/PENDING/APPROVED/REJECTED
     [SupervisorValidationDate]   DATETIME     NULL,     -- When supervisor validated
     [SupervisorValidationNote]   TEXT         NULL,     -- Supervisor feedback/notes
@@ -71,9 +70,9 @@ CREATE TABLE [dbo].[Achievement] (
 
 CREATE TABLE [dbo].[UserAchievement] (
     [Id]                         INT          NOT NULL IDENTITY (1, 1),
-    [UserId]                     INT          NULL,
+    [UserId]                     INT          NULL, --either its lecturer or student
     [AchievementId]              INT          NULL,
-    [AchievementRole]            VARCHAR(255) NULL,
+    [AchievementRole]            INT          NULL, --member, leader, or supervisor (enum)
     CONSTRAINT [PK_UserAchievement] PRIMARY KEY ([id])
 );
 

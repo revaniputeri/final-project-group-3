@@ -13,14 +13,14 @@ function generateEmail($name)
 
 function getRandomMajor()
 {
-    $majors = ['D-IV Informatics', 'D-IV Business Information System'];
-    return $majors[array_rand($majors)];
+    // Based on StudentMajor INT enum in create.sql
+    return rand(1, 2); // 1 = D-IV Informatics, 2 = D-IV Business Information System
 }
 
 function getRandomStatus()
 {
-    // 1 = Active, 2 = Non Active
-    return rand(1, 2);
+    // Based on StudentStatus INT enum in create.sql
+    return rand(1, 2); // 1 = Active, 2 = Non Active
 }
 
 try {
@@ -79,15 +79,14 @@ try {
                 Phone,
                 Avatar,
                 Role
-            ) OUTPUT INSERTED.Id
-            VALUES (
+            ) OUTPUT INSERTED.Id VALUES (
                 ?,
                 ?,
                 ?,
                 ?,
                 ?,
                 'default-avatar.png',
-                'STUDENT'
+                2 -- Role 2 = STUDENT based on enum in create.sql
             )
         ");
 
