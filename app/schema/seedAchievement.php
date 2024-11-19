@@ -8,13 +8,11 @@ function getRandomCompetitionType() {
 }
 
 function getRandomCompetitionLevel() {
-    $levels = ['Internasional', 'Nasional', 'Provinsi', 'Kab/Kota', 'Kecamatan', 'Sekolah'];
-    return $levels[array_rand($levels)];
+    return rand(1, 6); // 1 = International, 2 = National, 3 = Provincial, 4 = City, 5 = District, 6 = School
 }
 
 function getRandomCompetitionRank() {
-    $ranks = ['1st', '2nd', '3rd', 'Honorable Mention', 'Finalist'];
-    return $ranks[array_rand($ranks)];
+    return rand(1, 5); // 1 = 1st, 2 = 2nd, 3 = 3rd, 4 = Honorable Mention, 5 = Finalist
 }
 
 function getRandomPoints() {
@@ -65,9 +63,11 @@ try {
                 CompetitionEndDate, CompetitionRank, NumberOfInstitutions,
                 NumberOfStudents, LetterNumber, LetterDate, LetterFile,
                 CertificateFile, DocumentationFile, PosterFile, Points,
-                SupervisorId, AdminValidationStatus
+                SupervisorValidationStatus, AdminValidationStatus,
+                CreatedAt, UpdatedAt
             ) OUTPUT INSERTED.Id VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                GETDATE(), GETDATE()
             )
         ");
 
@@ -109,28 +109,28 @@ try {
                 'documentation_' . ($i + 1) . '.jpg',
                 'poster_' . ($i + 1) . '.jpg',
                 getRandomPoints(),
-                $lecturers[array_rand($lecturers)],
+                'PENDING',
                 'PENDING'
             ]);
 
             $achievementId = $achievementStmt->fetch(PDO::FETCH_COLUMN);
 
-            // Insert main participant
+            // Insert leader
             $userAchievementStmt->execute([
                 $userId,
                 $achievementId,
-                'Main Participant'
+                2 // 2 = Leader
             ]);
 
-            // Randomly add 1-3 team members
-            $teamMembers = rand(1, 3);
+            // Randomly add 1-5 team members
+            $teamMembers = rand(1, 5);
             for ($j = 0; $j < $teamMembers; $j++) {
                 $teamMemberId = $students[array_rand($students)];
                 if ($teamMemberId != $userId) {
                     $userAchievementStmt->execute([
                         $teamMemberId,
                         $achievementId,
-                        'Team Member'
+                        1 // 1 = Member
                     ]);
                 }
             }
@@ -140,7 +140,7 @@ try {
             $userAchievementStmt->execute([
                 $supervisorId, 
                 $achievementId,
-                'Supervisor'
+                3 // 3 = Supervisor
             ]);
         }
 

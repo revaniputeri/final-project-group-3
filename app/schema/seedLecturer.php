@@ -31,8 +31,8 @@ function getRandomExpertiseField()
 
 function getRandomMajor()
 {
-    $majors = ['D-IV Informatics', 'D-IV Business Information System', 'Other'];
-    return $majors[array_rand($majors)];
+    // Based on StudentMajor INT enum in create.sql
+    return rand(1, 2); // 1 = D-IV Informatics, 2 = D-IV Business Information System
 }
 
 try {
@@ -90,7 +90,9 @@ try {
                 Email, 
                 Phone, 
                 Avatar, 
-                Role
+                Role,
+                CreatedAt,
+                UpdatedAt
             ) OUTPUT INSERTED.Id
             VALUES (
                 ?, 
@@ -99,7 +101,9 @@ try {
                 ?, 
                 ?, 
                 'default-avatar.png', 
-                'LECTURER'
+                3,
+                GETDATE(),
+                GETDATE()
             )
         ");
 
@@ -108,18 +112,6 @@ try {
                 UserId,
                 ExpertiseField,
                 Major
-            ) VALUES (
-                ?,
-                ?,
-                ?
-            )
-        ");
-
-        $studentStmt = $conn->prepare("
-            INSERT INTO Student (
-                UserId,
-                StudentMajor,
-                StudentStatus
             ) VALUES (
                 ?,
                 ?,
