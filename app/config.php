@@ -2,7 +2,7 @@
 
 // change with your credentials
 return [
-    'host' => 'DESKTOP-93I3G0N',
+    'host' => 'REVANIPUTERI',
     'name' => 'prestac',
     'username' => '',
     'password' => ''

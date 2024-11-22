@@ -8,7 +8,8 @@ use DateTime;
 class Admin
 {
     public function __construct(
-        public $id,
+        public $id = null, // Made id nullable since it's auto-generated
+        public $userId, // Added userId field to match User table relationship
         public $name,
         public $email,
         public DateTime $createdAt,
@@ -21,8 +22,9 @@ class Admin
         $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
 
-        $row = $db->prepare('INSERT INTO [dbo].[Admin] (name, email, created_at, updated_at) VALUES (:name, :email, :createdAt, :updatedAt)');
+        $row = $db->prepare('INSERT INTO [dbo].[Admin] (user_id, name, email, created_at, updated_at) VALUES (:userId, :name, :email, :createdAt, :updatedAt)');
         $row->execute([
+            ':userId' => $this->userId,
             ':name' => $this->name,
             ':email' => $this->email,
             ':createdAt' => $createdAt,

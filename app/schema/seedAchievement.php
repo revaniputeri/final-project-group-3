@@ -62,11 +62,11 @@ try {
                 CompetitionPlaceEnglish, CompetitionUrl, CompetitionStartDate,
                 CompetitionEndDate, CompetitionRank, NumberOfInstitutions,
                 NumberOfStudents, LetterNumber, LetterDate, LetterFile,
-                CertificateFile, DocumentationFile, PosterFile, Points,
+                CertificateFile, DocumentationFile, PosterFile,
                 SupervisorValidationStatus, AdminValidationStatus,
                 CreatedAt, UpdatedAt
             ) OUTPUT INSERTED.Id VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 GETDATE(), GETDATE()
             )
         ");
@@ -108,7 +108,6 @@ try {
                 'certificate_' . ($i + 1) . '.pdf',
                 'documentation_' . ($i + 1) . '.jpg',
                 'poster_' . ($i + 1) . '.jpg',
-                getRandomPoints(),
                 'PENDING',
                 'PENDING'
             ]);

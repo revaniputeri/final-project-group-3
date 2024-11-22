@@ -71,7 +71,7 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// //leaderboard page
+// leaderboard page
 Router::add(
     method: "GET",
     path: "/leaderboard",
