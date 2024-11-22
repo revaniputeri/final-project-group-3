@@ -36,7 +36,6 @@ CREATE TABLE [dbo].[Achievement] (
     [UserId]                     INT          NOT NULL,
     [CompetitionType]            VARCHAR(50)  NOT NULL, --can add more
     [CompetitionLevel]           INT          NOT NULL, --enum
-    [CompetitionPoints]          DECIMAL      NOT NULL,
     [CompetitionTitle]           VARCHAR(255) NOT NULL,
     [CompetitionTitleEnglish]    VARCHAR(255) NOT NULL,
     [CompetitionPlace]           VARCHAR(255) NOT NULL,
@@ -55,7 +54,7 @@ CREATE TABLE [dbo].[Achievement] (
     [CertificateFile]            VARCHAR(255) NOT NULL,
     [DocumentationFile]          VARCHAR(255) NOT NULL,
     [PosterFile]                 VARCHAR(255) NOT NULL,
-    [Points]                     DECIMAL      NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank]
+    [CompetitionPoints]          DECIMAL      NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank]
     [SupervisorValidationStatus] VARCHAR(20)  NULL,     -- NULL/PENDING/APPROVED/REJECTED
     [SupervisorValidationDate]   DATETIME     NULL,     -- When supervisor validated
     [SupervisorValidationNote]   TEXT         NULL,     -- Supervisor feedback/notes
@@ -77,15 +76,15 @@ CREATE TABLE [dbo].[UserAchievement] (
 );
 
 ALTER TABLE [dbo].[Student]
-    ADD CONSTRAINT [FK_Student] 
+    ADD CONSTRAINT [FK_Student_User] 
         FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id]) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE [dbo].[Lecturer]
-    ADD CONSTRAINT [FK_Lecturer] 
+    ADD CONSTRAINT [FK_Lecturer_User] 
         FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id]) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE [dbo].[Achievement]
-    ADD CONSTRAINT [FK_Achievement]
+    ADD CONSTRAINT [FK_Achievement_User]
         FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id]) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE [dbo].[UserAchievement]
@@ -95,7 +94,3 @@ ALTER TABLE [dbo].[UserAchievement]
 ALTER TABLE [dbo].[UserAchievement]
     ADD CONSTRAINT [FK_UserAchievement_Achievement]
         FOREIGN KEY ([AchievementId]) REFERENCES [dbo].[Achievement] ([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE [dbo].[Achievement]
-    ADD CONSTRAINT [FK_Achievement_Supervisor]
-        FOREIGN KEY ([SupervisorId]) REFERENCES [dbo].[Lecturer] ([Id]);
