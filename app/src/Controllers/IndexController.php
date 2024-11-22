@@ -8,8 +8,6 @@ class IndexController
 {
     public function dashboard()
     {
-        View::render('dashboard', '');
+        View::render('dashboard', []);
     }
-
-    
 }

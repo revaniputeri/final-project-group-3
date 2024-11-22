@@ -21,4 +21,7 @@
   <link rel="stylesheet" href="/assets/css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="/assets/images/favicon.png" />
+  <script src="/assets/js/jquery.js"></script>
 </head>
+
+<body>

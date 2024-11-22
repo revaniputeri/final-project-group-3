@@ -29,7 +29,7 @@ class AuthController
 
     public function guest()
     {
-        View::render('guest', '');
+        View::render('guest', []);
     }
 
 
@@ -40,17 +40,17 @@ class AuthController
             header('Location: /dashboard');
             return;
         }
-        View::render('login', '');
+        View::render('login', []);
     }
 
     public function register()
     {
-        View::render('register', '');
+        View::render('register', []);
     }
 
     public function logout()
     {
-        View::render('logout', '');
+        View::render('logout', []);
     }
 
     public function loginProcess()

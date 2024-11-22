@@ -7,6 +7,10 @@ use PDO;
 
 class User
 {
+    private const ROLE_ADMIN = 1;
+    private const ROLE_STUDENT = 2;
+    private const ROLE_LECTURER = 3;
+
     public function __construct(
         public int $id,
         public string $fullName,
@@ -23,7 +27,7 @@ class User
 
     public static function findByUsername(PDO $db, string $username)
     {
-        $row = $db->prepare('SELECT * FROM [dbo].[User] WHERE Username=:username');
+        $row = $db->prepare('SELECT * FROM [dbo].[User] WHERE Username=:username AND DeletedAt IS NULL');
         $row->execute([
             "username" => $username
         ]);
@@ -67,24 +71,26 @@ class User
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
 
         $row = $db->prepare(
-            'INSERT INTO [dbo].[User] (FullName, Username, Password, Email, Phone, Avatar, Role)
-                    VALUES (:fullName, :username, :password, :email, :phone, :avatar, :role)'
+            'INSERT INTO [dbo].[User] (FullName, Username, Password, Email, Phone, Avatar, Role, CreatedAt, UpdatedAt)
+                    VALUES (:fullName, :username, :password, :email, :phone, :avatar, :role, :createdAt, :updatedAt)'
         );
-        // intinya bindParam -> securely add data to db
-        $row->bindParam(':fullName', $fullName);
-        $row->bindParam(':username', $username);
-        $row->bindParam(':password', $hashedPassword);
-        $row->bindParam(':email', $email);
-        $row->bindParam(':phone', $phone);
-        $row->bindParam(':avatar', $avatar);
-        $row->bindParam(':role', $role);
-
-        $row->execute();
+        
+        $row->execute([
+            ':fullName' => $fullName,
+            ':username' => $username,
+            ':password' => $hashedPassword,
+            ':email' => $email,
+            ':phone' => $phone,
+            ':avatar' => $avatar,
+            ':role' => $role,
+            ':createdAt' => $createdAt,
+            ':updatedAt' => $updatedAt
+        ]);
     }
 
     public static function getAll(PDO $db): array
     {
-        $row = $db->query("SELECT * FROM [dbo].[User]");
+        $row = $db->query("SELECT * FROM [dbo].[User] WHERE DeletedAt IS NULL");
         $results = $row->fetchAll();
 
         return array_map(fn($user) => User::fromArray($user), $results);
@@ -92,7 +98,7 @@ class User
 
     public static function getById(PDO $db, int $id): ?self
     {
-        $row = $db->prepare("SELECT * FROM [dbo].[User] WHERE Id = :id");
+        $row = $db->prepare("SELECT * FROM [dbo].[User] WHERE Id = :id AND DeletedAt IS NULL");
         $row->execute(['id' => $id]);
         $data = $row->fetch();
 
@@ -103,9 +109,10 @@ class User
     {
         $row = $db->prepare("
             SELECT * FROM [dbo].[User]
-            WHERE FullName LIKE :query OR
+            WHERE (FullName LIKE :query OR
                   Username LIKE :query OR
-                  Email LIKE :query
+                  Email LIKE :query) AND
+                  DeletedAt IS NULL
         ");
         $row->execute(['query' => '%' . $query . '%']);
         $results = $row->fetchAll();
@@ -125,7 +132,7 @@ class User
                 Avatar = :avatar,
                 Role = :role,
                 UpdatedAt = :updatedAt
-            WHERE Id = :id
+            WHERE Id = :id AND DeletedAt IS NULL
         ");
         $row->execute([
             'id' => $this->id,
@@ -142,13 +149,16 @@ class User
 
     public static function delete(PDO $db, int $id): void
     {
-        $row = $db->prepare("DELETE FROM [dbo].[User] WHERE Id = :id");
-        $row->execute(['id' => $id]);
+        $row = $db->prepare("UPDATE [dbo].[User] SET DeletedAt = :deletedAt WHERE Id = :id");
+        $row->execute([
+            'id' => $id,
+            'deletedAt' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
     }
     
     public static function getCount(PDO $db): int
     {
-        $stmt = $db->query("SELECT COUNT(*) AS Count FROM [dbo].[User]");
+        $stmt = $db->query("SELECT COUNT(*) AS Count FROM [dbo].[User] WHERE DeletedAt IS NULL");
         return (int)$stmt->fetch()['Count'];
     }
 
@@ -167,5 +177,68 @@ class User
             updatedAt: DateTime::createFromFormat('Y-m-d H:i:s.u', $data['UpdatedAt']),
             deletedAt: $data['DeletedAt'] ? DateTime::createFromFormat('Y-m-d H:i:s.u', $data['DeletedAt']) : null
         );
+    }
+
+    public static function getAllActiveLecturers(PDO $db): array
+    {
+        $stmt = $db->prepare("
+            SELECT u.* 
+            FROM [dbo].[User] u
+            INNER JOIN [dbo].[Lecturer] l ON u.Id = l.UserId
+            WHERE u.Role = :role 
+            AND u.DeletedAt IS NULL
+            ORDER BY u.FullName ASC
+        ");
+
+        $stmt->execute([':role' => self::ROLE_LECTURER]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(function($lecturer) {
+            return [
+                'Id' => $lecturer['Id'],
+                'FullName' => $lecturer['FullName'],
+                'Username' => $lecturer['Username'],
+                'Email' => $lecturer['Email']
+            ];
+        }, $results);
+    }
+
+    public static function getAllActiveStudents(PDO $db): array
+    {
+        $stmt = $db->prepare("
+            SELECT u.* 
+            FROM [dbo].[User] u
+            INNER JOIN [dbo].[Student] s ON u.Id = s.UserId
+            WHERE u.Role = :role 
+            AND u.DeletedAt IS NULL
+            ORDER BY u.FullName ASC
+        ");
+
+        $stmt->execute([':role' => self::ROLE_STUDENT]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(function($student) {
+            return [
+                'Id' => $student['Id'],
+                'FullName' => $student['FullName'],
+                'Username' => $student['Username'],
+                'Email' => $student['Email']
+            ];
+        }, $results);
+    }
+
+    public function isLecturer(): bool
+    {
+        return $this->role === self::ROLE_LECTURER;
+    }
+
+    public function isStudent(): bool
+    {
+        return $this->role === self::ROLE_STUDENT;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
     }
 }

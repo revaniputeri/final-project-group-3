@@ -10,12 +10,40 @@ class Achievement
 {
     private const MAX_FILE_SIZE = 5242880; // 5MB
     private const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
+    private const UPLOAD_BASE_PATH = 'public/storage/achievements/';
+    private const UPLOAD_FOLDERS = [
+        'letterFile' => 'letters',
+        'certificateFile' => 'certificates',
+        'documentationFile' => 'documentation',
+        'posterFile' => 'posters'
+    ];
+
+    private const COMPETITION_RANKS = [
+        1 => ['name' => 'Juara 1', 'points' => 3.5],
+        2 => ['name' => 'Juara 2', 'points' => 3],
+        3 => ['name' => 'Juara 3', 'points' => 2.5],
+        4 => ['name' => 'Penghargaan', 'points' => 2],
+        5 => ['name' => 'Juara Harapan', 'points' => 1]
+    ];
+
+    private const COMPETITION_LEVELS = [
+        1 => ['name' => 'Internasional', 'points' => 4.0],
+        2 => ['name' => 'Nasional', 'points' => 3.0],
+        3 => ['name' => 'Provinsi', 'points' => 2.0],
+        4 => ['name' => 'Kab/Kota', 'points' => 1.5],
+        5 => ['name' => 'Kecamatan', 'points' => 1.0],
+        6 => ['name' => 'Sekolah', 'points' => 1.0],
+        7 => ['name' => 'Jurusan', 'points' => 0.5]
+    ];
+
+    private const ROLE_SUPERVISOR = 1;
+    private const ROLE_TEAM_LEADER = 2;
+    private const ROLE_TEAM_MEMBER = 3;
 
     public function __construct(
         public $userId,
         public $competitionType,
         public $competitionLevel,
-        public $competitionPoints,
         public $competitionTitle,
         public $competitionTitleEnglish,
         public $competitionPlace,
@@ -23,6 +51,7 @@ class Achievement
         public $competitionUrl,
         public DateTime $competitionStartDate,
         public DateTime $competitionEndDate,
+        public $competitionRank,
         public $numberOfInstitutions,
         public $numberOfStudents,
         public $letterNumber,
@@ -31,25 +60,50 @@ class Achievement
         public $certificateFile,
         public $documentationFile,
         public $posterFile,
-        public $points,
+        public $competitionPoints,
         public DateTime $createdAt,
         public DateTime $updatedAt,
-        public ?DateTime $deletedAt
+        public $id = null,
+        public $supervisorValidationStatus = 'PENDING',
+        public ?DateTime $supervisorValidationDate = null,
+        public ?string $supervisorValidationNote = null,
+        public $adminValidationStatus = 'PENDING',
+        public ?DateTime $adminValidationDate = null,
+        public ?string $adminValidationNote = null,
+        public ?DateTime $deletedAt = null
     ) {}
 
-    public function saveAchievement(PDO $db)
+    private function calculateCompetitionPoints(): float
+    {
+        $rankPoints = self::COMPETITION_RANKS[$this->competitionRank]['points'] ?? 0;
+        $levelPoints = self::COMPETITION_LEVELS[$this->competitionLevel]['points'] ?? 0;
+
+        return $rankPoints + $levelPoints;
+    }
+
+    public static function getCompetitionRanks(): array
+    {
+        return self::COMPETITION_RANKS;
+    }
+
+    public static function getCompetitionLevels(): array
+    {
+        return self::COMPETITION_LEVELS;
+    }
+
+    public function saveAchievement(PDO $db, array $supervisors = [], array $teamMembers = [])
     {
         $this->validateFileInputs();
 
+        $this->competitionPoints = $this->calculateCompetitionPoints();
+
         $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
-        $points = 
 
         $row = $db->prepare('INSERT INTO [dbo].[Achievement] (
             UserId,
             CompetitionType,
             CompetitionLevel,
-            CompetitionPoints,
             CompetitionTitle,
             CompetitionTitleEnglish,
             CompetitionPlace,
@@ -57,6 +111,7 @@ class Achievement
             CompetitionUrl,
             CompetitionStartDate,
             CompetitionEndDate,
+            CompetitionRank,
             NumberOfInstitutions,
             NumberOfStudents,
             LetterNumber,
@@ -65,14 +120,19 @@ class Achievement
             CertificateFile,
             DocumentationFile,
             PosterFile,
-            Points,
+            CompetitionPoints,
+            SupervisorValidationStatus,
+            SupervisorValidationDate,
+            SupervisorValidationNote,
+            AdminValidationStatus,
+            AdminValidationDate,
+            AdminValidationNote,
             CreatedAt,
             UpdatedAt
         ) VALUES (
             :userId,
             :competitionType,
             :competitionLevel,
-            :competitionPoints,
             :competitionTitle,
             :competitionTitleEnglish,
             :competitionPlace,
@@ -80,6 +140,7 @@ class Achievement
             :competitionUrl,
             :competitionStartDate,
             :competitionEndDate,
+            :competitionRank,
             :numberOfInstitutions,
             :numberOfStudents,
             :letterNumber,
@@ -88,7 +149,13 @@ class Achievement
             :certificateFile,
             :documentationFile,
             :posterFile,
-            :points,
+            :competitionPoints,
+            :supervisorValidationStatus,
+            :supervisorValidationDate,
+            :supervisorValidationNote,
+            :adminValidationStatus,
+            :adminValidationDate,
+            :adminValidationNote,
             :createdAt,
             :updatedAt
         )');
@@ -97,7 +164,6 @@ class Achievement
             ':userId' => $this->userId,
             ':competitionType' => $this->competitionType,
             ':competitionLevel' => $this->competitionLevel,
-            ':competitionPoints' => $this->competitionPoints,
             ':competitionTitle' => $this->competitionTitle,
             ':competitionTitleEnglish' => $this->competitionTitleEnglish,
             ':competitionPlace' => $this->competitionPlace,
@@ -105,6 +171,7 @@ class Achievement
             ':competitionUrl' => $this->competitionUrl,
             ':competitionStartDate' => $this->competitionStartDate->format('Y-m-d H:i:s'),
             ':competitionEndDate' => $this->competitionEndDate->format('Y-m-d H:i:s'),
+            ':competitionRank' => $this->competitionRank,
             ':numberOfInstitutions' => $this->numberOfInstitutions,
             ':numberOfStudents' => $this->numberOfStudents,
             ':letterNumber' => $this->letterNumber,
@@ -113,12 +180,70 @@ class Achievement
             ':certificateFile' => $this->certificateFile,
             ':documentationFile' => $this->documentationFile,
             ':posterFile' => $this->posterFile,
-            ':points' => $this->points,
+            ':competitionPoints' => $this->competitionPoints,
+            ':supervisorValidationStatus' => $this->supervisorValidationStatus,
+            ':supervisorValidationDate' => $this->supervisorValidationDate?->format('Y-m-d H:i:s'),
+            ':supervisorValidationNote' => $this->supervisorValidationNote,
+            ':adminValidationStatus' => $this->adminValidationStatus,
+            ':adminValidationDate' => $this->adminValidationDate?->format('Y-m-d H:i:s'),
+            ':adminValidationNote' => $this->adminValidationNote,
             ':createdAt' => $createdAt,
             ':updatedAt' => $updatedAt
         ]);
 
-        return $db->lastInsertId();
+        $achievementId = $db->lastInsertId();
+
+        // Save supervisors and team members
+        $this->saveUserAchievements($db, $achievementId, $supervisors, $teamMembers);
+
+        return $achievementId;
+    }
+
+    private function saveUserAchievements(PDO $db, int $achievementId, array $supervisors, array $teamMembers)
+    {
+        $stmt = $db->prepare('INSERT INTO [dbo].[UserAchievement] 
+        (UserId, AchievementId, AchievementRole) 
+        VALUES (:userId, :achievementId, :role)');
+
+        if (!empty($supervisors)) {
+            foreach ($supervisors as $supervisorId) {
+                $stmt->execute([
+                    ':userId' => $supervisorId,
+                    ':achievementId' => $achievementId,
+                    ':role' => self::ROLE_SUPERVISOR
+                ]);
+            }
+        }
+
+        if (!empty($teamMembers)) {
+            foreach ($teamMembers as $member) {
+                $role = ($member['role'] === 'Ketua') ? self::ROLE_TEAM_LEADER : self::ROLE_TEAM_MEMBER;
+                $stmt->execute([
+                    ':userId' => $member['userId'],
+                    ':achievementId' => $achievementId,
+                    ':role' => $role
+                ]);
+            }
+        }
+    }
+
+    public static function getUsersByRole(PDO $db, int $achievementId, int $role): array
+    {
+        $stmt = $db->prepare('
+        SELECT u.Id, u.FullName, ua.AchievementRole
+        FROM [dbo].[UserAchievement] ua
+        JOIN [dbo].[User] u ON ua.UserId = u.Id
+        WHERE ua.AchievementId = :achievementId 
+        AND ua.AchievementRole = :role
+        AND u.DeletedAt IS NULL
+    ');
+
+        $stmt->execute([
+            ':achievementId' => $achievementId,
+            ':role' => $role
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function validateFileInputs()
@@ -126,9 +251,10 @@ class Achievement
         $fileInputs = ['letterFile', 'certificateFile', 'documentationFile', 'posterFile'];
 
         foreach ($fileInputs as $input) {
-            if ($this->$input) {
-                $this->validateFileSize($this->$input);
-                $this->validateFileType($this->$input);
+            if ($this->$input && is_array($this->$input)) {
+                $this->validateFileSize($this->$input['tmp_name']);
+                $this->validateFileType($this->$input['tmp_name']);
+                $this->$input = $this->storeFile($this->$input, $input);
             }
         }
     }
@@ -151,6 +277,26 @@ class Achievement
         }
     }
 
+    private function storeFile($file, $fileType)
+    {
+        $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
+        $uploadPath = self::UPLOAD_BASE_PATH . $folder . '/';
+
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = ($this->id ?? 'temp_' . uniqid()) . '_' . $fileType . '.' . $extension;
+        $destination = $uploadPath . $filename;
+
+        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+            throw new InvalidArgumentException("Failed to upload file.");
+        }
+
+        return $destination;
+    }
+
     public static function getAchievement(PDO $db, int $id)
     {
         $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE id = :id AND deleted_at IS NULL');
@@ -169,30 +315,32 @@ class Achievement
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
 
         $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET
-            competition_type = :competitionType,
-            competition_level = :competitionLevel,
-            competition_points = :competitionPoints,
-            competition_title = :competitionTitle,
-            competition_title_english = :competitionTitleEnglish,
-            competition_place = :competitionPlace,
-            competition_place_english = :competitionPlaceEnglish,
-            competition_url = :competitionUrl,
-            competition_start_date = :competitionStartDate,
-            competition_end_date = :competitionEndDate,
-            number_of_institutions = :numberOfInstitutions,
-            number_of_students = :numberOfStudents,
-            letter_number = :letterNumber,
-            letter_date = :letterDate,
-            letter_file = :letterFile,
-            certificate_file = :certificateFile,
-            documentation_file = :documentationFile,
-            poster_file = :posterFile,
-            updated_at = :updatedAt
+            CompetitionType = :competitionType,
+            CompetitionLevel = :competitionLevel,
+            CompetitionPoints = :competitionPoints,
+            CompetitionTitle = :competitionTitle,
+            CompetitionTitleEnglish = :competitionTitleEnglish,
+            CompetitionPlace = :competitionPlace,
+            CompetitionPlaceEnglish = :competitionPlaceEnglish,
+            CompetitionUrl = :competitionUrl,
+            CompetitionStartDate = :competitionStartDate,
+            CompetitionEndDate = :competitionEndDate,
+            CompetitionRank = :competitionRank,
+            NumberOfInstitutions = :numberOfInstitutions,
+            NumberOfStudents = :numberOfStudents,
+            LetterNumber = :letterNumber,
+            LetterDate = :letterDate,
+            LetterFile = :letterFile,
+            CertificateFile = :certificateFile,
+            DocumentationFile = :documentationFile,
+            PosterFile = :posterFile,
+            SupervisorValidationStatus = :supervisorValidationStatus,
+            AdminValidationStatus = :adminValidationStatus,
+            UpdatedAt = :updatedAt
         WHERE id = :id AND deleted_at IS NULL');
 
         return $stmt->execute([
             ':id' => $id,
-            ':userId' => $this->userId,
             ':competitionType' => $this->competitionType,
             ':competitionLevel' => $this->competitionLevel,
             ':competitionPoints' => $this->competitionPoints,
@@ -203,6 +351,7 @@ class Achievement
             ':competitionUrl' => $this->competitionUrl,
             ':competitionStartDate' => $this->competitionStartDate->format('Y-m-d H:i:s'),
             ':competitionEndDate' => $this->competitionEndDate->format('Y-m-d H:i:s'),
+            ':competitionRank' => $this->competitionRank,
             ':numberOfInstitutions' => $this->numberOfInstitutions,
             ':numberOfStudents' => $this->numberOfStudents,
             ':letterNumber' => $this->letterNumber,
@@ -211,6 +360,8 @@ class Achievement
             ':certificateFile' => $this->certificateFile,
             ':documentationFile' => $this->documentationFile,
             ':posterFile' => $this->posterFile,
+            ':supervisorValidationStatus' => $this->supervisorValidationStatus,
+            ':adminValidationStatus' => $this->adminValidationStatus,
             ':updatedAt' => $updatedAt
         ]);
     }
