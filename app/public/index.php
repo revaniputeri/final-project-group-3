@@ -70,15 +70,14 @@ Router::add(
     function: "loginProcess",
     dependencies: ['db' => $connection]
 );
-
-// leaderboard page
+//leaderboard page
 Router::add(
     method: "GET",
     path: "/leaderboard",
     controller: AchievementController::class,
     function: "leaderboard",
     dependencies: ['db' => $connection]
-);
+)
 
 //leaderboard process
 Router::add(
@@ -87,7 +86,7 @@ Router::add(
     controller: AchievementController::class,
     function: "leaderboardProcess",
     dependencies: ['db' => $connection]
-);
+)
 
 //dashboard page
 Router::add(
@@ -95,9 +94,8 @@ Router::add(
     path: "/dashboard",
     controller: IndexController::class,
     function: "dashboard",
-    dependencies: ['db' => $connection],
-    middleware: [AuthMiddleware::class]
-);
+    dependencies: ['db' => $connection]
+)
 
 //dashboard process
 Router::add(
@@ -106,14 +104,14 @@ Router::add(
     controller: IndexController::class,
     function: "dashboardProcess",
     dependencies: ['db' => $connection]
-);
+)
 
-// home page within the dashboard
+// profile customization page
 Router::add(
     method: "GET",
-    path: "/dashboard/home",
+    path: "/dashboard/profile-customization",
     controller: IndexController::class,
-    function: "home",
+    function: "profileCustomization",
     dependencies: ['db' => $connection]
 );
 
