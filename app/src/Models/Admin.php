@@ -8,8 +8,8 @@ use DateTime;
 class Admin
 {
     public function __construct(
-        public $id = null, // Made id nullable since it's auto-generated
-        public $userId, // Added userId field to match User table relationship
+        public $id = null, 
+        public $userId,
         public $name,
         public $email,
         public DateTime $createdAt,
@@ -17,28 +17,17 @@ class Admin
         public ?DateTime $deletedAt = null
     ) {}
 
-    public function saveAdmin(PDO $db)
-    {
-        $createdAt = (new DateTime())->format('Y-m-d H:i:s');
-        $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
-
-        $row = $db->prepare('INSERT INTO [dbo].[Admin] (user_id, name, email, created_at, updated_at) VALUES (:userId, :name, :email, :createdAt, :updatedAt)');
-        $row->execute([
-            ':userId' => $this->userId,
-            ':name' => $this->name,
-            ':email' => $this->email,
-            ':createdAt' => $createdAt,
-            ':updatedAt' => $updatedAt
-        ]);
-
-        return $db->lastInsertId();
-    }
-
     public static function getAdminById(PDO $db, int $id)
     {
         $row = $db->prepare('SELECT * FROM [dbo].[Admin] WHERE id = :id AND deleted_at IS NULL');
         $row->execute([':id' => $id]);
         return $row->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function updateAdminProfile(PDO $db, int $userId, array $data)
+    {
+        $stmt = $db->prepare("UPDATE admins SET username = ?, email = ?, bio = ? WHERE user_id = ?");
+        return $stmt->execute([$data['username'], $data['email'], $data['bio'], $userId]);
     }
 
     public static function getAllAdmins(PDO $db)

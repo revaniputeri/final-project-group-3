@@ -372,4 +372,30 @@ class Achievement
         $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET deleted_at = :deletedAt WHERE id = :id AND deleted_at IS NULL');
         return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
     }
+
+    public static function updateSupervisorValidation(PDO $db, int $achievementId, string $status, string $note)
+    {
+        $date = (new DateTime())->format('Y-m-d H:i:s');
+        $stmt = $db->prepare('UPDATE [dbo].[Achievement] 
+            SET SupervisorValidationStatus = :status, 
+                SupervisorValidationDate = :date, 
+                SupervisorValidationNote = :note 
+        WHERE id = :achievementId');
+        return $stmt->execute([
+            ':achievementId' => $achievementId,
+            ':status' => $status,
+            ':date' => $date,
+            ':note' => $note
+        ]);
+    }
+
+    public static function updateAdminValidation(PDO $db, int $achievementId, string $status, string $note)
+    {
+        $date = (new DateTime())->format('Y-m-d H:i:s');
+        $stmt = $db->prepare('UPDATE [dbo].[Achievement] 
+            SET AdminValidationStatus = :status, 
+                AdminValidationDate = :date, 
+                AdminValidationNote = :note 
+        WHERE id = :achievementId');
+    }
 }

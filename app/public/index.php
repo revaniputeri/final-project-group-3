@@ -77,7 +77,7 @@ Router::add(
     controller: AchievementController::class,
     function: "leaderboard",
     dependencies: ['db' => $connection]
-)
+);
 
 //leaderboard process
 Router::add(
@@ -86,7 +86,7 @@ Router::add(
     controller: AchievementController::class,
     function: "leaderboardProcess",
     dependencies: ['db' => $connection]
-)
+);
 
 //dashboard page
 Router::add(
@@ -95,7 +95,7 @@ Router::add(
     controller: IndexController::class,
     function: "dashboard",
     dependencies: ['db' => $connection]
-)
+);
 
 //dashboard process
 Router::add(
@@ -104,7 +104,7 @@ Router::add(
     controller: IndexController::class,
     function: "dashboardProcess",
     dependencies: ['db' => $connection]
-)
+);  
 
 // profile customization page
 Router::add(

@@ -140,6 +140,26 @@ class AchievementController
         exit();
     }
 
+    public function supervisorValidationProcess()
+    {
+        $this->ensureSession();
+        $achievementId = $_POST['achievementId'];
+        $status = $_POST['status'];
+        $note = $_POST['note'];
+
+        Achievement::updateSupervisorValidation($this->db, $achievementId, $status, $note);
+    }
+
+    public function adminValidationProcess()
+    {
+        $this->ensureSession();
+        $achievementId = $_POST['achievementId'];
+        $status = $_POST['status'];
+        $note = $_POST['note'];
+
+        Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
+    }
+
     public function achievementHistory()
     {
         $this->ensureSession();
