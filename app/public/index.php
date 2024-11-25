@@ -188,4 +188,24 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+//SUPERVISOR
+//supervisor validation process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement/supervisor-validation",
+    controller: AchievementController::class,
+    function: "supervisorValidationProcess",
+    dependencies: ['db' => $connection]
+);
+
+//ADMIN
+//admin validation process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement/admin-validation",
+    controller: AchievementController::class,
+    function: "adminValidationProcess",
+    dependencies: ['db' => $connection]
+);
+
 Router::run();
