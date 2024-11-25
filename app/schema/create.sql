@@ -55,7 +55,7 @@ CREATE TABLE [dbo].[Achievement] (
     [DocumentationFile]          VARCHAR(255) NOT NULL,
     [PosterFile]                 VARCHAR(255) NOT NULL,
     [CompetitionPoints]          DECIMAL      NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank]
-    [SupervisorValidationStatus] VARCHAR(20)  NULL,     -- NULL/PENDING/APPROVED/REJECTED
+    [SupervisorValidationStatus] VARCHAR(20)  NOT NULL DEFAULT 'PENDING',
     [SupervisorValidationDate]   DATETIME     NULL,     -- When supervisor validated
     [SupervisorValidationNote]   TEXT         NULL,     -- Supervisor feedback/notes
     [AdminValidationStatus]      VARCHAR(20)  NOT NULL DEFAULT 'PENDING',
