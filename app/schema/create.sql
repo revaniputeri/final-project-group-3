@@ -55,10 +55,10 @@ CREATE TABLE [dbo].[Achievement] (
     [DocumentationFile]          VARCHAR(255) NOT NULL,
     [PosterFile]                 VARCHAR(255) NOT NULL,
     [CompetitionPoints]          DECIMAL      NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank]
-    [SupervisorValidationStatus] VARCHAR(20)  NOT NULL DEFAULT 'PENDING',
+    [SupervisorValidationStatus] VARCHAR(20)  NOT NULL DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED
     [SupervisorValidationDate]   DATETIME     NULL,     -- When supervisor validated
     [SupervisorValidationNote]   TEXT         NULL,     -- Supervisor feedback/notes
-    [AdminValidationStatus]      VARCHAR(20)  NOT NULL DEFAULT 'PENDING',
+    [AdminValidationStatus]      VARCHAR(20)  NOT NULL DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED
     [AdminValidationDate]        DATETIME     NULL,     -- When admin validated
     [AdminValidationNote]        TEXT         NULL,     -- Admin feedback/notes
     [CreatedAt]                  DATETIME     NOT NULL DEFAULT GETDATE(),
