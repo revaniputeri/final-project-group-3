@@ -66,7 +66,7 @@
                   <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" href="../../index.html">SIGN UP</a>
                 </div>
                 <div class="text-center mt-4 font-weight-light">
-                  Sudah memiliki Akun? <a href="login.html" class="text-primary">Sign-in</a>
+                  Sudah memiliki Akun <a href="login.html" class="text-primary">Sign-in</a>
                 </div>
               </form>
             </div>
