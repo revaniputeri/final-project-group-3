@@ -1,0 +1,17 @@
+{
+    "name": "kelompok-3/prestac",
+    "autoload": {
+        "psr-4": {
+            "PrestaC\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "revaniputeri",
+            "email": "revaninandaputeri@gmail.com"
+        }
+    ],
+    "require": {
+        "psr/http-message": "^2.0"
+    }
+}
