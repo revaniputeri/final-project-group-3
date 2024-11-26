@@ -29,6 +29,12 @@ class AchievementController
         View::render('achievements', []);
     }
 
+    public function achievementHistory()
+    {
+        $this->ensureSession();
+        View::render('achievement-history', []);
+    }
+
     public function submissionForm()
     {
         $data = [
@@ -160,7 +166,7 @@ class AchievementController
         Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
     }
 
-    public function achievementHistory()
+    public function achievementHistoryProcess()
     {
         $this->ensureSession();
         try {
@@ -168,7 +174,7 @@ class AchievementController
             View::render('achievementHistory', ['achievements' => $achievements]);
         } catch (\Exception $e) {
             $_SESSION['error'] = "An error occurred while fetching achievement history.";
-            header('Location: /dashboard');
+            header('Location: /dashboard/achievement/history');
             exit();
         }
     }
