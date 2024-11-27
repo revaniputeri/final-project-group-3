@@ -23,16 +23,23 @@ class AchievementController
         }
     }
 
-    public function index()
-    {
-        $this->ensureSession();
-        View::render('achievements', []);
-    }
-
     public function achievementHistory()
     {
         $this->ensureSession();
-        View::render('achievement-history', []);
+
+        // Ambil data achievement dari database berdasarkan user ID
+        $achievements = Achievement::getAchievementsByUserId($this->db, $_SESSION['user']['id']);
+
+        // Konversi rank dan level ID ke nama yang sesuai
+        foreach ($achievements as &$achievement) {
+            $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
+            $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
+        }
+
+        // Kirim data ke view
+        View::render('achievement-history', [
+            'achievements' => $achievements
+        ]);
     }
 
     public function submissionForm()
@@ -44,13 +51,13 @@ class AchievementController
             'competitionRanks' => Achievement::getCompetitionRanks()
         ];
 
-         View::render('achievement-submission', $data);
+        View::render('achievement-submission', $data);
     }
 
     public function submissionFormProcess()
     {
         $this->ensureSession();
-        
+
         try {
             $userId = $_SESSION['user']['id'];
             $competitionType = $_POST['competitionType'];
@@ -133,7 +140,6 @@ class AchievementController
             // Pass supervisors and team members to saveAchievement
             $achievementId = $achievement->saveAchievement($this->db, $supervisors, $teamMembers);
             $_SESSION['success'] = "Achievement saved successfully with ID: " . $achievementId;
-            
         } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
         }
@@ -141,10 +147,16 @@ class AchievementController
         if (isset($_SESSION['error'])) {
             header('Location: /dashboard/achievement/form');
         } else {
-            header('Location: /dashboard/achievement');
+            header('Location: /dashboard/achievement/history');
         }
         exit();
     }
+
+    public function supervisorValidation()
+    {
+        View::render('achievement-history-supervisor', []);
+    }
+
 
     public function supervisorValidationProcess()
     {
@@ -156,6 +168,11 @@ class AchievementController
         Achievement::updateSupervisorValidation($this->db, $achievementId, $status, $note);
     }
 
+    public function adminValidation()
+    {
+        View::render('achievement-history-admin', []);
+    }
+
     public function adminValidationProcess()
     {
         $this->ensureSession();
@@ -164,32 +181,5 @@ class AchievementController
         $note = $_POST['note'];
 
         Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
-    }
-
-    public function achievementHistoryProcess()
-    {
-        $this->ensureSession();
-        try {
-            $achievements = Achievement::getAllAchievements($this->db);
-            View::render('achievementHistory', ['achievements' => $achievements]);
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "An error occurred while fetching achievement history.";
-            header('Location: /dashboard/achievement/history');
-            exit();
-        }
-    }
-
-    public function showSubmissionForm()
-    {
-        $data = [
-            'lecturers' => User::getAllActiveLecturers($this->db),
-            'students' => User::getAllActiveStudents($this->db),
-            'competitionLevels' => Achievement::getCompetitionLevels(),
-            'competitionRanks' => Achievement::getCompetitionRanks()
-        ];
-
-        var_dump($data);
-
-        View::render('achievement-submission', $data);
     }
 }
