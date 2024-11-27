@@ -20,13 +20,13 @@
                 <div class="col-md-4 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Submit Achievement</h4>
+                            <h4 class="card-title">Tambah Prestasi</h4>
                             <p class="card-description">
-                                Click here to submit a new achievement
+                                Klik disini untuk menambahkan prestasi baru
                             </p>
                             <a href="/dashboard/achievement/form" class="btn btn-primary btn-lg btn-block">
                                 <i class="ti-plus mr-2"></i>
-                                New Submission
+                                Tambah Baru
                             </a>
                         </div>
                     </div>
@@ -36,13 +36,13 @@
                 <div class="col-md-4 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Achievement History</h4>
+                            <h4 class="card-title">Riwayat Prestasi</h4>
                             <p class="card-description">
-                                View your past achievements
+                                Lihat riwayat prestasi Anda
                             </p>
                             <a href="/dashboard/achievement/history" class="btn btn-info btn-lg btn-block">
                                 <i class="ti-list mr-2"></i>
-                                View History
+                                Lihat Riwayat
                             </a>
                         </div>
                     </div>
@@ -52,13 +52,13 @@
                 <div class="col-md-4 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Achievement Info</h4>
+                            <h4 class="card-title">Informasi Prestasi</h4>
                             <p class="card-description">
-                                Check your achievement statistics
+                                Cek statistik prestasi Anda
                             </p>
                             <a href="/dashboard/achievement/info" class="btn btn-success btn-lg btn-block">
                                 <i class="ti-bar-chart mr-2"></i>
-                                View Stats
+                                Lihat Statistik
                             </a>
                         </div>
                     </div>
