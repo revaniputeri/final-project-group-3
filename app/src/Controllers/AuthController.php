@@ -22,16 +22,18 @@ class AuthController
         session_start();
         if (isset($_SESSION['user'])) {
             header('Location: /dashboard/home');
+            exit();
         } else {
             header('Location: /guest');
+            exit();
         }
     }
 
     public function guest()
     {
+        session_start();
         View::render('guest', []);
     }
-
 
     public function login()
     {
@@ -41,16 +43,6 @@ class AuthController
             return;
         }
         View::render('login', []);
-    }
-
-    public function register()
-    {
-        View::render('register', []);
-    }
-
-    public function logout()
-    {
-        View::render('logout', []);
     }
 
     public function loginProcess()
@@ -84,36 +76,10 @@ class AuthController
         header('Location: /dashboard/home');
     }
 
-    public function registerProcess(): void
+    public function logout()
     {
-        $fullname = $_POST['username'];
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $avatar = $_POST['avatar'];
-        $role = $_POST['role'];
-
         session_start();
-        //check if username already exists
-        if (User::findByUsername($this->db, $username)) {
-            $_SESSION['error_message'] = "Username already exists";
-            header('Location: /register');
-            exit;
-        }
-
-        User::register(
-            $this->db,
-            $fullname,
-            $username,
-            $password,
-            $email,
-            $phone,
-            $avatar,
-            $role
-        );
-
-        header('Location: /login');
+        View::render('logout', []);
     }
 
     public function logoutProcess(): void

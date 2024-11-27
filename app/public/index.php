@@ -35,24 +35,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//register page
-Router::add(
-    method: "GET",
-    path: "/register",
-    controller: AuthController::class,
-    function: "register",
-    dependencies: ['db' => $connection]
-);
-
-//register process
-Router::add(
-    method: "POST",
-    path: "/register",
-    controller: AuthController::class,
-    function: "registerProcess",
-    dependencies: ['db' => $connection]
-);
-
 //login page
 Router::add(
     method: "GET",
