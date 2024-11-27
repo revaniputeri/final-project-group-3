@@ -17,9 +17,9 @@
 
                         <form class="pt-3" action="/login" method="post">
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="NIM/NIDN" required 
+                                <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="NIM/NIDN/NIP" required 
                                     style="border-radius: 10px; border: 1px solid #dfe6e9; padding: 15px; transition: all 0.3s;">
-                                <small class="form-text text-muted ml-2">Masukkan NIM (untuk mahasiswa) atau NIDN (untuk dosen)</small>
+                                <small class="form-text text-muted ml-2">Masukkan NIM (untuk mahasiswa), NIDN (untuk dosen), atau NIP (untuk admin)</small>
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password" required
