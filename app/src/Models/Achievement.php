@@ -90,6 +90,15 @@ class Achievement
     {
         return self::COMPETITION_LEVELS;
     }
+    public static function getCompetitionRankName(int $rankId): string 
+    {
+        return self::COMPETITION_RANKS[$rankId]['name'] ?? 'Unknown';
+    }
+
+    public static function getCompetitionLevelName(int $levelId): string 
+    {
+        return self::COMPETITION_LEVELS[$levelId]['name'] ?? 'Unknown';
+    }
 
     public function saveAchievement(PDO $db, array $supervisors = [], array $teamMembers = [])
     {
@@ -299,14 +308,35 @@ class Achievement
 
     public static function getAchievement(PDO $db, int $id)
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE id = :id AND deleted_at IS NULL');
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE Id = :id AND DeletedAt IS NULL');
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public static function getAllAchievements(PDO $db)
     {
-        $stmt = $db->query('SELECT * FROM [dbo].[Achievement] WHERE deleted_at IS NULL');
+        $stmt = $db->query('SELECT * FROM [dbo].[Achievement] WHERE DeletedAt IS NULL');
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getAchievementsByUserId(PDO $db, int $userId)
+    {
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL');
+        $stmt->execute([':userId' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getAchievementsBySupervisorId(PDO $db, int $supervisorId)
+    {
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE SupervisorValidationStatus = :status AND DeletedAt IS NULL');
+        $stmt->execute([':status' => 'PENDING']);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getAchievementsByAdminId(PDO $db, int $adminId)
+    {
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE AdminValidationStatus = :status AND DeletedAt IS NULL');
+        $stmt->execute([':status' => 'PENDING']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -337,7 +367,7 @@ class Achievement
             SupervisorValidationStatus = :supervisorValidationStatus,
             AdminValidationStatus = :adminValidationStatus,
             UpdatedAt = :updatedAt
-        WHERE id = :id AND deleted_at IS NULL');
+        WHERE Id = :id AND DeletedAt IS NULL');
 
         return $stmt->execute([
             ':id' => $id,
@@ -369,7 +399,7 @@ class Achievement
     public static function deleteAchievement(PDO $db, int $id)
     {
         $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
-        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET deleted_at = :deletedAt WHERE id = :id AND deleted_at IS NULL');
+        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET DeletedAt = :deletedAt WHERE Id = :id AND DeletedAt IS NULL');
         return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
     }
 
@@ -380,7 +410,7 @@ class Achievement
             SET SupervisorValidationStatus = :status, 
                 SupervisorValidationDate = :date, 
                 SupervisorValidationNote = :note 
-        WHERE id = :achievementId');
+        WHERE Id = :achievementId');
         return $stmt->execute([
             ':achievementId' => $achievementId,
             ':status' => $status,
@@ -396,6 +426,8 @@ class Achievement
             SET AdminValidationStatus = :status, 
                 AdminValidationDate = :date, 
                 AdminValidationNote = :note 
-        WHERE id = :achievementId');
+        WHERE Id = :achievementId');
     }
+
+    
 }
