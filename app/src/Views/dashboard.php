@@ -64,7 +64,80 @@
                     </div>
                 </div>
             </div>
+            <!-- Add Top 10 Achievement Section -->
+            <div class="row mt-4">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="card-title">Top 10 Prestasi Tertinggi</h4>
+                                <div class="d-flex">
+                                    <select class="form-control mr-2" id="tahun" name="tahun">
+                                        <?php 
+                                        $currentYear = date('Y');
+                                        for($year = $currentYear; $year >= $currentYear - 4; $year--) {
+                                            $selected = ($year == ($selectedYear ?? $currentYear)) ? 'selected' : '';
+                                            echo "<option value='$year' $selected>$year</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                    <select class="form-control" id="semester" name="semester">
+                                        <option value="1" <?= ($selectedSemester ?? '') == '1' ? 'selected' : '' ?>>Semester Ganjil</option>
+                                        <option value="2" <?= ($selectedSemester ?? '') == '2' ? 'selected' : '' ?>>Semester Genap</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama</th>
+                                            <th>Program Studi</th>
+                                            <th>Total Poin</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                        if (!empty($topAchievements)) {
+                                            $no = 1;
+                                            foreach ($topAchievements as $achievement) : 
+                                        ?>
+                                            <tr>
+                                                <td><?= $no++ ?></td>
+                                                <td><?= htmlspecialchars($achievement['Fullname']) ?></td>
+                                                <td><?= htmlspecialchars($achievement['StudentMajor']) ?></td>
+                                                <td><?= number_format($achievement['TotalPoints'], 0, ',', '.') ?></td>
+                                            </tr>
+                                        <?php 
+                                            endforeach;
+                                        } else {
+                                        ?>
+                                            <tr>
+                                                <td colspan="4" class="text-center">Belum ada data prestasi</td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php require __DIR__ . '/partials/footer-page.php'; ?>
     </div>
 </div>
+
+<script>
+    document.getElementById('tahun').addEventListener('change', updateTopAchievements);
+    document.getElementById('semester').addEventListener('change', updateTopAchievements);
+
+    function updateTopAchievements() {
+        const tahun = document.getElementById('tahun').value;
+        const semester = document.getElementById('semester').value;
+        
+        // Redirect atau Ajax call
+        window.location.href = `/dashboard?tahun=${tahun}&semester=${semester}`;
+    }
+</script>
