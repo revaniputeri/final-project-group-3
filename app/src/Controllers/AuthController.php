@@ -21,7 +21,7 @@ class AuthController
         // check if a user has logged in, if they are then redirect to dashboard
         session_start();
         if (isset($_SESSION['user'])) {
-            header('Location: /dashboard');
+            header('Location: /dashboard/home');
         } else {
             header('Location: /guest');
         }
@@ -37,7 +37,7 @@ class AuthController
     {
         session_start();
         if (isset($_SESSION['user'])) {
-            header('Location: /dashboard');
+            header('Location: /dashboard/home');
             return;
         }
         View::render('login', []);
@@ -81,7 +81,7 @@ class AuthController
             'id' => $user->id,
             'fullName' => $user->fullName
         ];
-        header('Location: /dashboard');
+        header('Location: /dashboard/home');
     }
 
     public function registerProcess(): void
@@ -119,10 +119,10 @@ class AuthController
     public function logoutProcess(): void
     {
         session_start();
-        $_SESSION = array();
+        session_unset();
         session_destroy();
-
+        
         header('Location: /guest');
-        return;
+        exit();
     }
 }
