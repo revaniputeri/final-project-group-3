@@ -20,13 +20,13 @@
                 <div class="col-md-4 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Tambah Prestasi</h4>
+                            <h4 class="card-title">Add Achievement</h4>
                             <p class="card-description">
-                                Klik disini untuk menambahkan prestasi baru
+                                Click here to add new achievement
                             </p>
                             <a href="/dashboard/achievement/form" class="btn btn-primary btn-lg btn-block">
                                 <i class="ti-plus mr-2"></i>
-                                Tambah Baru
+                                Add New
                             </a>
                         </div>
                     </div>
@@ -52,13 +52,13 @@
                 <div class="col-md-4 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Informasi Prestasi</h4>
+                            <h4 class="card-title">Achievement Information</h4>
                             <p class="card-description">
-                                Cek statistik prestasi Anda
+                                Check your achievement statistics
                             </p>
                             <a href="/dashboard/achievement/info" class="btn btn-success btn-lg btn-block">
                                 <i class="ti-bar-chart mr-2"></i>
-                                Lihat Statistik
+                                View Statistics
                             </a>
                         </div>
                     </div>
