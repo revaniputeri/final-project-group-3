@@ -182,4 +182,65 @@ class AchievementController
 
         Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
     }
+
+    public function getTopAchievements()
+    {
+        $this->ensureSession();
+
+        // Get filter parameters
+        $selectedYear = $_GET['tahun'] ?? date('Y');
+        $selectedSemester = $_GET['semester'] ?? (date('n') <= 6 ? '2' : '1');
+
+        try {
+            // Query untuk mengambil top 10 achievements berdasarkan filter
+            $query = "SELECT 
+                    u.Fullname,
+                    u.StudentMajor,
+                    SUM(a.Points) as TotalPoints
+                FROM Achievements a
+                JOIN Users u ON a.UserId = u.Id
+                WHERE YEAR(a.CreatedAt) = :year
+                AND (
+                    (MONTH(a.CreatedAt) <= 6 AND :semester = '2') OR 
+                    (MONTH(a.CreatedAt) > 6 AND :semester = '1')
+                )
+                AND a.SupervisorValidationStatus = 'APPROVED'
+                AND a.AdminValidationStatus = 'APPROVED'
+                GROUP BY u.Fullname, u.StudentMajor
+                ORDER BY TotalPoints DESC
+                OFFSET 0 ROWS
+                FETCH NEXT 10 ROWS ONLY";
+
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([
+                ':year' => $selectedYear,
+                ':semester' => $selectedSemester
+            ]);
+
+            $topAchievements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Return data untuk dashboard view
+            return [
+                'topAchievements' => $topAchievements,
+                'selectedYear' => $selectedYear,
+                'selectedSemester' => $selectedSemester
+            ];
+        } catch (\PDOException $e) {
+            // Handle error
+            error_log($e->getMessage());
+            return [
+                'topAchievements' => [],
+                'selectedYear' => $selectedYear,
+                'selectedSemester' => $selectedSemester
+            ];
+        }
+    }
+
+    public function dashboard()
+    {
+        $this->ensureSession();
+        $dashboardData = $this->getTopAchievements();
+
+        View::render('dashboard/home', $dashboardData);
+    }
 }

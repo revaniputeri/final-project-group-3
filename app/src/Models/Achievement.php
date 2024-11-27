@@ -429,5 +429,25 @@ class Achievement
         WHERE Id = :achievementId');
     }
 
+    public static function getTopAchievements(PDO $db, int $limit = 10): array
+    {
+        $stmt = $db->prepare('
+            SELECT TOP :limit
+                a.CompetitionPoints as TotalPoints,
+                u.FullName as Fullname,
+                s.StudentMajor
+            FROM [dbo].[Achievement] a
+            INNER JOIN [dbo].[User] u ON a.UserId = u.Id 
+            INNER JOIN [dbo].[Student] s ON u.Id = s.UserId
+            WHERE a.DeletedAt IS NULL
+                AND a.AdminValidationStatus = \'APPROVED\'
+                AND a.SupervisorValidationStatus = \'APPROVED\'
+            ORDER BY a.CompetitionPoints DESC
+        ');
+        
+        $stmt->execute([':limit' => $limit]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     
 }
