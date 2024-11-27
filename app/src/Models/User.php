@@ -56,38 +56,6 @@ class User
         return password_verify($password, $this->password);
     }
 
-    public static function register(
-        PDO $db,
-        string $fullName,
-        string $username,
-        string $password,
-        string $email,
-        string $phone,
-        string $avatar,
-        string $role
-    ) {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $createdAt = (new DateTime())->format('Y-m-d H:i:s');
-        $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
-
-        $row = $db->prepare(
-            'INSERT INTO [dbo].[User] (FullName, Username, Password, Email, Phone, Avatar, Role, CreatedAt, UpdatedAt)
-                    VALUES (:fullName, :username, :password, :email, :phone, :avatar, :role, :createdAt, :updatedAt)'
-        );
-        
-        $row->execute([
-            ':fullName' => $fullName,
-            ':username' => $username,
-            ':password' => $hashedPassword,
-            ':email' => $email,
-            ':phone' => $phone,
-            ':avatar' => $avatar,
-            ':role' => $role,
-            ':createdAt' => $createdAt,
-            ':updatedAt' => $updatedAt
-        ]);
-    }
-
     public static function getAll(PDO $db): array
     {
         $row = $db->query("SELECT * FROM [dbo].[User] WHERE DeletedAt IS NULL");
