@@ -70,6 +70,16 @@ Router::add(
     function: "loginProcess",
     dependencies: ['db' => $connection]
 );
+
+//logout process
+Router::add(
+    method: "POST",
+    path: "/logout",
+    controller: AuthController::class,
+    function: "logoutProcess",
+    dependencies: ['db' => $connection]
+);
+
 //leaderboard page
 Router::add(
     method: "GET",
@@ -91,7 +101,7 @@ Router::add(
 //dashboard page
 Router::add(
     method: "GET",
-    path: "/dashboard",
+    path: "/dashboard/home",
     controller: IndexController::class,
     function: "dashboard",
     dependencies: ['db' => $connection]
@@ -100,7 +110,7 @@ Router::add(
 //dashboard process
 Router::add(
     method: "POST",
-    path: "/dashboard",
+    path: "/dashboard/home",
     controller: IndexController::class,
     function: "dashboardProcess",
     dependencies: ['db' => $connection]
@@ -109,9 +119,18 @@ Router::add(
 // profile customization page
 Router::add(
     method: "GET",
-    path: "/dashboard/profile-customization",
+    path: "/dashboard/profile",
     controller: IndexController::class,
     function: "profileCustomization",
+    dependencies: ['db' => $connection]
+);
+
+// Profile customization process
+Router::add(
+    method: "POST",
+    path: "/dashboard/profile",
+    controller: IndexController::class,
+    function: "profileCustomizationProcess",
     dependencies: ['db' => $connection]
 );
 
@@ -122,16 +141,6 @@ Router::add(
     controller: AssetsController::class,
     function: "serve",
     dependencies: []
-);
-
-// achievement index page
-Router::add(
-    method: "GET",
-    path: "/dashboard/achievement",
-    controller: AchievementController::class,
-    function: "index",
-    dependencies: ['db' => $connection],
-    middleware: [AuthMiddleware::class]
 );
 
 // submission form within achievement submission
@@ -170,29 +179,12 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// Profile customization page
-Router::add(
-    method: "GET",
-    path: "/dashboard/profile/customize",
-    controller: IndexController::class,
-    function: "profileCustomization",
-    dependencies: ['db' => $connection]
-);
-
-// Profile customization process
-Router::add(
-    method: "POST",
-    path: "/dashboard/profile/customize",
-    controller: IndexController::class,
-    function: "profileCustomizationProcess",
-    dependencies: ['db' => $connection]
-);
 
 //SUPERVISOR
 //supervisor validation process
 Router::add(
     method: "POST",
-    path: "/dashboard/achievement/supervisor-validation",
+    path: "/dashboard/supervisor/validation",
     controller: AchievementController::class,
     function: "supervisorValidationProcess",
     dependencies: ['db' => $connection]
@@ -202,7 +194,7 @@ Router::add(
 //admin validation process
 Router::add(
     method: "POST",
-    path: "/dashboard/achievement/admin-validation",
+    path: "/dashboard/admin/validation",
     controller: AchievementController::class,
     function: "adminValidationProcess",
     dependencies: ['db' => $connection]
