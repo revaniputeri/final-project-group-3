@@ -183,64 +183,127 @@ class AchievementController
         Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
     }
 
-    public function getTopAchievements()
+    public function editForm($id)
     {
         $this->ensureSession();
 
-        // Get filter parameters
-        $selectedYear = $_GET['tahun'] ?? date('Y');
-        $selectedSemester = $_GET['semester'] ?? (date('n') <= 6 ? '2' : '1');
+        // Convert $id to integer
+        $achievementId = (int)$id;
 
-        try {
-            // Query untuk mengambil top 10 achievements berdasarkan filter
-            $query = "SELECT 
-                    u.Fullname,
-                    u.StudentMajor,
-                    SUM(a.Points) as TotalPoints
-                FROM Achievements a
-                JOIN Users u ON a.UserId = u.Id
-                WHERE YEAR(a.CreatedAt) = :year
-                AND (
-                    (MONTH(a.CreatedAt) <= 6 AND :semester = '2') OR 
-                    (MONTH(a.CreatedAt) > 6 AND :semester = '1')
-                )
-                AND a.SupervisorValidationStatus = 'APPROVED'
-                AND a.AdminValidationStatus = 'APPROVED'
-                GROUP BY u.Fullname, u.StudentMajor
-                ORDER BY TotalPoints DESC
-                OFFSET 0 ROWS
-                FETCH NEXT 10 ROWS ONLY";
+        // Get achievement data
+        $achievement = Achievement::getAchievement($this->db, $achievementId);
 
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([
-                ':year' => $selectedYear,
-                ':semester' => $selectedSemester
-            ]);
-
-            $topAchievements = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // Return data untuk dashboard view
-            return [
-                'topAchievements' => $topAchievements,
-                'selectedYear' => $selectedYear,
-                'selectedSemester' => $selectedSemester
-            ];
-        } catch (\PDOException $e) {
-            // Handle error
-            error_log($e->getMessage());
-            return [
-                'topAchievements' => [],
-                'selectedYear' => $selectedYear,
-                'selectedSemester' => $selectedSemester
-            ];
+        // Check if achievement exists and belongs to current user
+        if (!$achievement || $achievement['UserId'] != $_SESSION['user']['id']) {
+            $_SESSION['error'] = "Achievement not found or access denied";
+            header('Location: /dashboard/achievement/history');
+            exit();
         }
+
+        // Check if achievement is still editable
+        if (
+            $achievement['SupervisorValidationStatus'] !== 'PENDING' ||
+            $achievement['AdminValidationStatus'] !== 'PENDING'
+        ) {
+            $_SESSION['error'] = "Achievement cannot be edited as it has been validated";
+            header('Location: /dashboard/achievement/history');
+            exit();
+        }
+
+        // Get additional data needed for the form
+        $data = [
+            'achievement' => $achievement,
+            'lecturers' => User::getAllActiveLecturers($this->db),
+            'students' => User::getAllActiveStudents($this->db),
+            'competitionLevels' => Achievement::getCompetitionLevels(),
+            'competitionRanks' => Achievement::getCompetitionRanks(),
+            'supervisors' => Achievement::getUsersByRole($this->db, $achievementId, 1), // 1 = ROLE_SUPERVISOR
+            'teamMembers' => Achievement::getUsersByRole($this->db, $achievementId, 3)  // 3 = ROLE_TEAM_MEMBER
+        ];
+
+        View::render('achievement-edit', $data);
     }
 
-    public function dashboard()
+    public function editFormProcess($id)
     {
         $this->ensureSession();
-        $dashboardData = $this->getTopAchievements();
 
-        View::render('dashboard/home', $dashboardData);
+        try {
+            // Convert $id to integer
+            $achievementId = (int)$id;
+
+            // First verify the achievement exists and is editable
+            $existingAchievement = Achievement::getAchievement($this->db, $achievementId);
+            if (
+                !$existingAchievement ||
+                $existingAchievement['UserId'] != $_SESSION['user']['id'] ||
+                $existingAchievement['SupervisorValidationStatus'] !== 'PENDING' ||
+                $existingAchievement['AdminValidationStatus'] !== 'PENDING'
+            ) {
+                throw new \Exception("Achievement cannot be edited");
+            }
+
+            // Process the form data similar to submissionFormProcess
+            $achievement = new Achievement(
+                $_SESSION['user']['id'],
+                $_POST['competitionType'],
+                (int)$_POST['competitionLevel'],
+                $_POST['competitionTitle'],
+                $_POST['competitionTitleEnglish'],
+                $_POST['competitionPlace'],
+                $_POST['competitionPlaceEnglish'],
+                $_POST['competitionUrl'],
+                new \DateTime($_POST['competitionStartDate']),
+                new \DateTime($_POST['competitionEndDate']),
+                (int)$_POST['competitionRank'],
+                $_POST['numberOfInstitutions'],
+                $_POST['numberOfStudents'],
+                $_POST['letterNumber'],
+                new \DateTime($_POST['letterDate']),
+                $_FILES['letterFile'] ?? null,
+                $_FILES['certificateFile'] ?? null,
+                $_FILES['documentationFile'] ?? null,
+                $_FILES['posterFile'] ?? null,
+                0, // Will be calculated
+                new \DateTime(),
+                new \DateTime(),
+                $achievementId
+            );
+
+            // Process supervisors and team members
+            $supervisors = [];
+            if (isset($_POST['supervisors']) && is_array($_POST['supervisors'])) {
+                foreach ($_POST['supervisors'] as $supervisorId) {
+                    if (!empty($supervisorId)) {
+                        $supervisors[] = (int)$supervisorId;
+                    }
+                }
+            }
+
+            $teamMembers = [];
+            if (isset($_POST['teamMembers']) && is_array($_POST['teamMembers'])) {
+                foreach ($_POST['teamMembers'] as $index => $memberId) {
+                    if (!empty($memberId)) {
+                        $teamMembers[] = [
+                            'userId' => (int)$memberId,
+                            'role' => $_POST['teamMemberRoles'][$index] ?? 'Anggota'
+                        ];
+                    }
+                }
+            }
+
+            // Update the achievement
+            $achievement->updateAchievement($this->db, $achievementId, $supervisors, $teamMembers);
+            $_SESSION['success'] = "Achievement updated successfully";
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        if (isset($_SESSION['error'])) {
+            header("Location: /dashboard/achievement/edit/$achievementId");
+        } else {
+            header('Location: /dashboard/achievement/history');
+        }
+        exit();
     }
 }
