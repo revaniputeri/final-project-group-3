@@ -90,12 +90,12 @@ class Achievement
     {
         return self::COMPETITION_LEVELS;
     }
-    public static function getCompetitionRankName(int $rankId): string 
+    public static function getCompetitionRankName(int $rankId): string
     {
         return self::COMPETITION_RANKS[$rankId]['name'] ?? 'Unknown';
     }
 
-    public static function getCompetitionLevelName(int $levelId): string 
+    public static function getCompetitionLevelName(int $levelId): string
     {
         return self::COMPETITION_LEVELS[$levelId]['name'] ?? 'Unknown';
     }
@@ -311,7 +311,7 @@ class Achievement
         $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL');
         $stmt->execute([':id' => $id]);
         $achievement = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($achievement) {
             error_log("Achievement files:");
             error_log("LetterFile: " . $achievement['LetterFile']);
@@ -319,7 +319,7 @@ class Achievement
             error_log("DocumentationFile: " . $achievement['DocumentationFile']);
             error_log("PosterFile: " . $achievement['PosterFile']);
         }
-        
+
         return $achievement;
     }
 
@@ -398,7 +398,7 @@ class Achievement
                 AND (a.SupervisorValidationStatus = \'APPROVED\' OR a.SupervisorValidationStatus IS NULL)
             ORDER BY a.CompetitionPoints DESC
         ');
-        
+
         $stmt->execute([':limit' => $limit]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -408,10 +408,10 @@ class Achievement
         // Calculate semester date ranges
         $startDate = '';
         $endDate = '';
-        
+
         if ($semester == 1) { // Semester 1 (August 26 - February 25)
             $startDate = $year . '-08-26';
-            $endDate = ($year + 1) . '-02-25'; 
+            $endDate = ($year + 1) . '-02-25';
         } else { // Semester 2 (February 26 - August 25)
             $startDate = $year . '-02-26';
             $endDate = $year . '-08-25';
@@ -441,33 +441,35 @@ class Achievement
             ':startDate' => $startDate,
             ':endDate' => $endDate
         ]);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updateAchievement(PDO $db, int $id, array $supervisors = [], array $teamMembers = [])
-{
-    // Validate the achievement is still editable
-    $existing = self::getAchievement($db, $id);
-    if (!$existing || 
-        $existing['SupervisorValidationStatus'] !== 'PENDING' || 
-        $existing['AdminValidationStatus'] !== 'PENDING') {
-        throw new \InvalidArgumentException("Achievement cannot be edited");
-    }
-
-    // Start transaction
-    $db->beginTransaction();
-    
-    try {
-        // Handle file uploads if new files are provided
-        if ($this->letterFile) {
-            $this->validateFileInputs();
+    {
+        // Validate the achievement is still editable
+        $existing = self::getAchievement($db, $id);
+        if (
+            !$existing ||
+            $existing['SupervisorValidationStatus'] !== 'PENDING' ||
+            $existing['AdminValidationStatus'] !== 'PENDING'
+        ) {
+            throw new \InvalidArgumentException("Achievement cannot be edited");
         }
 
-        $this->competitionPoints = $this->calculateCompetitionPoints();
-        $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
+        // Start transaction
+        $db->beginTransaction();
 
-        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET
+        try {
+            // Handle file uploads if new files are provided
+            if ($this->letterFile) {
+                $this->validateFileInputs();
+            }
+
+            $this->competitionPoints = $this->calculateCompetitionPoints();
+            $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
+
+            $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET
             CompetitionType = :competitionType,
             CompetitionLevel = :competitionLevel,
             CompetitionTitle = :competitionTitle,
@@ -486,62 +488,62 @@ class Achievement
             UpdatedAt = :updatedAt
             WHERE Id = :id');
 
-        $stmt->execute([
-            ':id' => $id,
-            ':competitionType' => $this->competitionType,
-            ':competitionLevel' => $this->competitionLevel,
-            ':competitionTitle' => $this->competitionTitle,
-            ':competitionTitleEnglish' => $this->competitionTitleEnglish,
-            ':competitionPlace' => $this->competitionPlace,
-            ':competitionPlaceEnglish' => $this->competitionPlaceEnglish,
-            ':competitionUrl' => $this->competitionUrl,
-            ':competitionStartDate' => $this->competitionStartDate->format('Y-m-d H:i:s'),
-            ':competitionEndDate' => $this->competitionEndDate->format('Y-m-d H:i:s'),
-            ':competitionRank' => $this->competitionRank,
-            ':numberOfInstitutions' => $this->numberOfInstitutions,
-            ':numberOfStudents' => $this->numberOfStudents,
-            ':letterNumber' => $this->letterNumber,
-            ':letterDate' => $this->letterDate->format('Y-m-d H:i:s'),
-            ':competitionPoints' => $this->competitionPoints,
-            ':updatedAt' => $updatedAt
-        ]);
+            $stmt->execute([
+                ':id' => $id,
+                ':competitionType' => $this->competitionType,
+                ':competitionLevel' => $this->competitionLevel,
+                ':competitionTitle' => $this->competitionTitle,
+                ':competitionTitleEnglish' => $this->competitionTitleEnglish,
+                ':competitionPlace' => $this->competitionPlace,
+                ':competitionPlaceEnglish' => $this->competitionPlaceEnglish,
+                ':competitionUrl' => $this->competitionUrl,
+                ':competitionStartDate' => $this->competitionStartDate->format('Y-m-d H:i:s'),
+                ':competitionEndDate' => $this->competitionEndDate->format('Y-m-d H:i:s'),
+                ':competitionRank' => $this->competitionRank,
+                ':numberOfInstitutions' => $this->numberOfInstitutions,
+                ':numberOfStudents' => $this->numberOfStudents,
+                ':letterNumber' => $this->letterNumber,
+                ':letterDate' => $this->letterDate->format('Y-m-d H:i:s'),
+                ':competitionPoints' => $this->competitionPoints,
+                ':updatedAt' => $updatedAt
+            ]);
 
-        // Update files if new ones are provided
-        if ($this->letterFile) {
-            $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET 
+            // Update files if new ones are provided
+            if ($this->letterFile) {
+                $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET 
                 LetterFile = :letterFile,
                 CertificateFile = :certificateFile,
                 DocumentationFile = :documentationFile,
                 PosterFile = :posterFile
                 WHERE Id = :id');
-                
-            $stmt->execute([
-                ':id' => $id,
-                ':letterFile' => $this->letterFile,
-                ':certificateFile' => $this->certificateFile,
-                ':documentationFile' => $this->documentationFile,
-                ':posterFile' => $this->posterFile
-            ]);
+
+                $stmt->execute([
+                    ':id' => $id,
+                    ':letterFile' => $this->letterFile,
+                    ':certificateFile' => $this->certificateFile,
+                    ':documentationFile' => $this->documentationFile,
+                    ':posterFile' => $this->posterFile
+                ]);
+            }
+
+            // Update supervisors and team members
+            $this->updateUserAchievements($db, $id, $supervisors, $teamMembers);
+
+            $db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $db->rollBack();
+            throw $e;
         }
-
-        // Update supervisors and team members
-        $this->updateUserAchievements($db, $id, $supervisors, $teamMembers);
-
-        $db->commit();
-        return true;
-    } catch (\Exception $e) {
-        $db->rollBack();
-        throw $e;
     }
-}
 
-private function updateUserAchievements(PDO $db, int $achievementId, array $supervisors, array $teamMembers)
-{
-    // Delete existing relationships
-    $stmt = $db->prepare('DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = :achievementId');
-    $stmt->execute([':achievementId' => $achievementId]);
+    private function updateUserAchievements(PDO $db, int $achievementId, array $supervisors, array $teamMembers)
+    {
+        // Delete existing relationships
+        $stmt = $db->prepare('DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = :achievementId');
+        $stmt->execute([':achievementId' => $achievementId]);
 
-    // Insert new relationships
-    $this->saveUserAchievements($db, $achievementId, $supervisors, $teamMembers);
-}
+        // Insert new relationships
+        $this->saveUserAchievements($db, $achievementId, $supervisors, $teamMembers);
+    }
 }

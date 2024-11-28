@@ -218,7 +218,8 @@ class AchievementController
             'competitionLevels' => Achievement::getCompetitionLevels(),
             'competitionRanks' => Achievement::getCompetitionRanks(),
             'supervisors' => Achievement::getUsersByRole($this->db, $achievementId, 1), // 1 = ROLE_SUPERVISOR
-            'teamMembers' => Achievement::getUsersByRole($this->db, $achievementId, 3)  // 3 = ROLE_TEAM_MEMBER
+            'teamMembers' => Achievement::getUsersByRole($this->db, $achievementId, 3),  // 3 = ROLE_TEAM_MEMBER
+            'teamLeaders' => Achievement::getUsersByRole($this->db, $achievementId, 2) // 2 = ROLE_TEAM_LEADER
         ];
 
         View::render('achievement-edit', $data);
