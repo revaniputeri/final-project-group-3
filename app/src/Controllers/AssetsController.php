@@ -73,12 +73,12 @@ class AssetsController
         // Set appropriate headers
         header("Content-Type: " . $mimeType);
         header("Content-Length: " . filesize($filePath));
-        
+
         // For PDF files
         if ($mimeType === 'application/pdf') {
             header('Content-Disposition: inline; filename="' . basename($filePath) . '"');
         }
-        
+
         // Check if file is readable
         if (!is_readable($filePath)) {
             error_log("File is not readable: " . $filePath);
