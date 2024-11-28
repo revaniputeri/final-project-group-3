@@ -85,7 +85,7 @@ Router::add(
     method: "GET",
     path: "/dashboard/home",
     controller: IndexController::class,
-    function: "dashboard",
+    function: "getTopAchievements",
     dependencies: ['db' => $connection]
 );
 
@@ -97,6 +97,22 @@ Router::add(
     function: "dashboardProcess",
     dependencies: ['db' => $connection]
 );  
+
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "editForm",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "editFormProcess",
+    dependencies: ['db' => $connection]
+);
 
 // profile customization page
 Router::add(
@@ -180,6 +196,15 @@ Router::add(
     controller: AchievementController::class,
     function: "adminValidationProcess",
     dependencies: ['db' => $connection]
+);
+
+// Add this route for serving uploaded files
+Router::add(
+    method: "GET",
+    path: "/storage/achievements/(?<path>.*)",
+    controller: AssetsController::class,
+    function: "serveUploadedFile",
+    dependencies: []
 );
 
 Router::run();
