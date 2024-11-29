@@ -102,7 +102,7 @@ Router::add(
     method: "GET",
     path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
     controller: AchievementController::class,
-    function: "editForm",
+    function: "edit",
     dependencies: ['db' => $connection]
 );
 

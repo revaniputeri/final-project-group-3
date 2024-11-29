@@ -25,6 +25,7 @@
                             </p>
 
                             <form class="forms-sample" method="POST" action="/dashboard/achievement/edit/<?= $achievement['Id'] ?>" enctype="multipart/form-data">
+                                <input type="hidden" name="achievementId" value="<?= $achievement['Id'] ?>">
                                 <div class="row">
                                     <!-- Kolom Kiri -->
                                     <div class="col-md-6">
