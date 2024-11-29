@@ -209,4 +209,5 @@ class User
     {
         return $this->role === self::ROLE_ADMIN;
     }
+    
 }
