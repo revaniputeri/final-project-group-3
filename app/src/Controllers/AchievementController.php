@@ -127,6 +127,8 @@ class AchievementController
                 }
             }
 
+            $this->validateTeamMembers($teamMembers, $numberOfStudents);
+
             $achievement = new Achievement(
                 $userId,
                 $competitionType,
@@ -359,6 +361,89 @@ class AchievementController
                 header('Location: /dashboard/achievement/history');
             }
             exit;
+        }
+    }
+
+    public function deleteAchievement($data)
+    {
+        // Check if user is logged in
+        if (!isset($_SESSION['user']['id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $achievementId = (int)$data['id'];
+
+        try {
+            // Verify ownership
+            $achievement = Achievement::getAchievement($this->db, $achievementId);
+            if (!$achievement) {
+                throw new \Exception('Prestasi tidak ditemukan.');
+            }
+
+            // Check if user owns this achievement
+            if ($achievement['UserId'] != $_SESSION['user']['id']) {
+                throw new \Exception('Anda tidak memiliki akses untuk menghapus prestasi ini.');
+            }
+
+            // Check if achievement is still in PENDING status
+            if ($achievement['SupervisorValidationStatus'] !== 'PENDING' || 
+                $achievement['AdminValidationStatus'] !== 'PENDING') {
+                throw new \Exception('Hanya prestasi dengan status PENDING yang dapat dihapus.');
+            }
+
+            // Perform the delete
+            if (Achievement::deleteAchievement($this->db, $achievementId)) {
+                $_SESSION['success'] = 'Prestasi berhasil dihapus.';
+            } else {
+                throw new \Exception('Gagal menghapus prestasi.');
+            }
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        header('Location: /dashboard/achievement/history');
+        exit;
+    }
+
+    private function validateTeamMembers($teamMembers, $numberOfStudents) {
+        $hasPersonal = false;
+        $hasTeam = false;
+
+        // Validate number of students for personal achievement
+        if ($numberOfStudents > 1) {
+            foreach ($teamMembers as $member) {
+                if ($member['role'] === 'Personal') {
+                    throw new \Exception('Prestasi personal hanya dapat dipilih untuk jumlah peserta 1 orang.');
+                }
+            }
+        }
+
+        foreach ($teamMembers as $member) {
+            if ($member['role'] === 'Personal') {
+                $hasPersonal = true;
+            } else {
+                $hasTeam = true;
+            }
+
+            if ($hasPersonal && $hasTeam) {
+                throw new \Exception('Prestasi tidak dapat berupa personal dan tim secara bersamaan.');
+            }
+        }
+
+        if ($hasTeam) {
+            $hasLeader = false;
+            foreach ($teamMembers as $member) {
+                if ($member['role'] === 'Ketua') {
+                    if ($hasLeader) {
+                        throw new \Exception('Tim hanya boleh memiliki satu ketua.');
+                    }
+                    $hasLeader = true;
+                }
+            }
+            if (!$hasLeader) {
+                throw new \Exception('Tim harus memiliki satu ketua.');
+            }
         }
     }
 }
