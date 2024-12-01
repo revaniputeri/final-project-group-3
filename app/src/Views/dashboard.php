@@ -71,21 +71,6 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="card-title">Top 10 Prestasi Tertinggi</h4>
-                                <div class="d-flex">
-                                    <select class="form-control mr-2" id="tahun" name="tahun">
-                                        <?php 
-                                        $currentYear = date('Y');
-                                        for($year = $currentYear; $year >= $currentYear - 4; $year--) {
-                                            $selected = ($year == ($selectedYear ?? $currentYear)) ? 'selected' : '';
-                                            echo "<option value='$year' $selected>$year</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                    <select class="form-control" id="semester" name="semester">
-                                        <option value="1" <?= ($selectedSemester ?? '') == '1' ? 'selected' : '' ?>>Semester Ganjil</option>
-                                        <option value="2" <?= ($selectedSemester ?? '') == '2' ? 'selected' : '' ?>>Semester Genap</option>
-                                    </select>
-                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -131,13 +116,11 @@
 
 <script>
     document.getElementById('tahun').addEventListener('change', updateTopAchievements);
-    document.getElementById('semester').addEventListener('change', updateTopAchievements);
 
     function updateTopAchievements() {
         const tahun = document.getElementById('tahun').value;
-        const semester = document.getElementById('semester').value;
         
-        // Redirect atau Ajax call
-        window.location.href = `/dashboard?tahun=${tahun}&semester=${semester}`;
+        // Redirect or Ajax call
+        window.location.href = `/dashboard?tahun=${tahun}`;
     }
 </script>
