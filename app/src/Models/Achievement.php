@@ -39,6 +39,7 @@ class Achievement
     private const ROLE_SUPERVISOR = 1;
     private const ROLE_TEAM_LEADER = 2;
     private const ROLE_TEAM_MEMBER = 3;
+    private const ROLE_PERSONAL = 4;
 
     public function __construct(
         public $userId,
@@ -326,7 +327,12 @@ class Achievement
 
         if (!empty($teamMembers)) {
             foreach ($teamMembers as $member) {
-                $role = ($member['role'] === 'Ketua') ? self::ROLE_TEAM_LEADER : self::ROLE_TEAM_MEMBER;
+                $role = match($member['role']) {
+                    'Ketua' => self::ROLE_TEAM_LEADER,
+                    'Anggota' => self::ROLE_TEAM_MEMBER,
+                    'Personal' => self::ROLE_PERSONAL,
+                    default => self::ROLE_TEAM_MEMBER
+                };
                 $stmt->execute([
                     ':userId' => $member['userId'],
                     ':achievementId' => $achievementId,
@@ -391,7 +397,7 @@ class Achievement
     private function storeFile($file, $fileType)
     {
         $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
-        $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
+        $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/app/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
 
         if (!file_exists($uploadPath)) {
             mkdir($uploadPath, 0755, true);

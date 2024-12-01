@@ -261,6 +261,7 @@
                                                                         <option value="">Pilih Peran</option>
                                                                         <option value="Ketua" <?= $member['AchievementRole'] == 2 ? 'selected' : '' ?>>Ketua</option>
                                                                         <option value="Anggota" <?= $member['AchievementRole'] == 3 ? 'selected' : '' ?>>Anggota</option>
+                                                                        <option value="Personal" <?= $member['AchievementRole'] == 4 ? 'selected' : '' ?>>Personal</option>
                                                                     </select>
                                                                     <div class="input-group-append">
                                                                         <button type="button" class="btn btn-success" onclick="addTeamMember()">
@@ -397,6 +398,7 @@
       </select>
       <select class="form-control" name="teamMemberRoles[]" required>
         <option value="">Pilih Peran</option>
+        <option value="Personal">Personal</option>
         <option value="Ketua">Ketua</option>
         <option value="Anggota">Anggota</option>
       </select>
@@ -495,6 +497,31 @@
             alert('Format file tidak didukung untuk preview');
         }
     }
+
+    function handleNumberOfStudentsChange() {
+        const numberOfStudents = parseInt(document.getElementById('numberOfStudents').value) || 0;
+        const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
+        
+        roleSelects.forEach(select => {
+            const personalOption = Array.from(select.options).find(option => option.value === 'Personal');
+            if (personalOption) {
+                if (numberOfStudents > 1) {
+                    personalOption.disabled = true;
+                    if (select.value === 'Personal') {
+                        select.value = '';
+                    }
+                } else {
+                    personalOption.disabled = false;
+                }
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        numberOfStudentsInput.addEventListener('change', handleNumberOfStudentsChange);
+        handleNumberOfStudentsChange(); // Initial check
+    });
 </script>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />

@@ -228,6 +228,7 @@
                                 <option value="">Pilih Peran</option>
                                 <option value="Ketua">Ketua</option>
                                 <option value="Anggota">Anggota</option>
+                                <option value="Personal">Personal</option>
                               </select>
                               <div class="input-group-append">
                                 <button type="button" class="btn btn-success" onclick="addTeamMember()">
@@ -247,9 +248,9 @@
                     <button type="submit" class="btn btn-primary btn-lg px-4 mr-3">
                       <i class="fas fa-paper-plane mr-2"></i> Kirim
                     </button>
-                    <button type="reset" class="btn btn-light btn-lg px-4">
+                    <a href="/dashboard/home" class="btn btn-light btn-lg px-4">
                       <i class="fas fa-undo mr-2"></i> Batal
-                    </button>
+                    </a>
                   </div>
                 </div>
               </form>
@@ -340,10 +341,17 @@
   function addTeamMember() {
     const numberOfStudents = parseInt(document.getElementById('numberOfStudents').value) || 0;
     const currentMembers = document.querySelectorAll('#teamMemberContainer .input-group').length;
+    const hasPersonalRole = Array.from(document.querySelectorAll('select[name="teamMemberRoles[]"]'))
+        .some(select => select.value === 'Personal');
+    
+    if (hasPersonalRole) {
+        alert('Prestasi personal tidak dapat memiliki anggota tim tambahan');
+        return;
+    }
     
     if (currentMembers >= numberOfStudents) {
-      alert('Jumlah anggota tim tidak boleh melebihi jumlah siswa peserta');
-      return;
+        alert('Jumlah anggota tim tidak boleh melebihi jumlah siswa peserta');
+        return;
     }
     
     const container = document.getElementById('teamMemberContainer');
@@ -360,6 +368,7 @@
         <option value="">Pilih Peran</option>
         <option value="Ketua">Ketua</option>
         <option value="Anggota">Anggota</option>
+        <option value="Personal">Personal</option>
       </select>
       <div class="input-group-append">
         <button type="button" class="btn btn-success" onclick="addTeamMember()">
@@ -417,6 +426,31 @@
 
     rankSelect.addEventListener('change', calculatePoints);
     levelSelect.addEventListener('change', calculatePoints);
+  });
+
+  function handleNumberOfStudentsChange() {
+    const numberOfStudents = parseInt(document.getElementById('numberOfStudents').value) || 0;
+    const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
+    
+    roleSelects.forEach(select => {
+        const personalOption = Array.from(select.options).find(option => option.value === 'Personal');
+        if (personalOption) {
+            if (numberOfStudents > 1) {
+                personalOption.disabled = true;
+                if (select.value === 'Personal') {
+                    select.value = '';
+                }
+            } else {
+                personalOption.disabled = false;
+            }
+        }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const numberOfStudentsInput = document.getElementById('numberOfStudents');
+    numberOfStudentsInput.addEventListener('change', handleNumberOfStudentsChange);
+    handleNumberOfStudentsChange(); // Initial check
   });
 </script>
 

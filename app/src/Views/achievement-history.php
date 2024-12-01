@@ -115,3 +115,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+    let achievementIdToDelete = null;
+
+    function confirmDelete(id) {
+        achievementIdToDelete = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        if (achievementIdToDelete) {
+            // Create and submit a form programmatically
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/dashboard/achievement/delete/${achievementIdToDelete}`;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+    </script>
