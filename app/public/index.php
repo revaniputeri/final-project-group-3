@@ -207,4 +207,13 @@ Router::add(
     dependencies: []
 );
 
+// achievement delete process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement/delete/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "deleteAchievement",
+    dependencies: ['db' => $connection]
+);
+
 Router::run();
