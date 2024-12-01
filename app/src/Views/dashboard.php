@@ -36,13 +36,13 @@
                 <div class="col-md-4 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Achievement History</h4>
+                            <h4 class="card-title">Riwayat Prestasi</h4>
                             <p class="card-description">
-                                View your achievement history
+                                Lihat riwayat prestasi Anda
                             </p>
                             <a href="/dashboard/achievement/history" class="btn btn-info btn-lg btn-block">
                                 <i class="ti-list mr-2"></i>
-                                View History
+                                Lihat Riwayat
                             </a>
                         </div>
                     </div>
