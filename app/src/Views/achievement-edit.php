@@ -162,7 +162,7 @@
                                                             <label class="custom-file-label" for="letterFile">Pilih file</label>
                                                         </div>
                                                         <?php if ($achievement['LetterFile']): ?>
-                                                            <button type="button" class="btn btn-info btn-sm ml-2" onclick="previewFile('<?= $achievement['LetterFile'] ?>')"><i class="fas fa-eye"></i> Lihat File</button>
+                                                            <a href="/storage/achievements/<?= $achievement['LetterFile'] ?>" target="_blank" class="btn btn-info btn-sm ml-2"><i class="fas fa-eye"></i> Lihat File</a>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
@@ -175,7 +175,7 @@
                                                             <label class="custom-file-label" for="certificateFile">Pilih file</label>
                                                         </div>
                                                         <?php if ($achievement['CertificateFile']): ?>
-                                                            <button type="button" class="btn btn-info btn-sm ml-2" onclick="previewFile('<?= $achievement['CertificateFile'] ?>')"><i class="fas fa-eye"></i> Lihat File</button>
+                                                            <a href="/storage/achievements/<?= $achievement['CertificateFile'] ?>" target="_blank" class="btn btn-info btn-sm ml-2"><i class="fas fa-eye"></i> Lihat File</a>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
@@ -188,7 +188,7 @@
                                                             <label class="custom-file-label" for="documentationFile">Pilih file</label>
                                                         </div>
                                                         <?php if ($achievement['DocumentationFile']): ?>
-                                                            <button type="button" class="btn btn-info btn-sm ml-2" onclick="previewFile('<?= $achievement['DocumentationFile'] ?>')"><i class="fas fa-eye"></i> Lihat File</button>
+                                                            <a href="/storage/achievements/<?= $achievement['DocumentationFile'] ?>" target="_blank" class="btn btn-info btn-sm ml-2"><i class="fas fa-eye"></i> Lihat File</a>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
@@ -201,7 +201,7 @@
                                                             <label class="custom-file-label" for="posterFile">Pilih file</label>
                                                         </div>
                                                         <?php if ($achievement['PosterFile']): ?>
-                                                            <button type="button" class="btn btn-info btn-sm ml-2" onclick="previewFile('<?= $achievement['PosterFile'] ?>')"><i class="fas fa-eye"></i> Lihat File</button>
+                                                            <a href="/storage/achievements/<?= $achievement['PosterFile'] ?>" target="_blank" class="btn btn-info btn-sm ml-2"><i class="fas fa-eye"></i> Lihat File</a>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
@@ -217,40 +217,90 @@
                                                 <div class="form-group mb-4">
                                                     <label class="form-label">Dosen Pembimbing</label>
                                                     <div id="supervisorContainer">
-                                                        <?php foreach ($supervisors as $index => $supervisor): ?>
+                                                        <?php
+                                                        if (empty($supervisors)):
+                                                        ?>
                                                             <div class="input-group mb-2">
-                                                                <select class="form-control dosen-pembimbing" name="supervisors[]" required>
+                                                                <select class="form-control dosen-pembimbing" name="supervisors[]">
                                                                     <option value="">Pilih Dosen Pembimbing</option>
                                                                     <?php foreach ($lecturers as $lecturer): ?>
-                                                                        <option value="<?= $lecturer['Id'] ?>" <?= $supervisor['Id'] == $lecturer['Id'] ? 'selected' : '' ?>><?= $lecturer['FullName'] ?></option>
+                                                                        <option value="<?= $lecturer['Id'] ?>"><?= $lecturer['FullName'] ?></option>
                                                                     <?php endforeach; ?>
                                                                 </select>
                                                                 <div class="input-group-append">
                                                                     <button type="button" class="btn btn-success" onclick="addSupervisor()">
                                                                         <i class="fas fa-plus">+</i>
                                                                     </button>
-                                                                    <?php if ($index > 0): ?>
-                                                                        <button type="button" class="btn btn-danger" onclick="removeSupervisor(this)">
-                                                                            <i class="fas fa-minus">-</i>
-                                                                        </button>
-                                                                    <?php endif; ?>
                                                                 </div>
                                                             </div>
-                                                        <?php endforeach; ?>
+                                                            <?php
+                                                        else:
+                                                            foreach ($supervisors as $index => $supervisor):
+                                                            ?>
+                                                                <div class="input-group mb-2">
+                                                                    <select class="form-control dosen-pembimbing" name="supervisors[]">
+                                                                        <option value="">Pilih Dosen Pembimbing</option>
+                                                                        <?php foreach ($lecturers as $lecturer): ?>
+                                                                            <option value="<?= $lecturer['Id'] ?>" <?= $supervisor['Id'] == $lecturer['Id'] ? 'selected' : '' ?>><?= $lecturer['FullName'] ?></option>
+                                                                        <?php endforeach; ?>
+                                                                    </select>
+                                                                    <div class="input-group-append">
+                                                                        <button type="button" class="btn btn-success" onclick="addSupervisor()">
+                                                                            <i class="fas fa-plus">+</i>
+                                                                        </button>
+                                                                        <?php if ($index > 0): ?>
+                                                                            <button type="button" class="btn btn-danger" onclick="removeSupervisor(this)">
+                                                                                <i class="fas fa-minus">-</i>
+                                                                            </button>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                </div>
+                                                        <?php
+                                                            endforeach;
+                                                        endif;
+                                                        ?>
                                                     </div>
                                                 </div>
 
-                                                    <!-- Anggota Tim -->
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label">Anggota Tim</label>
-                                                        <div id="teamMemberContainer">
-                                                            <?php foreach ([...$teamLeaders, ...$teamMembers] as $index => $member): ?>
+                                                <!-- Anggota Tim -->
+                                                <div class="form-group mb-3">
+                                                    <label class="form-label">Anggota Tim</label>
+                                                    <div id="teamMemberContainer">
+                                                        <?php
+                                                        // Jika tidak ada anggota tim, tampilkan satu baris form kosong
+                                                        if (empty($teamLeaders) && empty($teamMembers)):
+                                                        ?>
+                                                            <div class="input-group mb-2">
+                                                                <select class="form-control anggota-tim" name="teamMembers[]" required>
+                                                                    <option value="">Pilih Anggota Tim</option>
+                                                                    <?php foreach ($students as $student): ?>
+                                                                        <option value="<?= $student['Id'] ?>"><?= $student['FullName'] ?></option>
+                                                                    <?php endforeach; ?>
+                                                                </select>
+                                                                <select class="form-control anggota-tim-peran" name="teamMemberRoles[]" required>
+                                                                    <option value="">Pilih Peran</option>
+                                                                    <option value="Ketua">Ketua</option>
+                                                                    <option value="Anggota">Anggota</option>
+                                                                    <option value="Personal">Personal</option>
+                                                                </select>
+                                                                <div class="input-group-append">
+                                                                    <button type="button" class="btn btn-success" onclick="addTeamMember()">
+                                                                        <i class="fas fa-plus">+</i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <?php
+                                                        // Jika ada anggota tim, tampilkan data yang ada
+                                                        else:
+                                                            $allMembers = array_merge(is_array($teamLeaders) ? $teamLeaders : [], 
+                                                                                     is_array($teamMembers) ? $teamMembers : []);
+                                                            foreach ($allMembers as $index => $member):
+                                                            ?>
                                                                 <div class="input-group mb-2">
                                                                     <select class="form-control anggota-tim" name="teamMembers[]" required>
                                                                         <option value="">Pilih Anggota Tim</option>
                                                                         <?php foreach ($students as $student): ?>
-                                                                            <?php 
-                                                                            // Check if $member is an array and has 'Id' key before comparing
+                                                                            <?php
                                                                             $isSelected = is_array($member) && isset($member['Id']) && $member['Id'] == $student['Id'];
                                                                             ?>
                                                                             <option value="<?= $student['Id'] ?>" <?= $isSelected ? 'selected' : '' ?>><?= $student['FullName'] ?></option>
@@ -258,9 +308,9 @@
                                                                     </select>
                                                                     <select class="form-control anggota-tim-peran" name="teamMemberRoles[]" required>
                                                                         <option value="">Pilih Peran</option>
-                                                                        <option value="Ketua" <?= $member['AchievementRole'] == 2 ? 'selected' : '' ?>>Ketua</option>
-                                                                        <option value="Anggota" <?= $member['AchievementRole'] == 3 ? 'selected' : '' ?>>Anggota</option>
-                                                                        <option value="Personal" <?= $member['AchievementRole'] == 4 ? 'selected' : '' ?>>Personal</option>
+                                                                        <option value="Ketua" <?= $member['AchievementRole'] == '2' ? 'selected' : '' ?>>Ketua</option>
+                                                                        <option value="Anggota" <?= $member['AchievementRole'] == '3' ? 'selected' : '' ?>>Anggota</option>
+                                                                        <option value="Personal" <?= $member['AchievementRole'] == '4' ? 'selected' : '' ?>>Personal</option>
                                                                     </select>
                                                                     <div class="input-group-append">
                                                                         <button type="button" class="btn btn-success" onclick="addTeamMember()">
@@ -273,9 +323,12 @@
                                                                         <?php endif; ?>
                                                                     </div>
                                                                 </div>
-                                                            <?php endforeach; ?>
-                                                        </div>
+                                                        <?php
+                                                            endforeach;
+                                                        endif;
+                                                        ?>
                                                     </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -302,227 +355,18 @@
 </div>
 
 <script>
-    document.querySelectorAll('.custom-file-input').forEach(input => {
-        input.addEventListener('change', function(e) {
-            const fileName = this.files[0]?.name || 'Pilih file';
-            const label = this.nextElementSibling;
-            label.textContent = fileName;
-        });
-    });
+    // Pass PHP data to JavaScript
+    window.LECTURER_OPTIONS = `<?php foreach ($lecturers as $lecturer): ?>
+        <option value="<?= $lecturer['Id'] ?>"><?= $lecturer['FullName'] ?></option>
+    <?php endforeach; ?>`;
 
-    function getSelectedSupervisors() {
-        const supervisorSelects = document.querySelectorAll('select[name="supervisors[]"]');
-        return Array.from(supervisorSelects).map(select => select.value).filter(value => value !== '');
-    }
+    window.STUDENT_OPTIONS = `<?php foreach ($students as $student): ?>
+        <option value="<?= $student['Id'] ?>"><?= $student['FullName'] ?></option>
+    <?php endforeach; ?>`;
 
-    function getSelectedTeamMembers() {
-        const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
-        return Array.from(teamMemberSelects).map(select => select.value).filter(value => value !== '');
-    }
-
-    function updateSupervisorOptions() {
-        const selectedSupervisors = getSelectedSupervisors();
-        const supervisorSelects = document.querySelectorAll('select[name="supervisors[]"]');
-
-        supervisorSelects.forEach(select => {
-            const currentValue = select.value;
-            Array.from(select.options).forEach(option => {
-                if (option.value) {
-                    option.disabled = selectedSupervisors.includes(option.value) && option.value !== currentValue;
-                }
-            });
-        });
-    }
-
-    function updateTeamMemberOptions() {
-        const selectedMembers = getSelectedTeamMembers();
-        const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
-
-        teamMemberSelects.forEach(select => {
-            const currentValue = select.value;
-            Array.from(select.options).forEach(option => {
-                if (option.value) {
-                    option.disabled = selectedMembers.includes(option.value) && option.value !== currentValue;
-                }
-            });
-        });
-    }
-
-    function addSupervisor() {
-        const container = document.getElementById('supervisorContainer');
-        const newInput = document.createElement('div');
-        newInput.className = 'input-group mb-2';
-        newInput.innerHTML = `
-      <select class="form-control" name="supervisors[]" required>
-        <option value="">Pilih Dosen Pembimbing</option>
-        <?php foreach ($lecturers as $lecturer): ?>
-          <option value="<?= $lecturer['Id'] ?>"><?= $lecturer['FullName'] ?></option>
-        <?php endforeach; ?>
-      </select>
-      <div class="input-group-append">
-        <button type="button" class="btn btn-success" onclick="addSupervisor()">
-          <i class="fas fa-plus">+</i>
-        </button>
-        <button type="button" class="btn btn-danger" onclick="removeSupervisor(this)">
-          <i class="fas fa-minus">-</i>
-        </button>
-      </div>
-    `;
-        container.appendChild(newInput);
-
-        const newSelect = newInput.querySelector('select');
-        newSelect.addEventListener('change', updateSupervisorOptions);
-
-        updateSupervisorOptions();
-    }
-
-    function addTeamMember() {
-        const numberOfStudents = parseInt(document.getElementById('numberOfStudents').value) || 0;
-        const currentMembers = document.querySelectorAll('#teamMemberContainer .input-group').length;
-
-        if (currentMembers >= numberOfStudents) {
-            alert('Jumlah anggota tim tidak boleh melebihi jumlah siswa peserta');
-            return;
-        }
-
-        const container = document.getElementById('teamMemberContainer');
-        const newInput = document.createElement('div');
-        newInput.className = 'input-group mb-2';
-        newInput.innerHTML = `
-      <select class="form-control" name="teamMembers[]" required>
-        <option value="">Pilih Anggota Tim</option>
-        <?php foreach ($students as $student): ?>
-          <option value="<?= $student['Id'] ?>"><?= $student['FullName'] ?></option>
-        <?php endforeach; ?>
-      </select>
-      <select class="form-control" name="teamMemberRoles[]" required>
-        <option value="">Pilih Peran</option>
-        <option value="Personal">Personal</option>
-        <option value="Ketua">Ketua</option>
-        <option value="Anggota">Anggota</option>
-      </select>
-      <div class="input-group-append">
-        <button type="button" class="btn btn-success" onclick="addTeamMember()">
-          <i class="fas fa-plus">+</i>
-        </button>
-        <button type="button" class="btn btn-danger" onclick="removeTeamMember(this)">
-          <i class="fas fa-minus">-</i>
-        </button>
-      </div>
-    `;
-        container.appendChild(newInput);
-
-        const newSelect = newInput.querySelector('select[name="teamMembers[]"]');
-        newSelect.addEventListener('change', updateTeamMemberOptions);
-
-        updateTeamMemberOptions();
-    }
-
-    function removeSupervisor(button) {
-        const inputGroup = button.closest('.input-group');
-        if (inputGroup) {
-            inputGroup.remove();
-            updateSupervisorOptions();
-        }
-    }
-
-    function removeTeamMember(button) {
-        const inputGroup = button.closest('.input-group');
-        if (inputGroup) {
-            inputGroup.remove();
-            updateTeamMemberOptions();
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelector('select[name="supervisors[]"]').addEventListener('change', updateSupervisorOptions);
-        document.querySelector('select[name="teamMembers[]"]').addEventListener('change', updateTeamMemberOptions);
-
-        updateSupervisorOptions();
-        updateTeamMemberOptions();
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const rankSelect = document.getElementById('competitionRank');
-        const levelSelect = document.getElementById('competitionLevel');
-
-        const ranks = <?= json_encode($competitionRanks) ?>;
-        const levels = <?= json_encode($competitionLevels) ?>;
-
-        function calculatePoints() {
-            const rankPoints = ranks[rankSelect.value]?.points ?? 0;
-            const levelMultiplier = levels[levelSelect.value]?.multiplier ?? 1;
-            const totalPoints = rankPoints * levelMultiplier;
-        }
-
-        rankSelect.addEventListener('change', calculatePoints);
-        levelSelect.addEventListener('change', calculatePoints);
-    });
-
-    function previewFile(filePath) {
-        // Debug log
-        console.log('Original filePath:', filePath);
-        
-        const folders = ['letters', 'certificates', 'documentation', 'posters'];
-        let relativePath = '';
-        
-        for (const folder of folders) {
-            if (filePath.includes(folder)) {
-                relativePath = filePath.split(folder + '/')[1];
-                relativePath = folder + '/' + relativePath;
-                break;
-            }
-        }
-        
-        console.log('Relative path:', relativePath);
-        
-        if (!relativePath) {
-            console.error('Path tidak valid:', filePath);
-            alert('Path file tidak valid');
-            return;
-        }
-
-        // Construct the URL for the file preview endpoint
-        const previewUrl = `/storage/achievements/${relativePath}`;
-        console.log('Preview URL:', previewUrl);
-        
-        // Get file extension
-        const fileExtension = filePath.split('.').pop().toLowerCase();
-        
-        // For images and PDFs
-        if(['jpg', 'jpeg', 'png', 'pdf'].includes(fileExtension)) {
-            window.open(previewUrl, '_blank');
-        } else {
-            alert('Format file tidak didukung untuk preview');
-        }
-    }
-
-    function handleNumberOfStudentsChange() {
-        const numberOfStudents = parseInt(document.getElementById('numberOfStudents').value) || 0;
-        const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
-        
-        roleSelects.forEach(select => {
-            const personalOption = Array.from(select.options).find(option => option.value === 'Personal');
-            if (personalOption) {
-                if (numberOfStudents > 1) {
-                    personalOption.disabled = true;
-                    if (select.value === 'Personal') {
-                        select.value = '';
-                    }
-                } else {
-                    personalOption.disabled = false;
-                }
-            }
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const numberOfStudentsInput = document.getElementById('numberOfStudents');
-        numberOfStudentsInput.addEventListener('change', handleNumberOfStudentsChange);
-        handleNumberOfStudentsChange(); // Initial check
-    });
+    window.COMPETITION_RANKS = <?= json_encode($competitionRanks) ?>;
+    window.COMPETITION_LEVELS = <?= json_encode($competitionLevels) ?>;
 </script>
-
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="/assets/css/achievement-submission.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

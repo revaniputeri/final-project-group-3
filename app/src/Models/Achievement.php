@@ -118,36 +118,26 @@ class Achievement
         return $achievement;
     }
 
+    public static function getTopAchievements(PDO $db, int $limit = 10)
+    {
+        $stmt = $db->prepare('
+            SELECT * 
+            FROM [dbo].[Achievement] 
+            WHERE DeletedAt IS NULL 
+            AND AdminValidationStatus = \'APPROVED\'
+            AND SupervisorValidationStatus = \'APPROVED\'
+            ORDER BY CompetitionPoints DESC 
+            LIMIT :limit
+        ');
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public static function getAchievementsByUserId(PDO $db, int $userId)
     {
         $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL');
         $stmt->execute([':userId' => $userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public static function getTopAchievementsByYear(PDO $db, int $year, int $userId): array
-    {
-        $stmt = $db->prepare('
-            SELECT TOP 10
-                a.CompetitionPoints as TotalPoints,
-                u.FullName as Fullname, 
-                s.StudentMajor,
-                a.CompetitionTitle,
-                a.CompetitionRank,
-                a.CompetitionLevel,
-                a.CreatedAt
-            FROM [dbo].[Achievement] a
-            INNER JOIN [dbo].[User] u ON a.UserId = u.Id
-            INNER JOIN [dbo].[Student] s ON u.Id = s.UserId
-            WHERE a.DeletedAt IS NULL
-                AND a.AdminValidationStatus = \'APPROVED\'
-                AND YEAR(a.CreatedAt) = ?
-                AND a.UserId = ?
-            ORDER BY a.CompetitionPoints DESC
-        ');
-
-        $stmt->execute([$year, $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -186,8 +176,14 @@ class Achievement
     public function saveAchievement(PDO $db, array $supervisors = [], array $teamMembers = [])
     {
         $this->validateFileInputs();
-
         $this->competitionPoints = $this->calculateCompetitionPoints();
+
+        // Set supervisor validation status to null if no supervisors
+        if (empty($supervisors)) {
+            $this->supervisorValidationStatus = null;
+            $this->supervisorValidationDate = null;
+            $this->supervisorValidationNote = null;
+        }
 
         $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
@@ -332,19 +328,50 @@ class Achievement
 
         foreach ($fileInputs as $input) {
             // Skip if no file was uploaded (for edit form)
-            if (empty($this->$input) || !is_array($this->$input) || empty($this->$input['tmp_name'])) {
+            if (empty($this->$input)) {
                 continue;
             }
 
-            if ($this->$input['error'] === UPLOAD_ERR_OK) {
-                $this->validateFileSize($this->$input['tmp_name']);
-                $this->validateFileType($this->$input['tmp_name']);
-                $this->$input = $this->storeFile($this->$input, $input);
-            } elseif ($this->$input['error'] !== UPLOAD_ERR_NO_FILE) {
-                // Only throw error if there was an actual upload error (not just no file)
-                throw new InvalidArgumentException("Error uploading file: " . $this->$input['error']);
+            // Handle multiple files
+            $files = is_array($this->$input['tmp_name']) ? 
+                $this->restructureFilesArray($this->$input) : 
+                [$this->$input];
+
+            $processedFiles = [];
+            foreach ($files as $file) {
+                if (empty($file['tmp_name'])) {
+                    continue;
+                }
+
+                if ($file['error'] === UPLOAD_ERR_OK) {
+                    $this->validateFileSize($file['tmp_name']);
+                    $this->validateFileType($file['tmp_name']); 
+                    $processedFiles[] = $this->storeFile($file, $input);
+                } elseif ($file['error'] !== UPLOAD_ERR_NO_FILE) {
+                    throw new InvalidArgumentException("Error uploading file: " . $file['error']);
+                }
             }
+
+            // Store processed files back to property
+            $this->$input = count($processedFiles) === 1 ? $processedFiles[0] : $processedFiles;
         }
+    }
+
+    private function restructureFilesArray($fileInput)
+    {
+        $files = [];
+        foreach ($fileInput['tmp_name'] as $key => $tmpName) {
+            if ($tmpName === '') continue;
+            
+            $files[] = [
+                'name' => $fileInput['name'][$key],
+                'type' => $fileInput['type'][$key],
+                'tmp_name' => $tmpName,
+                'error' => $fileInput['error'][$key],
+                'size' => $fileInput['size'][$key]
+            ];
+        }
+        return $files;
     }
 
     private function validateFileSize($file)

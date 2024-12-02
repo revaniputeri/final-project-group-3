@@ -197,7 +197,7 @@
                           <label class="form-label">Dosen Pembimbing</label>
                           <div id="supervisorContainer">
                             <div class="input-group mb-2">
-                              <select class="form-control dosen-pembimbing" name="supervisors[]" required>
+                              <select class="form-control dosen-pembimbing" name="supervisors[]">
                                 <option value="">Pilih Dosen Pembimbing</option>
                                 <?php foreach ($lecturers as $lecturer): ?>
                                   <option value="<?= $lecturer['Id'] ?>"><?= $lecturer['FullName'] ?></option>
