@@ -204,7 +204,7 @@
                                 <?php endforeach; ?>
                               </select>
                               <div class="input-group-append">
-                                <button type="button" class="btn btn-success" onclick="addSupervisor()">
+                                <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
                                   <i class="fas fa-plus">+</i>
                                 </button>
                               </div>
@@ -230,7 +230,7 @@
                                 <option value="Personal">Personal</option>
                               </select>
                               <div class="input-group-append">
-                                <button type="button" class="btn btn-success" onclick="addTeamMember()">
+                                <button type="button" class="btn btn-success" onclick="achievementForm.addTeamMember()">
                                   <i class="fas fa-plus">+</i>
                                 </button>
                               </div>
@@ -266,20 +266,20 @@
   window.LECTURER_OPTIONS = `<?php foreach ($lecturers as $lecturer): ?>
         <option value="<?= $lecturer['Id'] ?>"><?= $lecturer['FullName'] ?></option>
     <?php endforeach; ?>`;
-    
-    window.STUDENT_OPTIONS = `<?php foreach ($students as $student): ?>
+
+  window.STUDENT_OPTIONS = `<?php foreach ($students as $student): ?>
         <option value="<?= $student['Id'] ?>"><?= $student['FullName'] ?></option>
     <?php endforeach; ?>`;
-    
-    window.COMPETITION_RANKS = <?= json_encode($competitionRanks) ?>;
-    window.COMPETITION_LEVELS = <?= json_encode($competitionLevels) ?>;
+
+  window.COMPETITION_RANKS = <?= json_encode($competitionRanks) ?>;
+  window.COMPETITION_LEVELS = <?= json_encode($competitionLevels) ?>;
 </script>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="/assets/css/achievement-submission.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="/assets/js/achievement-submission.js"></script>
-<script src="/vendors/js/vendor.bundle.base.js"></script>
-<script src="/js/off-canvas.js"></script>
-<script src="/js/hoverable-collapse.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script defer src="/assets/js/achievement-submission.js"></script>
+<script defer src="/vendors/js/vendor.bundle.base.js"></script>
+<script defer src="/js/off-canvas.js"></script>
+<script defer src="/js/hoverable-collapse.js"></script>
 <script src="/js/template.js"></script>

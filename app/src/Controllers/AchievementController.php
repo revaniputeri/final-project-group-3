@@ -26,13 +26,11 @@ class AchievementController
 
     public function achievementHistory()
     {
-        // Check if user is logged in
         if (!isset($_SESSION['user']['id'])) {
             header('Location: /login');
             exit;
         }
-
-        // Get achievements from database based on user ID
+        
         $achievements = Achievement::getAchievementsByUserId($this->db, $_SESSION['user']['id']);
 
         // Convert rank and level IDs to names

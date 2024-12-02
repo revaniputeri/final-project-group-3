@@ -118,18 +118,28 @@ class Achievement
         return $achievement;
     }
 
-    public static function getTopAchievements(PDO $db, int $limit = 10)
+    public static function getTopAchievements(PDO $db, int $limit = 10, int $userId = null)
     {
-        $stmt = $db->prepare('
-            SELECT * 
+        $sql = '
+            SELECT TOP (:limit) * 
             FROM [dbo].[Achievement] 
             WHERE DeletedAt IS NULL 
             AND AdminValidationStatus = \'APPROVED\'
-            AND SupervisorValidationStatus = \'APPROVED\'
-            ORDER BY CompetitionPoints DESC 
-            LIMIT :limit
-        ');
+            AND SupervisorValidationStatus = \'APPROVED\'';
+            
+        if ($userId) {
+            $sql .= ' AND UserId = :userId';
+        }
+        
+        $sql .= ' ORDER BY CompetitionPoints DESC';
+        
+        $stmt = $db->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        
+        if ($userId) {
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        }
+        
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
