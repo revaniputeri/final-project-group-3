@@ -23,34 +23,13 @@ class IndexController
     }
     public function dashboard()
     {
+        $this->ensureSession();
         View::render('dashboard', []);
     }
 
-    public function getTopAchievements()
-    {
-        $this->ensureSession();
-
-        // Get filter parameters
-        $selectedYear = $_GET['tahun'] ?? date('Y');
-
-        try {
-            $topAchievements = Achievement::getTopAchievementsByYear(
-                $this->db,
-                $selectedYear,
-                $_SESSION['user']['id']
-            );
-
-            View::render('dashboard', [
-                'topAchievements' => $topAchievements,
-                'selectedYear' => $selectedYear
-            ]);
-        } catch (\PDOException $e) {
-            // Handle error
-            error_log($e->getMessage());
-            View::render('dashboard', [
-                'topAchievements' => [],
-                'selectedYear' => $selectedYear
-            ]);
-        }
-    }
+    // public function getDataTableAchievements()
+    // {
+    //     $this->ensureSession();
+    //     $topAchievements = Achievement::g
+    // }
 }
