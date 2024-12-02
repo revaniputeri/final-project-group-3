@@ -91,15 +91,20 @@ class AchievementController
             $letterDate = new \DateTime($_POST['letterDate']);
 
             // Validate required files
-            if (!isset($_FILES['letterFile']) || !isset($_FILES['certificateFile']) || 
-                !isset($_FILES['documentationFile']) || !isset($_FILES['posterFile'])) {
-                throw new \Exception('All files are required');
-            }
+            $requiredFiles = [
+                'letterFile',
+                'certificateFile', 
+                'documentationFile',
+                'posterFile'
+            ];
 
-            $letterFile = $_FILES['letterFile'];
-            $certificateFile = $_FILES['certificateFile'];
-            $documentationFile = $_FILES['documentationFile'];
-            $posterFile = $_FILES['posterFile'];
+            $files = [];
+            foreach ($requiredFiles as $fileKey) {
+                if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] === UPLOAD_ERR_NO_FILE) {
+                    throw new \Exception("$fileKey is required");
+                }
+                $files[$fileKey] = $_FILES[$fileKey];
+            }
 
             // Calculate points based on competition level and rank
             $competitionPoints = $competitionLevel + $competitionRank;
@@ -145,10 +150,10 @@ class AchievementController
                 $numberOfStudents,
                 $letterNumber,
                 $letterDate,
-                $letterFile,
-                $certificateFile,
-                $documentationFile,
-                $posterFile,
+                $files['letterFile'],
+                $files['certificateFile'],
+                $files['documentationFile'],
+                $files['posterFile'],
                 $competitionPoints,
                 new \DateTime(),
                 new \DateTime(),

@@ -26,19 +26,31 @@ class AchievementForm {
         });
 
         // Initial setup for supervisors and team members
-        document.querySelector('select[name="supervisors[]"]').addEventListener('change', this.updateSupervisorOptions);
-        document.querySelector('select[name="teamMembers[]"]').addEventListener('change', this.updateTeamMemberOptions);
+        const supervisorSelect = document.querySelector('select[name="supervisors[]"]');
+        const teamMemberSelect = document.querySelector('select[name="teamMembers[]"]');
+        
+        if (supervisorSelect) {
+            supervisorSelect.addEventListener('change', this.updateSupervisorOptions);
+        }
+        
+        if (teamMemberSelect) {
+            teamMemberSelect.addEventListener('change', this.updateTeamMemberOptions);
+        }
         
         // Competition points calculation
         const rankSelect = document.getElementById('competitionRank');
         const levelSelect = document.getElementById('competitionLevel');
-        rankSelect.addEventListener('change', this.calculatePoints);
-        levelSelect.addEventListener('change', this.calculatePoints);
+        if (rankSelect && levelSelect) {
+            rankSelect.addEventListener('change', this.calculatePoints);
+            levelSelect.addEventListener('change', this.calculatePoints);
+        }
 
         // Number of students change handler
         const numberOfStudentsInput = document.getElementById('numberOfStudents');
-        numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
-        this.handleNumberOfStudentsChange(); // Initial check
+        if (numberOfStudentsInput) {
+            numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
+            this.handleNumberOfStudentsChange(); // Initial check
+        }
 
         this.updateSupervisorOptions();
         this.updateTeamMemberOptions();
@@ -47,7 +59,9 @@ class AchievementForm {
     handleFileInput(e) {
         const fileName = this.files[0]?.name || 'Pilih file';
         const label = this.nextElementSibling;
-        label.textContent = fileName;
+        if (label) {
+            label.textContent = fileName;
+        }
     }
 
     getSelectedSupervisors() {
@@ -88,20 +102,22 @@ class AchievementForm {
         });
     }
 
-    addSupervisor() {
+    addSupervisor = () => {
         const container = document.getElementById('supervisorContainer');
+        if (!container) return;
+
         const newInput = document.createElement('div');
         newInput.className = 'input-group mb-2';
         newInput.innerHTML = `
             <select class="form-control select2-dropdown" name="supervisors[]" required>
                 <option value="">Pilih Dosen Pembimbing</option>
-                ${window.LECTURER_OPTIONS}
+                ${window.LECTURER_OPTIONS || ''}
             </select>
             <div class="input-group-append">
-                <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
+                <button type="button" class="btn btn-success" onclick="window.achievementForm.addSupervisor()">
                     <i class="fas fa-plus">+</i>
                 </button>
-                <button type="button" class="btn btn-danger" onclick="achievementForm.removeSupervisor(this)">
+                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeSupervisor(this)">
                     <i class="fas fa-minus">-</i>
                 </button>
             </div>
@@ -115,12 +131,18 @@ class AchievementForm {
         });
         
         const newSelect = newInput.querySelector('select');
-        newSelect.addEventListener('change', this.updateSupervisorOptions);
-        this.updateSupervisorOptions();
+        if (newSelect) {
+            newSelect.addEventListener('change', this.updateSupervisorOptions);
+            this.updateSupervisorOptions();
+        }
     }
 
-    addTeamMember() {
-        const numberOfStudents = parseInt(document.getElementById('numberOfStudents').value) || 0;
+    addTeamMember = () => {
+        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        const container = document.getElementById('teamMemberContainer');
+        if (!numberOfStudentsInput || !container) return;
+
+        const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
         const currentMembers = document.querySelectorAll('#teamMemberContainer .input-group').length;
         const hasPersonalRole = Array.from(document.querySelectorAll('select[name="teamMemberRoles[]"]'))
             .some(select => select.value === 'Personal');
@@ -135,25 +157,37 @@ class AchievementForm {
             return;
         }
         
-        const container = document.getElementById('teamMemberContainer');
         const newInput = document.createElement('div');
         newInput.className = 'input-group mb-2';
-        newInput.innerHTML = `
-            <select class="form-control select2-dropdown" name="teamMembers[]" required>
-                <option value="">Pilih Anggota Tim</option>
-                ${window.STUDENT_OPTIONS}
-            </select>
-            <select class="form-control" name="teamMemberRoles[]" required>
+        
+        let roleOptions = '';
+        if (numberOfStudents === 1) {
+            roleOptions = `
+                <option value="">Pilih Peran</option>
+                <option value="Personal">Personal</option>
+            `;
+        } else {
+            roleOptions = `
                 <option value="">Pilih Peran</option>
                 <option value="Ketua">Ketua</option>
                 <option value="Anggota">Anggota</option>
                 <option value="Personal">Personal</option>
+            `;
+        }
+
+        newInput.innerHTML = `
+            <select class="form-control select2-dropdown" name="teamMembers[]" required>
+                <option value="">Pilih Anggota Tim</option>
+                ${window.STUDENT_OPTIONS || ''}
+            </select>
+            <select class="form-control" name="teamMemberRoles[]" required>
+                ${roleOptions}
             </select>
             <div class="input-group-append">
-                <button type="button" class="btn btn-success" onclick="achievementForm.addTeamMember()">
+                <button type="button" class="btn btn-success" onclick="window.achievementForm.addTeamMember()">
                     <i class="fas fa-plus">+</i>
                 </button>
-                <button type="button" class="btn btn-danger" onclick="achievementForm.removeTeamMember(this)">
+                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeTeamMember(this)">
                     <i class="fas fa-minus">-</i>
                 </button>
             </div>
@@ -167,12 +201,14 @@ class AchievementForm {
         });
         
         const newSelect = newInput.querySelector('select[name="teamMembers[]"]');
-        newSelect.addEventListener('change', this.updateTeamMemberOptions);
-        this.updateTeamMemberOptions();
+        if (newSelect) {
+            newSelect.addEventListener('change', this.updateTeamMemberOptions);
+            this.updateTeamMemberOptions();
+        }
     }
 
     removeSupervisor(button) {
-        const inputGroup = button.closest('.input-group');
+        const inputGroup = button?.closest('.input-group');
         if (inputGroup) {
             inputGroup.remove();
             this.updateSupervisorOptions();
@@ -180,7 +216,7 @@ class AchievementForm {
     }
 
     removeTeamMember(button) {
-        const inputGroup = button.closest('.input-group');
+        const inputGroup = button?.closest('.input-group');
         if (inputGroup) {
             inputGroup.remove();
             this.updateTeamMemberOptions();
@@ -190,6 +226,8 @@ class AchievementForm {
     calculatePoints = () => {
         const rankSelect = document.getElementById('competitionRank');
         const levelSelect = document.getElementById('competitionLevel');
+        if (!rankSelect || !levelSelect || !window.COMPETITION_RANKS || !window.COMPETITION_LEVELS) return;
+
         const rankPoints = window.COMPETITION_RANKS[rankSelect.value]?.points ?? 0;
         const levelMultiplier = window.COMPETITION_LEVELS[levelSelect.value]?.multiplier ?? 1;
         const totalPoints = rankPoints * levelMultiplier;
@@ -197,24 +235,28 @@ class AchievementForm {
     }
 
     handleNumberOfStudentsChange = () => {
-        const numberOfStudents = parseInt(document.getElementById('numberOfStudents').value) || 0;
+        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        if (!numberOfStudentsInput) return;
+
+        const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
         const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
         
         roleSelects.forEach(select => {
-            const personalOption = Array.from(select.options).find(option => option.value === 'Personal');
-            if (personalOption) {
-                if (numberOfStudents > 1) {
-                    personalOption.disabled = true;
-                    if (select.value === 'Personal') {
-                        select.value = '';
-                    }
-                } else {
-                    personalOption.disabled = false;
-                }
+            // Reset select value
+            select.value = '';
+            
+            // Add appropriate options based on number of students
+            if (numberOfStudents === 1) {
+                select.add(new Option('Pilih Peran', ''));
+                select.add(new Option('Personal', 'Personal'));
+            } else {
+                select.add(new Option('Pilih Peran', ''));
+                select.add(new Option('Ketua', 'Ketua'));
+                select.add(new Option('Anggota', 'Anggota'));
             }
         });
     }
 }
 
 // Initialize the form
-const achievementForm = new AchievementForm(); 
+window.achievementForm = new AchievementForm();
