@@ -35,6 +35,7 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+//login page
 Router::add(
     method: "GET",
     path: "/login",
@@ -51,6 +52,7 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+//logout process
 Router::add(
     method: "POST",
     path: "/logout",
@@ -59,7 +61,7 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// AchievementController routes
+//leaderboard page
 Router::add(
     method: "GET",
     path: "/leaderboard",
@@ -82,12 +84,8 @@ Router::add(
     controller: AchievementController::class,
     function: "leaderboard",
     dependencies: ['db' => $connection]
-)
+);
 
-<<<<<<< ours
-||||||| ancestor
-//profile page
-=======
 //leaderboard process
 Router::add(
     method: "POST",
@@ -95,76 +93,67 @@ Router::add(
     controller: AchievementController::class,
     function: "leaderboardProcess",
     dependencies: ['db' => $connection]
-)
+);
 
 //dashboard page
->>>>>>> theirs
 Router::add(
     method: "GET",
-<<<<<<< ours
-    path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
-    controller: AchievementController::class,
-    function: "edit",
-||||||| ancestor
-    path: "/profile",
-    controller: AuthController::class,
-    function: "profile",
-=======
-    path: "/dashboard",
+    path: "/dashboard/home",
     controller: IndexController::class,
-    function: "dashboard",
+    function: "getTopAchievements",
     dependencies: ['db' => $connection]
-)
+);
 
 //dashboard process
 Router::add(
     method: "POST",
-    path: "/dashboard",
+    path: "/dashboard/home",
     controller: IndexController::class,
     function: "dashboardProcess",
     dependencies: ['db' => $connection]
-)
+);  
+
+Router::add(
+    method: "GET",
+    path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "edit",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "editFormProcess",
+    dependencies: ['db' => $connection]
+);
 
 // profile customization page
 Router::add(
     method: "GET",
-    path: "/dashboard/profile-customization",
+    path: "/dashboard/profile",
     controller: IndexController::class,
     function: "profileCustomization",
->>>>>>> theirs
     dependencies: ['db' => $connection]
 );
 
-<<<<<<< ours
-||||||| ancestor
-//profile process
-=======
-// profile customization process
->>>>>>> theirs
+// Profile customization process
 Router::add(
     method: "POST",
-<<<<<<< ours
-    path: "/dashboard/achievement/edit/(?<id>[0-9]+)",
-    controller: AchievementController::class,
-    function: "editFormProcess",
-||||||| ancestor
-    path: "/profile",
-    controller: AuthController::class,
-    function: "profileProcess",
-=======
-    path: "/dashboard/profile-customization",
+    path: "/dashboard/profile",
     controller: IndexController::class,
     function: "profileCustomizationProcess",
->>>>>>> theirs
     dependencies: ['db' => $connection]
 );
 
+// profile customization process
 Router::add(
     method: "GET",
-    path: "/dashboard/achievement/view/(?<id>[0-9]+)",
-    controller: AchievementController::class,
-    function: "viewAchievement",
-    dependencies: ['db' => $connection]
+    path: "/assets/(?<path>.*)",
+    controller: AssetsController::class,
+    function: "serve",
+    dependencies: []
 );
 
 Router::add(
@@ -290,11 +279,29 @@ Router::add(
 );
 
 Router::add(
+    method: "POST",
+    path: "/dashboard/admin/validation",
+    controller: AchievementController::class,
+    function: "adminValidationProcess",
+    dependencies: ['db' => $connection]
+);
+
+// Add this route for serving uploaded files
+Router::add(
     method: "GET",
     path: "/storage/achievements/(?<path>.*)",
     controller: AssetsController::class,
     function: "serveUploadedFile",
     dependencies: []
+);
+
+// achievement delete process
+Router::add(
+    method: "POST",
+    path: "/dashboard/achievement/delete/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "deleteAchievement",
+    dependencies: ['db' => $connection]
 );
 
 Router::run();

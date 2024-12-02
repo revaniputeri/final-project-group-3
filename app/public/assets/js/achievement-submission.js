@@ -22,6 +22,75 @@ class AchievementForm {
     }
 
     initEventListeners() {
+        // File input listeners
+        document.querySelectorAll('.custom-file-input').forEach(input => {
+            input.addEventListener('change', this.handleFileInput);
+        });
+
+        // Initial setup for supervisors and team members
+        document.querySelector('select[name="supervisors[]"]').addEventListener('change', this.updateSupervisorOptions);
+        document.querySelector('select[name="teamMembers[]"]').addEventListener('change', this.updateTeamMemberOptions);
+        
+        // Competition points calculation
+        const rankSelect = document.getElementById('competitionRank');
+        const levelSelect = document.getElementById('competitionLevel');
+        rankSelect.addEventListener('change', this.calculatePoints);
+        levelSelect.addEventListener('change', this.calculatePoints);
+
+        // Number of students change handler
+        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
+        this.handleNumberOfStudentsChange(); // Initial check
+
+        this.updateSupervisorOptions();
+        this.updateTeamMemberOptions();
+    }
+
+    handleFileInput(e) {
+        const fileName = this.files[0]?.name || 'Pilih file';
+        const label = this.nextElementSibling;
+        label.textContent = fileName;
+    }
+
+    getSelectedSupervisors() {
+        const supervisorSelects = document.querySelectorAll('select[name="supervisors[]"]');
+        return Array.from(supervisorSelects).map(select => select.value).filter(value => value !== '');
+    }
+
+    getSelectedTeamMembers() {
+        const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
+        return Array.from(teamMemberSelects).map(select => select.value).filter(value => value !== '');
+    }
+
+    updateSupervisorOptions = () => {
+        const selectedSupervisors = this.getSelectedSupervisors();
+        const supervisorSelects = document.querySelectorAll('select[name="supervisors[]"]');
+        
+        supervisorSelects.forEach(select => {
+            const currentValue = select.value;
+            Array.from(select.options).forEach(option => {
+                if (option.value) {
+                    option.disabled = selectedSupervisors.includes(option.value) && option.value !== currentValue;
+                }
+            });
+        });
+    }
+
+    updateTeamMemberOptions = () => {
+        const selectedMembers = this.getSelectedTeamMembers();
+        const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
+        
+        teamMemberSelects.forEach(select => {
+            const currentValue = select.value;
+            Array.from(select.options).forEach(option => {
+                if (option.value) {
+                    option.disabled = selectedMembers.includes(option.value) && option.value !== currentValue;
+                }
+            });
+        });
+    }
+
+    initEventListeners() {
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', this.handleFileInput);
         });
@@ -132,6 +201,9 @@ class AchievementForm {
                 </button>
                 <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
                     <i class="fas fa-plus">+</i>
+                </button>
+                <button type="button" class="btn btn-danger" onclick="achievementForm.removeSupervisor(this)">
+                    <i class="fas fa-minus">-</i>
                 </button>
             </div>
         `;
