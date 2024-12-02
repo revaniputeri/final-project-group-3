@@ -364,6 +364,98 @@ class AchievementController
         }
     }
 
+    public function editFormProcess($data)
+    {
+        if (!isset($_SESSION['user']['id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $achievementId = (int)$data['id'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Verify ownership
+                $achievement = Achievement::getAchievement($this->db, $achievementId);
+                if (!$achievement) {
+                    throw new \Exception('Prestasi tidak ditemukan.');
+                }
+
+                // Check if user owns this achievement
+                if ($achievement['UserId'] != $_SESSION['user']['id']) {
+                    throw new \Exception('Anda tidak memiliki akses untuk mengedit prestasi ini.');
+                }
+
+                // Check if achievement is still in PENDING status
+                if ($achievement['SupervisorValidationStatus'] !== 'PENDING' || 
+                    $achievement['AdminValidationStatus'] !== 'PENDING') {
+                    throw new \Exception('Hanya prestasi dengan status PENDING yang dapat diedit.');
+                }
+
+                // Prepare update data
+                $updateData = [
+                    'CompetitionType' => trim($_POST['competitionType']),
+                    'CompetitionLevel' => (int)$_POST['competitionLevel'],
+                    'CompetitionRank' => (int)$_POST['competitionRank'],
+                    'CompetitionTitle' => trim($_POST['competitionTitle']),
+                    'CompetitionTitleEnglish' => trim($_POST['competitionTitleEnglish']),
+                    'CompetitionPlace' => trim($_POST['competitionPlace']),
+                    'CompetitionPlaceEnglish' => trim($_POST['competitionPlaceEnglish']),
+                    'CompetitionUrl' => trim($_POST['competitionUrl']),
+                    'CompetitionStartDate' => $_POST['competitionStartDate'],
+                    'CompetitionEndDate' => $_POST['competitionEndDate'],
+                    'NumberOfInstitutions' => (int)$_POST['numberOfInstitutions'],
+                    'NumberOfStudents' => (int)$_POST['numberOfStudents'],
+                    'LetterNumber' => trim($_POST['letterNumber']),
+                    'LetterDate' => $_POST['letterDate']
+                ];
+
+                // Handle file uploads if new files are provided
+                if (!empty($_FILES['letterFile']['name'])) {
+                    $updateData['LetterFile'] = Achievement::handleFileUpload($_FILES['letterFile'], 'letters');
+                }
+                if (!empty($_FILES['certificateFile']['name'])) {
+                    $updateData['CertificateFile'] = Achievement::handleFileUpload($_FILES['certificateFile'], 'certificates');
+                }
+                if (!empty($_FILES['documentationFile']['name'])) {
+                    $updateData['DocumentationFile'] = Achievement::handleFileUpload($_FILES['documentationFile'], 'documentation');
+                }
+                if (!empty($_FILES['posterFile']['name'])) {
+                    $updateData['PosterFile'] = Achievement::handleFileUpload($_FILES['posterFile'], 'posters');
+                }
+
+                // Update the achievement
+                $success = Achievement::updateAchievement($this->db, $achievementId, $updateData);
+                
+                // Update supervisors and team members
+                if ($success) {
+                    // Update supervisors
+                    if (isset($_POST['supervisors'])) {
+                        Achievement::updateSupervisors($this->db, $achievementId, $_POST['supervisors']);
+                    }
+                    
+                    // Update team members
+                    if (isset($_POST['teamMembers']) && isset($_POST['teamMemberRoles'])) {
+                        $teamData = array_map(function($member, $role) {
+                            return ['memberId' => $member, 'role' => $role];
+                        }, $_POST['teamMembers'], $_POST['teamMemberRoles']);
+                        Achievement::updateTeamMembers($this->db, $achievementId, $teamData);
+                    }
+
+                    $_SESSION['success'] = 'Prestasi berhasil diperbarui.';
+                } else {
+                    throw new \Exception('Gagal memperbarui prestasi.');
+                }
+
+                header('Location: /dashboard/achievement/history');
+            } catch (\Exception $e) {
+                $_SESSION['error'] = $e->getMessage();
+                header('Location: /dashboard/achievement/history');
+            }
+            exit;
+        }
+    }
+
     public function deleteAchievement($data)
     {
         // Check if user is logged in
