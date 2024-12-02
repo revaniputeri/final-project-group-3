@@ -5,17 +5,16 @@
 
     <div class="main-panel">
         <div class="content-wrapper">
-            <?php if (isset($_SESSION['error'])): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?= $_SESSION['error'] ?>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <?php unset($_SESSION['error']); ?>
-            <?php endif; ?>
-
             <div class="row pt-5">
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?= $_SESSION['error'] ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
                 <div class="col-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">

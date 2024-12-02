@@ -380,8 +380,8 @@ class Achievement
     private function storeFile($file, $fileType)
     {
         $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
-        $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/app/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
-
+        $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
+        
         if (!file_exists($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
@@ -402,7 +402,30 @@ class Achievement
 
     public static function handleFileUpload(array $file, string $folder): string
     {
-        $uploadDir = __DIR__ . '/../../../storage/achievements/' . $folder . '/';
+        $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
+        
+        // Create directory if it doesn't exist
+        if (!file_exists($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true)) {
+                throw new \Exception('Failed to create upload directory');
+            }
+        }
+
+        // Validate file size
+        if ($file['size'] > 5 * 1024 * 1024) { // 5MB limit
+            throw new \Exception('File size exceeds maximum limit of 5MB');
+        }
+
+        // Validate file type
+        $allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        if (!in_array($mimeType, $allowedTypes)) {
+            throw new \Exception('Invalid file type. Only PDF, JPEG and PNG files are allowed');
+        }
+
         $fileName = uniqid() . '_' . basename($file['name']);
         $targetPath = $uploadDir . $fileName;
         
