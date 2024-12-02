@@ -32,27 +32,24 @@ class IndexController
 
         // Get filter parameters
         $selectedYear = $_GET['tahun'] ?? date('Y');
-        $selectedSemester = $_GET['semester'] ?? (date('n') <= 6 ? '2' : '1');
 
         try {
-            $topAchievements = Achievement::getTopAchievementsByYearAndSemester(
+            $topAchievements = Achievement::getTopAchievementsByYear(
                 $this->db,
                 $selectedYear,
-                $selectedSemester
+                $_SESSION['user']['id']
             );
 
             View::render('dashboard', [
                 'topAchievements' => $topAchievements,
-                'selectedYear' => $selectedYear,
-                'selectedSemester' => $selectedSemester
+                'selectedYear' => $selectedYear
             ]);
         } catch (\PDOException $e) {
             // Handle error
             error_log($e->getMessage());
             View::render('dashboard', [
                 'topAchievements' => [],
-                'selectedYear' => $selectedYear,
-                'selectedSemester' => $selectedSemester
+                'selectedYear' => $selectedYear
             ]);
         }
     }

@@ -126,20 +126,8 @@ class Achievement
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getTopAchievementsByYearAndSemester(PDO $db, int $year, int $semester): array
+    public static function getTopAchievementsByYear(PDO $db, int $year, int $userId): array
     {
-        // Calculate semester date ranges
-        $startDate = '';
-        $endDate = '';
-
-        if ($semester == 1) { // Semester 1 (August 26 - February 25)
-            $startDate = $year . '-08-26';
-            $endDate = ($year + 1) . '-02-25';
-        } else { // Semester 2 (February 26 - August 25)
-            $startDate = $year . '-02-26';
-            $endDate = $year . '-08-25';
-        }
-
         $stmt = $db->prepare('
             SELECT TOP 10
                 a.CompetitionPoints as TotalPoints,
@@ -154,17 +142,12 @@ class Achievement
             INNER JOIN [dbo].[Student] s ON u.Id = s.UserId
             WHERE a.DeletedAt IS NULL
                 AND a.AdminValidationStatus = \'APPROVED\'
-                AND (a.SupervisorValidationStatus = \'APPROVED\' OR a.SupervisorValidationStatus IS NULL)
-                AND a.CreatedAt >= :startDate
-                AND a.CreatedAt <= :endDate
+                AND YEAR(a.CreatedAt) = ?
+                AND a.UserId = ?
             ORDER BY a.CompetitionPoints DESC
         ');
 
-        $stmt->execute([
-            ':startDate' => $startDate,
-            ':endDate' => $endDate
-        ]);
-
+        $stmt->execute([$year, $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
