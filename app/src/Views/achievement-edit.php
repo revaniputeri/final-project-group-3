@@ -292,8 +292,10 @@
                                                             <?php
                                                         // Jika ada anggota tim, tampilkan data yang ada
                                                         else:
-                                                            $allMembers = array_merge(is_array($teamLeaders) ? $teamLeaders : [], 
-                                                                                     is_array($teamMembers) ? $teamMembers : []);
+                                                            $allMembers = array_merge(
+                                                                is_array($teamLeaders) ? $teamLeaders : [],
+                                                                is_array($teamMembers) ? $teamMembers : []
+                                                            );
                                                             foreach ($allMembers as $index => $member):
                                                             ?>
                                                                 <div class="input-group mb-2">

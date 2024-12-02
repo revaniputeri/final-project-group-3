@@ -28,15 +28,15 @@ class AchievementForm {
         // Initial setup for supervisors and team members
         const supervisorSelect = document.querySelector('select[name="supervisors[]"]');
         const teamMemberSelect = document.querySelector('select[name="teamMembers[]"]');
-        
+
         if (supervisorSelect) {
             supervisorSelect.addEventListener('change', this.updateSupervisorOptions);
         }
-        
+
         if (teamMemberSelect) {
             teamMemberSelect.addEventListener('change', this.updateTeamMemberOptions);
         }
-        
+
         // Competition points calculation
         const rankSelect = document.getElementById('competitionRank');
         const levelSelect = document.getElementById('competitionLevel');
@@ -77,7 +77,7 @@ class AchievementForm {
     updateSupervisorOptions = () => {
         const selectedSupervisors = this.getSelectedSupervisors();
         const supervisorSelects = document.querySelectorAll('select[name="supervisors[]"]');
-        
+
         supervisorSelects.forEach(select => {
             const currentValue = select.value;
             Array.from(select.options).forEach(option => {
@@ -91,7 +91,7 @@ class AchievementForm {
     updateTeamMemberOptions = () => {
         const selectedMembers = this.getSelectedTeamMembers();
         const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
-        
+
         teamMemberSelects.forEach(select => {
             const currentValue = select.value;
             Array.from(select.options).forEach(option => {
@@ -108,33 +108,30 @@ class AchievementForm {
 
         const newInput = document.createElement('div');
         newInput.className = 'input-group mb-2';
+
         newInput.innerHTML = `
-            <select class="form-control select2-dropdown" name="supervisors[]" required>
+            <select class="form-control dosen-pembimbing" name="supervisors[]">
                 <option value="">Pilih Dosen Pembimbing</option>
                 ${window.LECTURER_OPTIONS || ''}
             </select>
             <div class="input-group-append">
-                <button type="button" class="btn btn-success" onclick="window.achievementForm.addSupervisor()">
-                    <i class="fas fa-plus">+</i>
-                </button>
-                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeSupervisor(this)">
+                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeTeamMember(this)">
                     <i class="fas fa-minus">-</i>
+                </button>
+                <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
+                    <i class="fas fa-plus">+</i>
                 </button>
             </div>
         `;
         container.appendChild(newInput);
-        
-        $(newInput).find('.select2-dropdown').select2({
-            width: '100%',
+
+        // Initialize select2 dengan width yang sesuai
+        $(newInput).find('.dosen-pembimbing').select2({
             placeholder: 'Cari dosen pembimbing...',
-            allowClear: true
+            allowClear: true,
         });
-        
-        const newSelect = newInput.querySelector('select');
-        if (newSelect) {
-            newSelect.addEventListener('change', this.updateSupervisorOptions);
-            this.updateSupervisorOptions();
-        }
+
+        this.updateSupervisorOptions();
     }
 
     addTeamMember = () => {
@@ -146,20 +143,20 @@ class AchievementForm {
         const currentMembers = document.querySelectorAll('#teamMemberContainer .input-group').length;
         const hasPersonalRole = Array.from(document.querySelectorAll('select[name="teamMemberRoles[]"]'))
             .some(select => select.value === 'Personal');
-        
+
         if (hasPersonalRole) {
             alert('Prestasi personal tidak dapat memiliki anggota tim tambahan');
             return;
         }
-        
+
         if (currentMembers >= numberOfStudents) {
             alert('Jumlah anggota tim tidak boleh melebihi jumlah siswa peserta');
             return;
         }
-        
+
         const newInput = document.createElement('div');
         newInput.className = 'input-group mb-2';
-        
+
         let roleOptions = '';
         if (numberOfStudents === 1) {
             roleOptions = `
@@ -180,26 +177,25 @@ class AchievementForm {
                 <option value="">Pilih Anggota Tim</option>
                 ${window.STUDENT_OPTIONS || ''}
             </select>
-            <select class="form-control" name="teamMemberRoles[]" required>
+            <select class="form-control select2-dropdown" name="teamMemberRoles[]" required>
                 ${roleOptions}
             </select>
             <div class="input-group-append">
-                <button type="button" class="btn btn-success" onclick="window.achievementForm.addTeamMember()">
-                    <i class="fas fa-plus">+</i>
-                </button>
                 <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeTeamMember(this)">
                     <i class="fas fa-minus">-</i>
+                </button>
+                <button type="button" class="btn btn-success" onclick="window.achievementForm.addTeamMember()">
+                    <i class="fas fa-plus">+</i>
                 </button>
             </div>
         `;
         container.appendChild(newInput);
-        
+
         $(newInput).find('.select2-dropdown').select2({
-            width: '100%',
             placeholder: 'Cari anggota tim...',
             allowClear: true
         });
-        
+
         const newSelect = newInput.querySelector('select[name="teamMembers[]"]');
         if (newSelect) {
             newSelect.addEventListener('change', this.updateTeamMemberOptions);
@@ -240,11 +236,11 @@ class AchievementForm {
 
         const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
         const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
-        
+
         roleSelects.forEach(select => {
             // Reset select value
             select.value = '';
-            
+
             // Add appropriate options based on number of students
             if (numberOfStudents === 1) {
                 select.add(new Option('Pilih Peran', ''));
