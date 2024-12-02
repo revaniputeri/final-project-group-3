@@ -11,7 +11,7 @@
                         <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                             <h1 class="font-weight-bold">Selamat Datang di Dashboard PrestaC</h1>
                             <p class="text-muted">Pantau dan kelola prestasi Anda melalui dashboard yang mudah digunakan</p>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,7 +72,6 @@
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="card-title">Top 10 Prestasi Tertinggi</h4>
                             </div>
-                            <?php var_dump($topAchievements); ?>
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
@@ -84,21 +83,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php 
+                                        <?php
                                         if (!empty($topAchievements)) {
                                             $no = 1;
-                                            foreach ($topAchievements as $achievement) : 
+                                            foreach ($topAchievements as $achievement) {
                                         ?>
-                                            <tr>
-                                                <td><?= $no++ ?></td>
-                                                <td><?= htmlspecialchars($achievement['Fullname']) ?></td>
-                                                <td><?= htmlspecialchars($achievement['StudentMajor']) ?></td>
-                                                <td><?= number_format($achievement['TotalPoints'], 0, ',', '.') ?></td>
-                                            </tr>
-                                        <?php 
-                                            endforeach;
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>
+                                                    <td><?= htmlspecialchars($achievement['CompetitionLevel']) ?></td>
+                                                    <td><?= number_format($achievement['CompetitionPoints'], 0, ',', '.') ?></td>
+                                                </tr>
+                                            <?php
+                                            }
                                         } else {
-                                        ?>
+                                            ?>
                                             <tr>
                                                 <td colspan="4" class="text-center">Belum ada data prestasi</td>
                                             </tr>
@@ -120,7 +119,7 @@
 
     function updateTopAchievements() {
         const tahun = document.getElementById('tahun').value;
-        
+
         // Redirect or Ajax call
         window.location.href = `/dashboard?tahun=${tahun}`;
     }

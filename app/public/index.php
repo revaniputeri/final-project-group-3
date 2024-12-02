@@ -85,7 +85,7 @@ Router::add(
     method: "GET",
     path: "/dashboard/home",
     controller: IndexController::class,
-    function: "getTopAchievements",
+    function: "getDataTableAchievements",
     dependencies: ['db' => $connection]
 );
 
@@ -94,7 +94,7 @@ Router::add(
     method: "POST",
     path: "/dashboard/home",
     controller: IndexController::class,
-    function: "dashboardProcess",
+    function: "getDataTableAchievements",
     dependencies: ['db' => $connection]
 );  
 
