@@ -10,9 +10,5 @@
     <a href="/login">
         <button type="submit">Login</button>
     </a>
-    <br>
-    <a href="/register">
-        <button type="submit">Register</button>
-    </a>
 </body>
 </html>

@@ -10,7 +10,7 @@ class Achievement
 {
     private const MAX_FILE_SIZE = 5242880; // 5MB
     private const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
-    private const UPLOAD_BASE_PATH = 'public/storage/achievements/';
+    private const UPLOAD_BASE_PATH = '@storage/achievements/';
     private const UPLOAD_FOLDERS = [
         'letterFile' => 'letters',
         'certificateFile' => 'certificates',
@@ -39,6 +39,7 @@ class Achievement
     private const ROLE_SUPERVISOR = 1;
     private const ROLE_TEAM_LEADER = 2;
     private const ROLE_TEAM_MEMBER = 3;
+    private const ROLE_PERSONAL = 4;
 
     public function __construct(
         public $userId,
@@ -89,6 +90,97 @@ class Achievement
     public static function getCompetitionLevels(): array
     {
         return self::COMPETITION_LEVELS;
+    }
+    public static function getCompetitionRankName(int $rankId): string
+    {
+        return self::COMPETITION_RANKS[$rankId]['name'] ?? 'Unknown';
+    }
+
+    public static function getCompetitionLevelName(int $levelId): string
+    {
+        return self::COMPETITION_LEVELS[$levelId]['name'] ?? 'Unknown';
+    }
+
+    public static function getAchievement(PDO $db, int $id)
+    {
+        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL');
+        $stmt->execute([':id' => $id]);
+        $achievement = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($achievement) {
+            error_log("Achievement files:");
+            error_log("LetterFile: " . $achievement['LetterFile']);
+            error_log("CertificateFile: " . $achievement['CertificateFile']);
+            error_log("DocumentationFile: " . $achievement['DocumentationFile']);
+            error_log("PosterFile: " . $achievement['PosterFile']);
+        }
+
+        return $achievement;
+    }
+
+
+    public static function getAchievementsByUserId(PDO $db, int $userId)
+    {
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL');
+        $stmt->execute([':userId' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getTopAchievementsByYear(PDO $db, int $year, int $userId): array
+    {
+        $stmt = $db->prepare('
+            SELECT TOP 10
+                a.CompetitionPoints as TotalPoints,
+                u.FullName as Fullname, 
+                s.StudentMajor,
+                a.CompetitionTitle,
+                a.CompetitionRank,
+                a.CompetitionLevel,
+                a.CreatedAt
+            FROM [dbo].[Achievement] a
+            INNER JOIN [dbo].[User] u ON a.UserId = u.Id
+            INNER JOIN [dbo].[Student] s ON u.Id = s.UserId
+            WHERE a.DeletedAt IS NULL
+                AND a.AdminValidationStatus = \'APPROVED\'
+                AND YEAR(a.CreatedAt) = ?
+                AND a.UserId = ?
+            ORDER BY a.CompetitionPoints DESC
+        ');
+
+        $stmt->execute([$year, $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getSupervisorsByAchievementId(PDO $db, int $achievementId): array
+    {
+        $stmt = $db->prepare("
+            SELECT u.* 
+            FROM [dbo].[User] u
+            JOIN [dbo].[UserAchievement] ua ON u.Id = ua.UserId
+            WHERE ua.AchievementId = :achievementId
+            AND ua.AchievementRole = :role
+        ");
+        $stmt->execute([
+            ':achievementId' => $achievementId,
+            ':role' => self::ROLE_SUPERVISOR
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getTeamMembersByAchievementId(PDO $db, int $achievementId, int $role): array
+    {
+        $stmt = $db->prepare("
+            SELECT u.*, ua.AchievementRole 
+            FROM [dbo].[User] u
+            JOIN [dbo].[UserAchievement] ua ON u.Id = ua.UserId
+            WHERE ua.AchievementId = :achievementId 
+            AND ua.AchievementRole = :role
+        ");
+        $stmt->execute([
+            ':achievementId' => $achievementId,
+            ':role' => $role
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function saveAchievement(PDO $db, array $supervisors = [], array $teamMembers = [])
@@ -198,6 +290,7 @@ class Achievement
 
         return $achievementId;
     }
+    
 
     private function saveUserAchievements(PDO $db, int $achievementId, array $supervisors, array $teamMembers)
     {
@@ -217,7 +310,12 @@ class Achievement
 
         if (!empty($teamMembers)) {
             foreach ($teamMembers as $member) {
-                $role = ($member['role'] === 'Ketua') ? self::ROLE_TEAM_LEADER : self::ROLE_TEAM_MEMBER;
+                $role = match($member['role']) {
+                    'Ketua' => self::ROLE_TEAM_LEADER,
+                    'Anggota' => self::ROLE_TEAM_MEMBER,
+                    'Personal' => self::ROLE_PERSONAL,
+                    default => self::ROLE_TEAM_MEMBER
+                };
                 $stmt->execute([
                     ':userId' => $member['userId'],
                     ':achievementId' => $achievementId,
@@ -227,34 +325,24 @@ class Achievement
         }
     }
 
-    public static function getUsersByRole(PDO $db, int $achievementId, int $role): array
-    {
-        $stmt = $db->prepare('
-        SELECT u.Id, u.FullName, ua.AchievementRole
-        FROM [dbo].[UserAchievement] ua
-        JOIN [dbo].[User] u ON ua.UserId = u.Id
-        WHERE ua.AchievementId = :achievementId 
-        AND ua.AchievementRole = :role
-        AND u.DeletedAt IS NULL
-    ');
-
-        $stmt->execute([
-            ':achievementId' => $achievementId,
-            ':role' => $role
-        ]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
     private function validateFileInputs()
     {
         $fileInputs = ['letterFile', 'certificateFile', 'documentationFile', 'posterFile'];
 
         foreach ($fileInputs as $input) {
-            if ($this->$input && is_array($this->$input)) {
+            // Skip if no file was uploaded (for edit form)
+            if (empty($this->$input) || !is_array($this->$input) || empty($this->$input['tmp_name'])) {
+                continue;
+            }
+
+            if ($this->$input['error'] === UPLOAD_ERR_OK) {
                 $this->validateFileSize($this->$input['tmp_name']);
                 $this->validateFileType($this->$input['tmp_name']);
                 $this->$input = $this->storeFile($this->$input, $input);
+            } elseif ($this->$input['error'] !== UPLOAD_ERR_NO_FILE) {
+                // Only throw error if there was an actual upload error (not just no file)
+                throw new InvalidArgumentException("Error uploading file: " . $this->$input['error']);
             }
         }
     }
@@ -268,9 +356,21 @@ class Achievement
 
     private function validateFileType($file)
     {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file);
-        finfo_close($finfo);
+        if (!file_exists($file)) {
+            throw new InvalidArgumentException("File does not exist");
+        }
+
+        $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo === false) {
+            // If finfo_open fails, try alternative mime type detection
+            $mimeType = mime_content_type($file);
+            if ($mimeType === false) {
+                throw new InvalidArgumentException("Could not determine file type");
+            }
+        } else {
+            $mimeType = finfo_file($finfo, $file);
+            finfo_close($finfo);
+        }
 
         if (!in_array($mimeType, self::ALLOWED_FILE_TYPES)) {
             throw new InvalidArgumentException("Invalid file type. Allowed types are PDF, JPEG, and PNG.");
@@ -280,97 +380,60 @@ class Achievement
     private function storeFile($file, $fileType)
     {
         $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
-        $uploadPath = self::UPLOAD_BASE_PATH . $folder . '/';
-
+        $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
+        
         if (!file_exists($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
 
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = ($this->id ?? 'temp_' . uniqid()) . '_' . $fileType . '.' . $extension;
+        
+        // Save full path for moving the file
         $destination = $uploadPath . $filename;
-
+        
         if (!move_uploaded_file($file['tmp_name'], $destination)) {
             throw new InvalidArgumentException("Failed to upload file.");
         }
 
-        return $destination;
+        // Return relative path to store in database
+        return $folder . '/' . $filename;
     }
 
-    public static function getAchievement(PDO $db, int $id)
+    public static function handleFileUpload(array $file, string $folder): string
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE id = :id AND deleted_at IS NULL');
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+        $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
+        
+        // Create directory if it doesn't exist
+        if (!file_exists($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true)) {
+                throw new \Exception('Failed to create upload directory');
+            }
+        }
 
-    public static function getAllAchievements(PDO $db)
-    {
-        $stmt = $db->query('SELECT * FROM [dbo].[Achievement] WHERE deleted_at IS NULL');
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+        // Validate file size
+        if ($file['size'] > 5 * 1024 * 1024) { // 5MB limit
+            throw new \Exception('File size exceeds maximum limit of 5MB');
+        }
 
-    public function updateAchievement(PDO $db, int $id)
-    {
-        $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
+        // Validate file type
+        $allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
 
-        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET
-            CompetitionType = :competitionType,
-            CompetitionLevel = :competitionLevel,
-            CompetitionPoints = :competitionPoints,
-            CompetitionTitle = :competitionTitle,
-            CompetitionTitleEnglish = :competitionTitleEnglish,
-            CompetitionPlace = :competitionPlace,
-            CompetitionPlaceEnglish = :competitionPlaceEnglish,
-            CompetitionUrl = :competitionUrl,
-            CompetitionStartDate = :competitionStartDate,
-            CompetitionEndDate = :competitionEndDate,
-            CompetitionRank = :competitionRank,
-            NumberOfInstitutions = :numberOfInstitutions,
-            NumberOfStudents = :numberOfStudents,
-            LetterNumber = :letterNumber,
-            LetterDate = :letterDate,
-            LetterFile = :letterFile,
-            CertificateFile = :certificateFile,
-            DocumentationFile = :documentationFile,
-            PosterFile = :posterFile,
-            SupervisorValidationStatus = :supervisorValidationStatus,
-            AdminValidationStatus = :adminValidationStatus,
-            UpdatedAt = :updatedAt
-        WHERE id = :id AND deleted_at IS NULL');
+        if (!in_array($mimeType, $allowedTypes)) {
+            throw new \Exception('Invalid file type. Only PDF, JPEG and PNG files are allowed');
+        }
 
-        return $stmt->execute([
-            ':id' => $id,
-            ':competitionType' => $this->competitionType,
-            ':competitionLevel' => $this->competitionLevel,
-            ':competitionPoints' => $this->competitionPoints,
-            ':competitionTitle' => $this->competitionTitle,
-            ':competitionTitleEnglish' => $this->competitionTitleEnglish,
-            ':competitionPlace' => $this->competitionPlace,
-            ':competitionPlaceEnglish' => $this->competitionPlaceEnglish,
-            ':competitionUrl' => $this->competitionUrl,
-            ':competitionStartDate' => $this->competitionStartDate->format('Y-m-d H:i:s'),
-            ':competitionEndDate' => $this->competitionEndDate->format('Y-m-d H:i:s'),
-            ':competitionRank' => $this->competitionRank,
-            ':numberOfInstitutions' => $this->numberOfInstitutions,
-            ':numberOfStudents' => $this->numberOfStudents,
-            ':letterNumber' => $this->letterNumber,
-            ':letterDate' => $this->letterDate->format('Y-m-d H:i:s'),
-            ':letterFile' => $this->letterFile,
-            ':certificateFile' => $this->certificateFile,
-            ':documentationFile' => $this->documentationFile,
-            ':posterFile' => $this->posterFile,
-            ':supervisorValidationStatus' => $this->supervisorValidationStatus,
-            ':adminValidationStatus' => $this->adminValidationStatus,
-            ':updatedAt' => $updatedAt
-        ]);
-    }
-
-    public static function deleteAchievement(PDO $db, int $id)
-    {
-        $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
-        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET deleted_at = :deletedAt WHERE id = :id AND deleted_at IS NULL');
-        return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
+        $fileName = uniqid() . '_' . basename($file['name']);
+        $targetPath = $uploadDir . $fileName;
+        
+        if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+            throw new \Exception('Failed to upload file');
+        }
+        
+        return $folder . '/' . $fileName;
     }
 
     public static function updateSupervisorValidation(PDO $db, int $achievementId, string $status, string $note)
@@ -380,7 +443,7 @@ class Achievement
             SET SupervisorValidationStatus = :status, 
                 SupervisorValidationDate = :date, 
                 SupervisorValidationNote = :note 
-        WHERE id = :achievementId');
+        WHERE Id = :achievementId');
         return $stmt->execute([
             ':achievementId' => $achievementId,
             ':status' => $status,
@@ -396,6 +459,82 @@ class Achievement
             SET AdminValidationStatus = :status, 
                 AdminValidationDate = :date, 
                 AdminValidationNote = :note 
-        WHERE id = :achievementId');
+        WHERE Id = :achievementId');
+        return $stmt->execute([
+            ':achievementId' => $achievementId,
+            ':status' => $status,
+            ':date' => $date,
+            ':note' => $note
+        ]);
+    }
+
+    public static function updateAchievement(PDO $db, int $achievementId, array $updateData): bool
+    {
+        $setClauses = [];
+        $params = [];
+        
+        foreach ($updateData as $key => $value) {
+            $setClauses[] = "$key = ?";
+            $params[] = $value;
+        }
+        
+        $params[] = $achievementId;
+        $sql = "UPDATE [dbo].[Achievement] SET " . implode(', ', $setClauses) . " WHERE Id = ?";
+        
+        $stmt = $db->prepare($sql);
+        return $stmt->execute($params);
+    }
+
+    public static function updateSupervisors(PDO $db, int $achievementId, array $supervisorIds): bool
+    {
+        // Delete existing supervisors
+        $db->prepare("DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = ? AND AchievementRole = ?")->execute([
+            $achievementId,
+            self::ROLE_SUPERVISOR
+        ]);
+        
+        // Insert new supervisors
+        $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
+        foreach ($supervisorIds as $supervisorId) {
+            if (!empty($supervisorId)) {
+                $stmt->execute([
+                    $achievementId,
+                    $supervisorId,
+                    self::ROLE_SUPERVISOR
+                ]);
+            }
+        }
+        
+        return true;
+    }
+
+    public static function updateTeamMembers(PDO $db, int $achievementId, array $teamData): bool
+    {
+        $db->prepare("DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = ? AND AchievementRole IN (?, ?)")->execute([
+            $achievementId,
+            self::ROLE_TEAM_LEADER,
+            self::ROLE_TEAM_MEMBER
+        ]);
+        
+        $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
+        foreach ($teamData as $member) {
+            if (!empty($member['memberId'])) {
+                $role = $member['role'] === 'Ketua' ? self::ROLE_TEAM_LEADER : self::ROLE_TEAM_MEMBER;
+                $stmt->execute([
+                    $achievementId,
+                    $member['memberId'],
+                    $role
+                ]);
+            }
+        }
+        
+        return true;
+    }
+
+    public static function deleteAchievement(PDO $db, int $id)
+    {
+        $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
+        $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET DeletedAt = :deletedAt WHERE Id = :id AND DeletedAt IS NULL');
+        return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
     }
 }

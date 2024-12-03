@@ -21,36 +21,28 @@ class AuthController
         // check if a user has logged in, if they are then redirect to dashboard
         session_start();
         if (isset($_SESSION['user'])) {
-            header('Location: /dashboard');
+            header('Location: /dashboard/home');
+            exit();
         } else {
             header('Location: /guest');
+            exit();
         }
     }
 
     public function guest()
     {
+        session_start();
         View::render('guest', []);
     }
-
 
     public function login()
     {
         session_start();
         if (isset($_SESSION['user'])) {
-            header('Location: /dashboard');
+            header('Location: /dashboard/home');
             return;
         }
         View::render('login', []);
-    }
-
-    public function register()
-    {
-        View::render('register', []);
-    }
-
-    public function logout()
-    {
-        View::render('logout', []);
     }
 
     public function loginProcess()
@@ -81,48 +73,22 @@ class AuthController
             'id' => $user->id,
             'fullName' => $user->fullName
         ];
-        header('Location: /dashboard');
+        header('Location: /dashboard/home');
     }
 
-    public function registerProcess(): void
+    public function logout()
     {
-        $fullname = $_POST['username'];
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $avatar = $_POST['avatar'];
-        $role = $_POST['role'];
-
         session_start();
-        //check if username already exists
-        if (User::findByUsername($this->db, $username)) {
-            $_SESSION['error_message'] = "Username already exists";
-            header('Location: /register');
-            exit;
-        }
-
-        User::register(
-            $this->db,
-            $fullname,
-            $username,
-            $password,
-            $email,
-            $phone,
-            $avatar,
-            $role
-        );
-
-        header('Location: /login');
+        View::render('logout', []);
     }
 
     public function logoutProcess(): void
     {
         session_start();
-        $_SESSION = array();
+        session_unset();
         session_destroy();
-
+        
         header('Location: /guest');
-        return;
+        exit();
     }
 }
