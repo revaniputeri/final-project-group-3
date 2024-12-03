@@ -71,6 +71,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="card-title">Top 10 Prestasi Tertinggi</h4>
                             </div>
+                            <?php var_dump($topAchievements); ?>
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
