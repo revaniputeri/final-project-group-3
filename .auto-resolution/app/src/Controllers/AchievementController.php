@@ -30,6 +30,7 @@ class AchievementController
             header('Location: /login');
             exit;
         }
+<<<<<<< ours
     }
 
     public function achievementHistory()
@@ -42,6 +43,14 @@ class AchievementController
         //approval
         $achievementsByProdi = Achievement::getAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
         $achievementsPusat = Achievement::getAllAchievements($this->db);
+||||||| ancestor
+
+        // Get achievements from database based on user ID
+        $achievements = Achievement::getAchievementsByUserId($this->db, $_SESSION['user']['id']);
+=======
+        
+        $achievements = Achievement::getAchievementsByUserId($this->db, $_SESSION['user']['id']);
+>>>>>>> theirs
 
         // Convert rank and level IDs to names
         foreach ($achievements as &$achievement) {
@@ -90,6 +99,7 @@ class AchievementController
             $letterDate = new \DateTime($_POST['letterDate']);
 
             // Validate required files
+<<<<<<< ours
             $requiredFiles = [
                 'letterFile',
                 'certificateFile',
@@ -103,6 +113,25 @@ class AchievementController
                     throw new \Exception("$fileKey is required");
                 }
                 $files[$fileKey] = $_FILES[$fileKey];
+||||||| ancestor
+            if (!isset($_FILES['letterFile']) || !isset($_FILES['certificateFile']) || 
+                !isset($_FILES['documentationFile']) || !isset($_FILES['posterFile'])) {
+                throw new \Exception('All files are required');
+=======
+            $requiredFiles = [
+                'letterFile',
+                'certificateFile', 
+                'documentationFile',
+                'posterFile'
+            ];
+
+            $files = [];
+            foreach ($requiredFiles as $fileKey) {
+                if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] === UPLOAD_ERR_NO_FILE) {
+                    throw new \Exception("$fileKey is required");
+                }
+                $files[$fileKey] = $_FILES[$fileKey];
+>>>>>>> theirs
             }
 
             // Calculate points based on competition level and rank

@@ -1,4 +1,4 @@
-<?php include __DIR__ . '/partials/navbar.php'; ?>
+<?php include _DIR_ . '/partials/navbar.php'; ?>
 
 <?php
 $formData = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
@@ -8,7 +8,7 @@ if (isset($_SESSION['form_data'])) {
 ?>
 
 <div class="container-fluid page-body-wrapper">
-  <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
+  <?php include _DIR_ . '/partials/sidebar-student.php'; ?>
 
   <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
     <div class="content-wrapper">
@@ -297,7 +297,7 @@ if (isset($_SESSION['form_data'])) {
         </div>
       </div>
     </div>
-    <?php include __DIR__ . '/partials/footer-page.php'; ?>
+    <?php include _DIR_ . '/partials/footer-page.php'; ?>
   </div>
 </div>
 

@@ -57,9 +57,17 @@ class IndexController
 
     public function dashboardLecturer()
     {
+<<<<<<< ours
         View::render('dashboard-lecturer', []);
+||||||| ancestor
+        View::render('dashboard', []);
+=======
+        $this->ensureSession();
+        View::render('dashboard', []);
+>>>>>>> theirs
     }
 
+<<<<<<< ours
     public function getDataTableAchievements()
     {
         $this->ensureSession();
@@ -83,3 +91,40 @@ class IndexController
         View::render('achievement-informasi', []);
     }
 }
+||||||| ancestor
+    public function getTopAchievements()
+    {
+        $this->ensureSession();
+
+        // Get filter parameters
+        $selectedYear = $_GET['tahun'] ?? date('Y');
+
+        try {
+            $topAchievements = Achievement::getTopAchievementsByYear(
+                $this->db,
+                $selectedYear,
+                $_SESSION['user']['id']
+            );
+
+            View::render('dashboard', [
+                'topAchievements' => $topAchievements,
+                'selectedYear' => $selectedYear
+            ]);
+        } catch (\PDOException $e) {
+            // Handle error
+            error_log($e->getMessage());
+            View::render('dashboard', [
+                'topAchievements' => [],
+                'selectedYear' => $selectedYear
+            ]);
+        }
+    }
+}
+=======
+    // public function getDataTableAchievements()
+    // {
+    //     $this->ensureSession();
+    //     $topAchievements = Achievement::g
+    // }
+}
+>>>>>>> theirs

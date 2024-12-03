@@ -477,11 +477,13 @@ class Achievement
 
         // Save full path for moving the file
         $destination = $uploadPath . $filename;
-
+        
         if (!move_uploaded_file($file['tmp_name'], $destination)) {
             throw new InvalidArgumentException("Failed to upload file.");
         }
 
+        // Return relative path to store in database
+        return $folder . '/' . $filename;
         // Return relative path to store in database
         return $folder . '/' . $filename;
     }
@@ -555,29 +557,6 @@ class Achievement
         return $stmt->execute($params);
     }
 
-    public static function updateSupervisors(PDO $db, int $achievementId, array $supervisorIds): bool
-    {
-        // ngehapus supervisor yang sudah ada sebelumnya
-        $db->prepare("DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = ? AND AchievementRole = ?")->execute([
-            $achievementId,
-            self::ROLE_SUPERVISOR
-        ]);
-
-        // terus di insert lagi sama yang baru
-        $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
-        foreach ($supervisorIds as $supervisorId) {
-            if (!empty($supervisorId)) {
-                $stmt->execute([
-                    $achievementId,
-                    $supervisorId,
-                    self::ROLE_SUPERVISOR
-                ]);
-            }
-        }
-
-        return true;
-    }
-
     public static function updateTeamMembers(PDO $db, int $achievementId, array $teamData): bool
     {
         try {
@@ -613,6 +592,29 @@ class Achievement
             $db->rollBack();
             return false;
         }
+    }
+
+    public static function updateSupervisors(PDO $db, int $achievementId, array $supervisorIds): bool
+    {
+        // Delete existing supervisors
+        $db->prepare("DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = ? AND AchievementRole = ?")->execute([
+            $achievementId,
+            self::ROLE_SUPERVISOR
+        ]);
+        
+        // Insert new supervisors
+        $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
+        foreach ($supervisorIds as $supervisorId) {
+            if (!empty($supervisorId)) {
+                $stmt->execute([
+                    $achievementId,
+                    $supervisorId,
+                    self::ROLE_SUPERVISOR
+                ]);
+            }
+        }
+        
+        return true;
     }
 
     public static function deleteAchievement(PDO $db, int $id)

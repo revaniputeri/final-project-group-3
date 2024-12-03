@@ -174,6 +174,17 @@ class AchievementController
         exit();
     }
 
+    public function supervisorValidation()
+    {
+        // Check if user is supervisor
+        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'supervisor') {
+            header('Location: /login');
+            exit;
+        }
+
+        View::render('achievement-history-supervisor', []);
+    }
+
     public function edit($data)
     {
         // Verify if user is logged in
