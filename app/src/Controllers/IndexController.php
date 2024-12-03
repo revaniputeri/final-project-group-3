@@ -21,15 +21,18 @@ class IndexController
             session_start();
         }
     }
-    public function dashboard()
+
+    public function getDataTableAchievements()
     {
         $this->ensureSession();
-        View::render('dashboard', []);
-    }
+        if (!isset($_SESSION['user']['id'])) {
+            header('Location: /login');
+            exit;
+        }
 
-    // public function getDataTableAchievements()
-    // {
-    //     $this->ensureSession();
-    //     $topAchievements = Achievement::g
-    // }
+        $topAchievements = Achievement::getTopAchievements($this->db, 10, $_SESSION['user']['id']);
+        View::render('dashboard', [
+            'topAchievements' => $topAchievements
+        ]);
+    }
 }
