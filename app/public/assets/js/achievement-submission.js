@@ -135,7 +135,7 @@ class AchievementForm {
     }
 
     addTeamMember = () => {
-        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        const numberOfStudentsInput = document.getElementById('numberOfStudents') ?? document.getElementById('numberOfStudentsEdit');
         const container = document.getElementById('teamMemberContainer');
         if (!numberOfStudentsInput || !container) return;
 
@@ -239,9 +239,10 @@ class AchievementForm {
 
         roleSelects.forEach(select => {
             // Reset select value
-            select.value = '';
             $(select).find('option').each(function () {
-                $(this).remove();
+                if ($(this).val() !== select.value) {
+                    $(this).remove();
+                }
             })
 
             // Add appropriate options based on number of students
