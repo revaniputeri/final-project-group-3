@@ -245,14 +245,14 @@
                                                                         <?php endforeach; ?>
                                                                     </select>
                                                                     <div class="input-group-append">
-                                                                        <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
-                                                                            <i class="fas fa-plus">+</i>
-                                                                        </button>
                                                                         <?php if ($index > 0): ?>
                                                                             <button type="button" class="btn btn-danger" onclick="achievementForm.removeSupervisor(this)">
                                                                                 <i class="fas fa-minus">-</i>
                                                                             </button>
                                                                         <?php endif; ?>
+                                                                        <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
+                                                                            <i class="fas fa-plus">+</i>
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                         <?php
@@ -315,14 +315,14 @@
                                                                         <option value="Personal" <?= $member['AchievementRole'] == '4' ? 'selected' : '' ?>>Personal</option>
                                                                     </select>
                                                                     <div class="input-group-append">
-                                                                        <button type="button" class="btn btn-success" onclick="achievementForm.addTeamMember()">
-                                                                            <i class="fas fa-plus">+</i>
-                                                                        </button>
                                                                         <?php if ($index > 0): ?>
                                                                             <button type="button" class="btn btn-danger" onclick="achievementForm.removeTeamMember(this)">
                                                                                 <i class="fas fa-minus">-</i>
                                                                             </button>
                                                                         <?php endif; ?>
+                                                                        <button type="button" class="btn btn-success" onclick="achievementForm.addTeamMember()">
+                                                                            <i class="fas fa-plus">+</i>
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                         <?php
@@ -338,7 +338,7 @@
 
                                 <div class="row mt-4">
                                     <div class="col-12 text-right">
-                                        <button type="submit" class="btn btn-primary btn-lg px-4 mr-3">
+                                        <button type="submit" id="submitButton" class="btn btn-primary btn-lg px-4 mr-3">
                                             <i class="fas fa-save mr-2"></i> Simpan Perubahan
                                         </button>
                                         <a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
@@ -371,7 +371,7 @@
 </script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="/assets/css/achievement-submission.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="/assets/js/achievement-submission.js"></script>
 <script src="/vendors/js/vendor.bundle.base.js"></script>
 <script src="/js/off-canvas.js"></script>
