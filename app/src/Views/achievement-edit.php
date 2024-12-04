@@ -131,7 +131,7 @@
 
                                                 <div class="form-group mb-3">
                                                     <label class="form-label" for="numberOfStudents">Jumlah Siswa Peserta <span class="text-danger">*</span></label>
-                                                    <input type="number" class="form-control" id="numberOfStudents" name="numberOfStudents" value="<?= $achievement['NumberOfStudents'] ?>" placeholder="Total jumlah siswa" min="1" required>
+                                                    <input type="number" class="form-control" id="numberOfStudentsEdit" name="numberOfStudents" value="<?= $achievement['NumberOfStudents'] ?>" placeholder="Total jumlah siswa" min="1" required>
                                                 </div>
 
                                                 <div class="form-group mb-3">
@@ -228,7 +228,7 @@
                                                                     <?php endforeach; ?>
                                                                 </select>
                                                                 <div class="input-group-append">
-                                                                    <button type="button" class="btn btn-success" onclick="addSupervisor()">
+                                                                    <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
                                                                         <i class="fas fa-plus">+</i>
                                                                     </button>
                                                                 </div>
@@ -245,11 +245,11 @@
                                                                         <?php endforeach; ?>
                                                                     </select>
                                                                     <div class="input-group-append">
-                                                                        <button type="button" class="btn btn-success" onclick="addSupervisor()">
+                                                                        <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
                                                                             <i class="fas fa-plus">+</i>
                                                                         </button>
                                                                         <?php if ($index > 0): ?>
-                                                                            <button type="button" class="btn btn-danger" onclick="removeSupervisor(this)">
+                                                                            <button type="button" class="btn btn-danger" onclick="achievementForm.removeSupervisor(this)">
                                                                                 <i class="fas fa-minus">-</i>
                                                                             </button>
                                                                         <?php endif; ?>
@@ -284,7 +284,7 @@
                                                                     <option value="Personal">Personal</option>
                                                                 </select>
                                                                 <div class="input-group-append">
-                                                                    <button type="button" class="btn btn-success" onclick="addTeamMember()">
+                                                                    <button type="button" class="btn btn-success" onclick="achievementForm.addTeamMember()">
                                                                         <i class="fas fa-plus">+</i>
                                                                     </button>
                                                                 </div>
@@ -315,11 +315,11 @@
                                                                         <option value="Personal" <?= $member['AchievementRole'] == '4' ? 'selected' : '' ?>>Personal</option>
                                                                     </select>
                                                                     <div class="input-group-append">
-                                                                        <button type="button" class="btn btn-success" onclick="addTeamMember()">
+                                                                        <button type="button" class="btn btn-success" onclick="achievementForm.addTeamMember()">
                                                                             <i class="fas fa-plus">+</i>
                                                                         </button>
                                                                         <?php if ($index > 0): ?>
-                                                                            <button type="button" class="btn btn-danger" onclick="removeTeamMember(this)">
+                                                                            <button type="button" class="btn btn-danger" onclick="achievementForm.removeTeamMember(this)">
                                                                                 <i class="fas fa-minus">-</i>
                                                                             </button>
                                                                         <?php endif; ?>
