@@ -45,11 +45,11 @@ class AchievementForm {
             levelSelect.addEventListener('change', this.calculatePoints);
         }
 
+        // lavina
         // Number of students change handler
-        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        const numberOfStudentsInput = document.getElementById('numberOfStudentsEdit');
         if (numberOfStudentsInput) {
             numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
-            this.handleNumberOfStudentsChange(); // Initial check
         }
 
         this.updateSupervisorOptions();
@@ -231,7 +231,7 @@ class AchievementForm {
     }
 
     handleNumberOfStudentsChange = () => {
-        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        const numberOfStudentsInput = document.getElementById('numberOfStudents') ?? document.getElementById('numberOfStudentsEdit');
         if (!numberOfStudentsInput) return;
 
         const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
@@ -240,6 +240,9 @@ class AchievementForm {
         roleSelects.forEach(select => {
             // Reset select value
             select.value = '';
+            $(select).find('option').each(function () {
+                $(this).remove();
+            })
 
             // Add appropriate options based on number of students
             if (numberOfStudents === 1) {
