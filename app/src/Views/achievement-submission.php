@@ -854,7 +854,7 @@ if (isset($_SESSION['form_data'])) {
 
                 <div class="row mt-4">
                   <div class="col-12 text-right">
-                    <button type="submit" class="btn btn-primary btn-lg px-4 mr-3">
+                    <button type="submit" id="submitButton" class="btn btn-primary btn-lg px-4 mr-3">
                       <i class="fas fa-paper-plane mr-2"></i> Kirim
                     </button>
                     <a href="/dashboard/home" class="btn btn-light btn-lg px-4">

@@ -640,8 +640,10 @@ const achievementForm = new AchievementForm();
 =======
 class AchievementForm {
     constructor() {
-        this.initSelect2();
-        this.initEventListeners();
+        $(document).ready(() => {
+            this.initSelect2();
+            this.initEventListeners();
+        });
     }
 
     initSelect2() {
@@ -677,23 +679,23 @@ class AchievementForm {
             teamMemberSelect.addEventListener('change', this.updateTeamMemberOptions);
         }
 
-        // Competition points calculation
-        const rankSelect = document.getElementById('competitionRank');
-        const levelSelect = document.getElementById('competitionLevel');
-        if (rankSelect && levelSelect) {
-            rankSelect.addEventListener('change', this.calculatePoints);
-            levelSelect.addEventListener('change', this.calculatePoints);
-        }
-
         // Number of students change handler
-        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        const numberOfStudentsInput = document.getElementById('numberOfStudentsEdit') ?? document.getElementById('numberOfStudents');
         if (numberOfStudentsInput) {
             numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
-            this.handleNumberOfStudentsChange(); // Initial check
         }
 
         this.updateSupervisorOptions();
         this.updateTeamMemberOptions();
+
+        const submitButton = document.getElementById('submitButton');
+        if (submitButton) {
+            submitButton.addEventListener('click', (event) => {
+                if (!this.validateTeamMembers()) {
+                    event.preventDefault();
+                }
+            });
+        }
     }
 
     handleFileInput(e) {
@@ -731,6 +733,7 @@ class AchievementForm {
     updateTeamMemberOptions = () => {
         const selectedMembers = this.getSelectedTeamMembers();
         const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
+        const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
 
         teamMemberSelects.forEach(select => {
             const currentValue = select.value;
@@ -740,6 +743,16 @@ class AchievementForm {
                 }
             });
         });
+
+        const hasLeader = Array.from(roleSelects).some(select => select.value === 'Ketua');
+        roleSelects.forEach(select => {
+            if (hasLeader) {
+                $(select).find('option[value="Ketua"]').prop('disabled', true);
+            } else {
+                $(select).find('option[value="Ketua"]').prop('disabled', false);
+            }
+        });
+        this.handleNumberOfStudentsChange();
     }
 
     addSupervisor = () => {
@@ -750,7 +763,7 @@ class AchievementForm {
         newInput.className = 'input-group mb-2';
 
         newInput.innerHTML = `
-            <select class="form-control dosen-pembimbing" name="supervisors[]">
+            <select class="form-control select2-dropdown dosen-pembimbing" name="supervisors[]">
                 <option value="">Pilih Dosen Pembimbing</option>
                 ${window.LECTURER_OPTIONS || ''}
             </select>
@@ -775,7 +788,7 @@ class AchievementForm {
     }
 
     addTeamMember = () => {
-        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        const numberOfStudentsInput = document.getElementById('numberOfStudents') ?? document.getElementById('numberOfStudentsEdit');
         const container = document.getElementById('teamMemberContainer');
         if (!numberOfStudentsInput || !container) return;
 
@@ -840,6 +853,7 @@ class AchievementForm {
         if (newSelect) {
             newSelect.addEventListener('change', this.updateTeamMemberOptions);
             this.updateTeamMemberOptions();
+            this.handleNumberOfStudentsChange();
         }
     }
 
@@ -852,26 +866,17 @@ class AchievementForm {
     }
 
     removeTeamMember(button) {
+        this.handleNumberOfStudentsChange();
         const inputGroup = button?.closest('.input-group');
         if (inputGroup) {
             inputGroup.remove();
             this.updateTeamMemberOptions();
+            this.handleNumberOfStudentsChange();
         }
     }
 
-    calculatePoints = () => {
-        const rankSelect = document.getElementById('competitionRank');
-        const levelSelect = document.getElementById('competitionLevel');
-        if (!rankSelect || !levelSelect || !window.COMPETITION_RANKS || !window.COMPETITION_LEVELS) return;
-
-        const rankPoints = window.COMPETITION_RANKS[rankSelect.value]?.points ?? 0;
-        const levelMultiplier = window.COMPETITION_LEVELS[levelSelect.value]?.multiplier ?? 1;
-        const totalPoints = rankPoints * levelMultiplier;
-        // You can use totalPoints as needed
-    }
-
     handleNumberOfStudentsChange = () => {
-        const numberOfStudentsInput = document.getElementById('numberOfStudents');
+        const numberOfStudentsInput = document.getElementById('numberOfStudents') ?? document.getElementById('numberOfStudentsEdit');
         if (!numberOfStudentsInput) return;
 
         const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
@@ -879,21 +884,43 @@ class AchievementForm {
 
         roleSelects.forEach(select => {
             // Reset select value
-            select.value = '';
+            $(select).find('option').each(function () {
+                $(this).prop('disabled', false);
+            });
 
-            // Add appropriate options based on number of students
             if (numberOfStudents === 1) {
-                select.add(new Option('Pilih Peran', ''));
-                select.add(new Option('Personal', 'Personal'));
+                $(select).find('option[value="Anggota"]').prop('disabled', true);
+                $(select).find('option[value="Ketua"]').prop('disabled', true);
             } else {
-                select.add(new Option('Pilih Peran', ''));
-                select.add(new Option('Ketua', 'Ketua'));
-                select.add(new Option('Anggota', 'Anggota'));
+                $(select).find('option[value="Personal"]').prop('disabled', true);
             }
         });
     }
+
+    validateTeamMembers = () => {
+        const numberOfStudentsInput = document.getElementById('numberOfStudents') ?? document.getElementById('numberOfStudentsEdit');
+        const teamMemberInputs = document.querySelectorAll('select[name="teamMembers[]"]');
+        const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
+
+        const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
+        const currentMembers = Array.from(teamMemberInputs).filter(select => select.value !== '').length;
+
+        if (currentMembers !== numberOfStudents) {
+            alert(`Jumlah anggota tim (${currentMembers}) harus sesuai dengan jumlah siswa peserta (${numberOfStudents}).`);
+            return false;
+        }
+
+        if (currentMembers > 1) {
+            const hasLeader = Array.from(roleSelects).some(select => select.value === 'Ketua');
+            if (!hasLeader) {
+                alert('Tim yang memiliki lebih dari 1 anggota wajib memiliki ketua.');
+                return false; 
+            }
+        }
+        this.handleNumberOfStudentsChange();
+        return true;
+    }
 }
 
-// Initialize the form
 window.achievementForm = new AchievementForm();
 >>>>>>> theirs

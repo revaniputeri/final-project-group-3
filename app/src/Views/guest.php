@@ -6,11 +6,23 @@
     <title>Auth Selection</title>
 </head>
 <body>
+<<<<<<< ours
     <div style="text-align: center; margin-top: 20%;">
         <h1>Welcome! Please choose an option:</h1>
         <a href="/login">
             <button type="submit">Login</button>
         </a>
     </div>
+||||||| ancestor
+    <h2>Welcome! Please choose an option:</h2>
+    <a href="/login">
+        <button type="submit">Login</button>
+    </a>
+=======
+    <h1>Welcome! Please choose an option:</h1>
+    <a href="/login">
+        <button type="submit">Login</button>
+    </a>
+>>>>>>> theirs
 </body>
 </html>
