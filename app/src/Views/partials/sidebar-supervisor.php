@@ -1,4 +1,4 @@
-<nav class="sidebar sidebar-offcanvas pt-5" id="sidebar">
+<nav class="sidebar sidebar-offcanvas pt-5" id="sidebar" style="position: fixed; height: 100%;">
   <ul class="nav">
     <li class="nav-item">
       <a class="nav-link" href="/dashboard">
