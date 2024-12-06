@@ -13,6 +13,7 @@ class IndexController
     function __construct(array $dependencies)
     {
         $this->db = $dependencies['db']->getConnection();
+        $this->ensureSession(); // Initialize session for all controller methods
     }
 
     private function ensureSession()
@@ -43,6 +44,23 @@ class IndexController
         $topAchievements = Achievement::getTopAchievements($this->db, 10, $_SESSION['user']['id']);
         View::render('dashboard', [
             'topAchievements' => $topAchievements
+        ]);
+    }
+
+    // public function info()
+    // {
+    //     session_start();
+    //     View::render('achievement-infomasi', ['']);
+    // }
+
+    public function info()
+    {
+        // Check if the session is already started before calling session_start()
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        View::render('achievement-informasi', [
+            // Pass data yang diperlukan ke tampilan, misalnya: 'achievements' => $achievements
         ]);
     }
 }

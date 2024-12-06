@@ -234,4 +234,27 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+Router::add(
+    method: "GET",
+    path: "/dashboard/info",
+    controller: IndexController::class,
+    function: "info",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "GET",
+    path: "/dashboard/info",
+    controller: AchievementController::class,
+    function: "info",
+    dependencies: ['db' => $connection]
+);
+// Router::add(
+//     method: "GET",
+//     path: "/dashboard/dosen/home",
+//     controller: LecturerController::class,
+//     function: "index",
+//     dependencies: ['db' => $connection]
+// );
+
 Router::run();
