@@ -4,7 +4,7 @@
         <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
 
         <!-- Main Panel -->
-        <div class="main-panel">
+        <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
             <div class="content-wrapper">
                 <div class="row pt-5">
                     <div class="col-12 grid-margin stretch-card">
