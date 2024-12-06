@@ -22,6 +22,16 @@ class IndexController
         }
     }
 
+    public function dashboardAdmin()
+    {
+        View::render('dashboard-admin', []);
+    }
+
+    public function dashboardLecturer()
+    {
+        View::render('dashboard-lecturer', []);
+    }
+
     public function getDataTableAchievements()
     {
         $this->ensureSession();
