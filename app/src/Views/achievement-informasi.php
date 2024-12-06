@@ -3,7 +3,7 @@
 <div class="container-fluid page-body-wrapper">
     <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
 
-    <div class="main-panel">
+    <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
     <div class="content-wrapper">
         <div class="row pt-5">
             <!-- Card Container -->
