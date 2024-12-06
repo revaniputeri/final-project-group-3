@@ -6,9 +6,11 @@
     <title>Auth Selection</title>
 </head>
 <body>
-    <h1>Welcome! Please choose an option:</h1>
-    <a href="/login">
-        <button type="submit">Login</button>
-    </a>
+    <div style="text-align: center; margin-top: 20%;">
+        <h1>Welcome! Please choose an option:</h1>
+        <a href="/login">
+            <button type="submit">Login</button>
+        </a>
+    </div>
 </body>
 </html>
