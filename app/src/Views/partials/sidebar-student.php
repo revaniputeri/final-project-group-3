@@ -18,5 +18,11 @@
         <span class="menu-title">Riwayat Prestasi</span>
       </a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/dashboard/info">
+        <i class="icon-paper menu-icon"></i>
+        <span class="menu-title">Informasi Prestasi</span>
+      </a>
+    </li>
   </ul>
 </nav>

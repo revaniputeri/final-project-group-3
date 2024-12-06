@@ -541,4 +541,8 @@ class AchievementController
             }
         }
     }
+
+    public function achievementInfo()
+    {
+    }
 }
