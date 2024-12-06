@@ -96,7 +96,25 @@ Router::add(
     controller: IndexController::class,
     function: "getDataTableAchievements",
     dependencies: ['db' => $connection]
-);  
+);
+
+//dashboard admin
+Router::add(
+    method: "GET",
+    path: "/admin/dashboard",
+    controller: IndexController::class,
+    function: "dashboardAdmin",
+    dependencies: ['db' => $connection]
+);
+
+//dashboard lecturer
+Router::add(
+    method: "GET",
+    path: "/lecturer/dashboard",
+    controller: IndexController::class,
+    function: "dashboardLecturer",
+    dependencies: ['db' => $connection]
+);
 
 Router::add(
     method: "GET",

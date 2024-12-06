@@ -18,7 +18,6 @@ class AuthController
 
     public function redirect()
     {
-        // check if a user has logged in, if they are then redirect to dashboard
         session_start();
         if (isset($_SESSION['user'])) {
             header('Location: /dashboard/home');
@@ -39,17 +38,62 @@ class AuthController
     {
         session_start();
         if (isset($_SESSION['user'])) {
-            header('Location: /dashboard/home');
+            $role = $_SESSION['user']['role'];
+            switch ($role) {
+                case 1:
+                    header('Location: /dashboard/admin');
+                    break;
+                case 2:
+                    header('Location: /dashboard/home');
+                    break;
+                case 3:
+                    header('Location: /dashboard/lecturer');
+                    break;
+                default:
+                    header('Location: /guest');
+            }
             return;
         }
         View::render('login', []);
     }
 
+    // public function loginProcess()
+    // {
+    //     $username = $_POST['username'];
+    //     $password = $_POST['password'];
+
+    //     session_start();
+
+    //     // Validate username exists
+    //     $user = User::findByUsername($this->db, $username);
+    //     if (!$user) {
+    //         $_SESSION['error'] = "Invalid username or password";
+    //         header('Location: /login');
+    //         return;
+    //     }
+
+    //     // Validate password
+    //     $isPasswordCorrect = $user->validatePassword($password);
+    //     if (!$isPasswordCorrect) {
+    //         $_SESSION['error'] = "Invalid username or password"; 
+    //         header('Location: /login');
+    //         return;
+    //     }
+
+    //     // Login successful
+    //     $_SESSION['user'] = [
+    //         'id' => $user->id,
+    //         'fullName' => $user->fullName
+    //     ];
+    //     header('Location: /dashboard/home');
+    // }
+
+
     public function loginProcess()
     {
         $username = $_POST['username'];
         $password = $_POST['password'];
-        
+
         session_start();
 
         // Validate username exists
@@ -63,7 +107,7 @@ class AuthController
         // Validate password
         $isPasswordCorrect = $user->validatePassword($password);
         if (!$isPasswordCorrect) {
-            $_SESSION['error'] = "Invalid username or password"; 
+            $_SESSION['error'] = "Invalid username or password";
             header('Location: /login');
             return;
         }
@@ -71,11 +115,25 @@ class AuthController
         // Login successful
         $_SESSION['user'] = [
             'id' => $user->id,
-            'fullName' => $user->fullName
+            'fullName' => $user->fullName,
+            'role' => (int)$user->role
         ];
-        header('Location: /dashboard/home');
-    }
 
+        switch ($_SESSION['user']['role']) {
+            case 1: // Admin
+                header('Location: /admin/dashboard');
+                break;
+            case 2: // Student
+                header('Location: /dashboard/home');
+                break;
+            case 3: // Lecturer
+                header('Location: /lecturer/dashboard');;
+                break;
+            default:
+                header('Location: /guest');
+                break;
+        }
+    }
     public function logout()
     {
         session_start();
@@ -87,7 +145,7 @@ class AuthController
         session_start();
         session_unset();
         session_destroy();
-        
+
         header('Location: /guest');
         exit();
     }
