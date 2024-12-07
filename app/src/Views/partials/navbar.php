@@ -4,13 +4,13 @@
     <a class="navbar-brand brand-logo-mini" href="/"><img src="/assets/img/logo-prestac-mini.png" alt="logo" style="width: 50px; height: auto;" /></a>
   </div>
   <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-      <span class="icon-menu"></span>
+    <button class="navbar-toggler navbar-toggler align-self-center" type="button" id="toggle-sidebar-button" data-toggle="minimize">
+      <span class="icon-menu" id="toggle-sidebar-icon"></span>
     </button>
     <ul class="navbar-nav navbar-nav-right">
       <li class="nav-item nav-profile dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-          <i class="icon-head menu-icon"></i>
+          <i class="icon-head menu-icon" id="profile-icon"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
           <a class="dropdown-item" href="/dashboard/profile-customization">
