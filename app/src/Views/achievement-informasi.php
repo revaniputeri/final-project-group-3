@@ -25,19 +25,19 @@
                         <p class="fs-5"><strong>Jenis Prestasi Mahasiswa:</strong></p>
                         <div class="row text-center">
                             <div class="col-md-3">
-                                <img src="/assets/img/sains.png" alt="Sains" class="img-fluid rounded">
+                                <img src="/assets/img/sains.jpg" alt="Sains" class="img-fluid rounded">
                                 <p><strong>Sains</strong></p>
                             </div>
                             <div class="col-md-3">
-                                <img src="/assets/img/seni.png" alt="Seni" class="img-fluid rounded">
+                                <img src="/assets/img/seni.jpg" alt="Seni" class="img-fluid rounded">
                                 <p><strong>Seni</strong></p>
                             </div>
                             <div class="col-md-3">
-                                <img src="/assets/img/olahraga.png" alt="Olahraga" class="img-fluid rounded">
+                                <img src="/assets/img/olahraga.jpg" alt="Olahraga" class="img-fluid rounded">
                                 <p><strong>Olahraga</strong></p>
                             </div>
-                            <div class="col-md-3">
-                                <img src="img/more.png" alt="Lainnya" class="img-fluid rounded">
+                            <div class="col-md-3 text-center">
+                                <img src="/assets/img/Others.jpg" alt="Lainnya" class="img-fluid rounded">
                                 <p><strong>Lainnya</strong></p>
                             </div>
                         </div>
@@ -154,7 +154,9 @@
             </div>
         </div><br>
         <!-- Tombol Unduh PDF -->
-        <a href="generate-pdf.php" class="btn btn-warning">Unduh PDF</a>
-        <?php require __DIR__ . '/partials/footer-page.php'; ?>
+        <div class="text-center mt-5 mb-5">
+            <a href="generate-pdf.php" class="btn btn-info btn-lg shadow-lg">Unduh PDF</a>
+        </div>
+            <?php require __DIR__ . '/partials/footer-page.php'; ?>
     </div>
 </div>
