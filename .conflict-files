@@ -1,0 +1,3 @@
+ancestorEntries = ["app/src/Controllers/IndexController.php", "app/src/Controllers/StudentController.php"]
+ourEntries = ["app/src/Controllers/IndexController.php"]
+theirEntries = ["app/src/Controllers/IndexController.php", "app/src/Controllers/StudentController.php"]
