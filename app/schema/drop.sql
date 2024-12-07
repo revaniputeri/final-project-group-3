@@ -29,3 +29,5 @@ IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Student')
 
 IF EXISTS (SELECT * FROM sys.tables WHERE name = 'User')
     DROP TABLE [dbo].[User];
+
+
