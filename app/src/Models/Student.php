@@ -6,40 +6,24 @@ use PDO;
 
 class Student
 {
-    public static function createStudent(PDO $db, array $data)
+    public static function getStudentById(PDO $db, int $userId)
     {
-        $stmt = $db->prepare("INSERT INTO students (username, email, bio, profile_picture) VALUES (:username, :email, :bio, :profilePicture)");
-        $stmt->execute([
-            ':username' => $data['username'],
-            ':email' => $data['email'],
-            ':bio' => $data['bio'],
-            ':profilePicture' => $data['profilePicture']
-        ]);
-        return $db->lastInsertId();
-    }
-
-    public static function getStudentById(PDO $db, int $id)
-    {
-        $stmt = $db->prepare("SELECT * FROM students WHERE id = :id");
-        $stmt->execute([':id' => $id]);
+        $stmt = $db->prepare("SELECT * FROM dbo.Student WHERE UserId = ?");
+        $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function updateStudentProfile(PDO $db, int $id, array $data)
+    public static function updateStudentProfile(PDO $db, int $userId, array $data)
     {
-        $stmt = $db->prepare("UPDATE students SET username = :username, email = :email, bio = :bio, profile_picture = :profilePicture WHERE id = :id");
-        $stmt->execute([
-            ':username' => $data['username'],
-            ':email' => $data['email'],
-            ':bio' => $data['bio'],
-            ':profilePicture' => $data['profilePicture'],
-            ':id' => $id
+        $sql = "UPDATE dbo.Student SET username = ?, email = ?, bio = ?, profile_image = ? WHERE UserId = ?";
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([
+            $data['username'],
+            $data['email'],
+            $data['bio'],
+            $data['profile_image'] ?? null,
+            $userId
         ]);
     }
-
-    public static function deleteStudent(PDO $db, int $id)
-    {
-        $stmt = $db->prepare("DELETE FROM students WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-    }
+    
 }
