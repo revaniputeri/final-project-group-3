@@ -167,6 +167,7 @@ class IndexController
             'topAchievements' => $topAchievements
         ]);
     }
+<<<<<<< ours
 }
 =======
 <?php
@@ -234,5 +235,12 @@ class IndexController
             // Pass data yang diperlukan ke tampilan, misalnya: 'achievements' => $achievements
         ]);
     }
+}
+>>>>>>> theirs
+||||||| ancestor
+}
+=======
+
+    
 }
 >>>>>>> theirs
