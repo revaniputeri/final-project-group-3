@@ -23,8 +23,9 @@ try {
 
     //data array admin
     $admins = [
-        ['ADM001', 'Admin Prodi SIB'],
-        ['ADM002', 'Admin Prodi TI']
+        ['ADM000', 'Admin Pusat'],
+        ['ADM001', 'Admin Program Studi Sistem Informasi Bisnis'],
+        ['ADM002', 'Admin Program Studi Teknik Informatika']
     ];
 
     $conn->beginTransaction();
