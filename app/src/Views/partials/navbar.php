@@ -10,8 +10,14 @@
     <ul class="navbar-nav navbar-nav-right">
       <li class="nav-item nav-profile dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+<<<<<<< ours
           <span class="nav-user-name mr-2 mt-3"><?= isset($_SESSION['user']['fullName']) ? htmlspecialchars($_SESSION['user']['fullName']) : '' ?></span>
           <i class="icon-head menu-icon mb-1" id="profile-icon"></i>
+||||||| ancestor
+          <i class="icon-head menu-icon"></i>
+=======
+          <i class="icon-head menu-icon" id="profile-icon"></i>
+>>>>>>> theirs
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
           <a class="dropdown-item" href="/dashboard/profile-customization">
