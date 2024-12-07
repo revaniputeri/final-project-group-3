@@ -126,20 +126,20 @@ class Achievement
             WHERE DeletedAt IS NULL 
             AND AdminValidationStatus = \'APPROVED\'
             AND SupervisorValidationStatus = \'APPROVED\'';
-            
+
         if ($userId) {
             $sql .= ' AND UserId = :userId';
         }
-        
+
         $sql .= ' ORDER BY CompetitionPoints DESC';
-        
+
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        
+
         if ($userId) {
             $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         }
-        
+
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -296,7 +296,7 @@ class Achievement
 
         return $achievementId;
     }
-    
+
 
     private function saveUserAchievements(PDO $db, int $achievementId, array $supervisors, array $teamMembers)
     {
@@ -316,7 +316,7 @@ class Achievement
 
         if (!empty($teamMembers)) {
             foreach ($teamMembers as $member) {
-                $role = match($member['role']) {
+                $role = match ($member['role']) {
                     'Ketua' => self::ROLE_TEAM_LEADER,
                     'Anggota' => self::ROLE_TEAM_MEMBER,
                     'Personal' => self::ROLE_PERSONAL,
@@ -343,8 +343,8 @@ class Achievement
             }
 
             // Handle multiple files
-            $files = is_array($this->$input['tmp_name']) ? 
-                $this->restructureFilesArray($this->$input) : 
+            $files = is_array($this->$input['tmp_name']) ?
+                $this->restructureFilesArray($this->$input) :
                 [$this->$input];
 
             $processedFiles = [];
@@ -355,7 +355,7 @@ class Achievement
 
                 if ($file['error'] === UPLOAD_ERR_OK) {
                     $this->validateFileSize($file['tmp_name']);
-                    $this->validateFileType($file['tmp_name']); 
+                    $this->validateFileType($file['tmp_name']);
                     $processedFiles[] = $this->storeFile($file, $input);
                 } elseif ($file['error'] !== UPLOAD_ERR_NO_FILE) {
                     throw new InvalidArgumentException("Error uploading file: " . $file['error']);
@@ -372,7 +372,7 @@ class Achievement
         $files = [];
         foreach ($fileInput['tmp_name'] as $key => $tmpName) {
             if ($tmpName === '') continue;
-            
+
             $files[] = [
                 'name' => $fileInput['name'][$key],
                 'type' => $fileInput['type'][$key],
@@ -418,17 +418,17 @@ class Achievement
     {
         $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
         $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
-        
+
         if (!file_exists($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
 
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = ($this->id ?? 'temp_' . uniqid()) . '_' . $fileType . '.' . $extension;
-        
+
         // Save full path for moving the file
         $destination = $uploadPath . $filename;
-        
+
         if (!move_uploaded_file($file['tmp_name'], $destination)) {
             throw new InvalidArgumentException("Failed to upload file.");
         }
@@ -440,7 +440,7 @@ class Achievement
     public static function handleFileUpload(array $file, string $folder): string
     {
         $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
-        
+
         // Create directory if it doesn't exist
         if (!file_exists($uploadDir)) {
             if (!mkdir($uploadDir, 0755, true)) {
@@ -465,11 +465,11 @@ class Achievement
 
         $fileName = uniqid() . '_' . basename($file['name']);
         $targetPath = $uploadDir . $fileName;
-        
+
         if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
             throw new \Exception('Failed to upload file');
         }
-        
+
         return $folder . '/' . $fileName;
     }
 
@@ -509,15 +509,15 @@ class Achievement
     {
         $setClauses = [];
         $params = [];
-        
+
         foreach ($updateData as $key => $value) {
             $setClauses[] = "$key = ?";
             $params[] = $value;
         }
-        
+
         $params[] = $achievementId;
         $sql = "UPDATE [dbo].[Achievement] SET " . implode(', ', $setClauses) . " WHERE Id = ?";
-        
+
         $stmt = $db->prepare($sql);
         return $stmt->execute($params);
     }
@@ -529,7 +529,7 @@ class Achievement
             $achievementId,
             self::ROLE_SUPERVISOR
         ]);
-        
+
         // Insert new supervisors
         $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
         foreach ($supervisorIds as $supervisorId) {
@@ -541,7 +541,7 @@ class Achievement
                 ]);
             }
         }
-        
+
         return true;
     }
 
@@ -552,7 +552,7 @@ class Achievement
             self::ROLE_TEAM_LEADER,
             self::ROLE_TEAM_MEMBER
         ]);
-        
+
         $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
         foreach ($teamData as $member) {
             if (!empty($member['memberId'])) {
@@ -564,7 +564,7 @@ class Achievement
                 ]);
             }
         }
-        
+
         return true;
     }
 
@@ -573,5 +573,17 @@ class Achievement
         $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
         $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET DeletedAt = :deletedAt WHERE Id = :id AND DeletedAt IS NULL');
         return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
+    }
+
+    public static function getAcceptedCount(PDO $db)
+    {
+        $stmt = $db->query("SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = 'Accepted'");
+        return $stmt->fetchColumn();
+    }
+
+    public static function getRejectedCount(PDO $db)
+    {
+        $stmt = $db->query("SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = 'Rejected'");
+        return $stmt->fetchColumn();
     }
 }
