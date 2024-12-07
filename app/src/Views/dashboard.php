@@ -262,7 +262,7 @@
                 <div class="col-md-12 grid-margin">
                     <div class="row">
                         <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                            <h1 class="font-weight-bold">Selamat Datang di PrestaC</h1>
+                            <h1 class="font-weight-bold">Selamat Datang, <?= isset($_SESSION['user']['fullName']) ? $_SESSION['user']['fullName'] : '' ?></h1>
                             <p class="text-muted">Pantau dan kelola prestasi Anda melalui dashboard yang mudah digunakan</p>
                         </div>
                     </div>
@@ -309,7 +309,7 @@
                             <p class="card-description">
                                 Pelajari kebijakan dan informasi seputar prestasi mahasiswa
                             </p>
-                            <a href="/dashboard/achievement/guideline" class="btn btn-info btn-lg btn-block">
+                            <a href="/dashboard/info" class="btn btn-info btn-lg btn-block">
                                 <i class="ti-book mr-2"></i>
                                 Baca Buku Panduan
                             </a>

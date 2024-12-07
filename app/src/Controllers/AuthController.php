@@ -337,6 +337,7 @@ class AuthController
             'role' => (int)$user->role
         ];
 
+
         switch ($_SESSION['user']['role']) {
             case 1: // Admin
                 header('Location: /admin/dashboard');
