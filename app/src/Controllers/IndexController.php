@@ -24,8 +24,19 @@ class IndexController
     }
 
     public function dashboardAdmin()
-    {
-        View::render('dashboard-admin', []);
+{
+    // Fetch the counts of accepted and rejected students
+    $acceptedCount = Achievement::getAcceptedCount($this->db);
+    $rejectedCount = Achievement::getRejectedCount($this->db);
+    
+    // Fetch top achievements if needed
+    $topAchievements = Achievement::getTopAchievements($this->db, 10);
+
+    View::render('dashboard-admin', [
+        'acceptedCount' => $acceptedCount,
+        'rejectedCount' => $rejectedCount,
+        'topAchievements' => $topAchievements
+        ]);
     }
 
     public function dashboardLecturer()
@@ -47,20 +58,12 @@ class IndexController
         ]);
     }
 
-    // public function info()
-    // {
-    //     session_start();
-    //     View::render('achievement-infomasi', ['']);
-    // }
-
     public function info()
     {
         // Check if the session is already started before calling session_start()
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        View::render('achievement-informasi', [
-            // Pass data yang diperlukan ke tampilan, misalnya: 'achievements' => $achievements
-        ]);
+        View::render('achievement-informasi', []);
     }
 }
