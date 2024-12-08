@@ -93,7 +93,7 @@ class AuthController
     {
         $username = $_POST['username'];
         $password = $_POST['password'];
-
+        
         session_start();
 
         // Validate username exists
@@ -116,9 +116,9 @@ class AuthController
         $_SESSION['user'] = [
             'id' => $user->id,
             'fullName' => $user->fullName,
-            'role' => (int)$user->role
+            'role' => (int)$user->role,
+            'prodi' => ($user->fullName == 'Admin Program Studi Sistem Informasi Bisnis') ? 2 : 1
         ];
-
 
         switch ($_SESSION['user']['role']) {
             case 1: // Admin
