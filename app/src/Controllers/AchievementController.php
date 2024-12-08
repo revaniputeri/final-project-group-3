@@ -24,6 +24,14 @@ class AchievementController
         }
     }
 
+    private function validateUser()
+    {
+        if (!isset($_SESSION['user']['id'])) {
+            header('Location: /login');
+            exit;
+        }
+    }
+
     public function achievementHistory()
     {
         if (!isset($_SESSION['user']['id'])) {
@@ -31,7 +39,11 @@ class AchievementController
             exit;
         }
         
-        $achievements = Achievement::getAchievementsByUserId($this->db, $_SESSION['user']['id']);
+        $achievements = Achievement::getAchievementById($this->db, $_SESSION['user']['id']);
+
+        //approval
+        $achievementsByProdi = Achievement::getAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
+        $achievementsPusat = Achievement::getAllAchievements($this->db);
 
         // Convert rank and level IDs to names
         foreach ($achievements as &$achievement) {
@@ -47,11 +59,7 @@ class AchievementController
 
     public function submissionForm()
     {
-        // Check if user is logged in
-        if (!isset($_SESSION['user']['id'])) {
-            header('Location: /login');
-            exit;
-        }
+        $this->validateUser();
 
         $data = [
             'lecturers' => User::getAllActiveLecturers($this->db),
@@ -65,12 +73,7 @@ class AchievementController
 
     public function submissionFormProcess()
     {
-        // Check if user is logged in
-        if (!isset($_SESSION['user']['id'])) {
-            header('Location: /login');
-            exit;
-        }
-
+        $this->validateUser();
         try {
             $userId = $_SESSION['user']['id'];
             $competitionType = trim($_POST['competitionType']);
@@ -159,12 +162,9 @@ class AchievementController
                 'PENDING',
                 null,
                 null,
-                'PENDING',
-                null,
                 null
             );
 
-            // Pass supervisors and team members to saveAchievement
             $achievementId = $achievement->saveAchievement($this->db, $supervisors, $teamMembers);
             $_SESSION['success'] = "Achievement saved successfully with ID: " . $achievementId;
             header('Location: /dashboard/achievement/history');
@@ -175,43 +175,8 @@ class AchievementController
         exit();
     }
 
-    public function supervisorValidation()
-    {
-        // Check if user is supervisor
-        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'supervisor') {
-            header('Location: /login');
-            exit;
-        }
-
-        View::render('achievement-history-supervisor', []);
-    }
-
-    public function supervisorValidationProcess()
-    {
-        // Check if user is supervisor
-        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'supervisor') {
-            header('Location: /login');
-            exit;
-        }
-
-        $achievementId = (int)$_POST['achievementId'];
-        $status = trim($_POST['status']);
-        $note = trim($_POST['note']);
-
-        try {
-            Achievement::updateSupervisorValidation($this->db, $achievementId, $status, $note);
-            $_SESSION['success'] = 'Validation updated successfully';
-        } catch (\Exception $e) {
-            $_SESSION['error'] = $e->getMessage();
-        }
-
-        header('Location: /dashboard/achievement/supervisor');
-        exit();
-    }
-
     public function adminValidation()
     {
-        // Check if user is admin
         if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: /login');
             exit;
@@ -256,7 +221,7 @@ class AchievementController
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             try {
                 // Fetch the achievement data
-                $achievement = Achievement::getAchievement($this->db, $id);
+                $achievement = Achievement::getAchievementById($this->db, $id);
                 
                 // Verify if achievement exists and belongs to the user
                 if (!$achievement || $achievement['UserId'] != $_SESSION['user']['id']) {
@@ -298,7 +263,7 @@ class AchievementController
                 $achievementId = (int)$_POST['achievementId'];
                 
                 // Verify ownership again
-                $achievement = Achievement::getAchievement($this->db, $achievementId);
+                $achievement = Achievement::getAchievementById($this->db, $achievementId);
                 if (!$achievement || $achievement['UserId'] != $_SESSION['user']['id']) {
                     throw new \Exception('Prestasi tidak ditemukan atau Anda tidak memiliki akses.');
                 }
@@ -379,7 +344,7 @@ class AchievementController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 // Verify ownership
-                $achievement = Achievement::getAchievement($this->db, $achievementId);
+                $achievement = Achievement::getAchievementById($this->db, $achievementId);
                 if (!$achievement) {
                     throw new \Exception('Prestasi tidak ditemukan.');
                 }
@@ -470,24 +435,19 @@ class AchievementController
         $achievementId = (int)$data['id'];
 
         try {
-            // Verify ownership
-            $achievement = Achievement::getAchievement($this->db, $achievementId);
+            $achievement = Achievement::getAchievementById($this->db, $achievementId);
             if (!$achievement) {
                 throw new \Exception('Prestasi tidak ditemukan.');
             }
 
-            // Check if user owns this achievement
             if ($achievement['UserId'] != $_SESSION['user']['id']) {
                 throw new \Exception('Anda tidak memiliki akses untuk menghapus prestasi ini.');
             }
 
-            // Check if achievement is still in PENDING status
-            if ($achievement['SupervisorValidationStatus'] !== 'PENDING' || 
-                $achievement['AdminValidationStatus'] !== 'PENDING') {
+            if ($achievement['AdminValidationStatus'] !== 'PENDING') {
                 throw new \Exception('Hanya prestasi dengan status PENDING yang dapat dihapus.');
             }
 
-            // Perform the delete
             if (Achievement::deleteAchievement($this->db, $achievementId)) {
                 $_SESSION['success'] = 'Prestasi berhasil dihapus.';
             } else {
