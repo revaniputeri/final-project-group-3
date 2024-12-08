@@ -2,32 +2,39 @@
 
 $config = require_once __DIR__ . '/../config.php';
 
-function getRandomCompetitionType() {
+function getRandomCompetitionType()
+{
     $types = ['Sains', 'Seni', 'Olahraga', 'Lainnya'];
     return $types[array_rand($types)];
 }
 
-function getRandomCompetitionLevel() {
+function getRandomCompetitionLevel()
+{
     return rand(1, 6); // 1 = International, 2 = National, 3 = Provincial, 4 = City, 5 = District, 6 = School
 }
 
-function getRandomCompetitionRank() {
+function getRandomCompetitionRank()
+{
     return rand(1, 5); // 1 = 1st, 2 = 2nd, 3 = 3rd, 4 = Honorable Mention, 5 = Finalist
 }
 
-function getRandomPoints() {
+function getRandomPoints()
+{
     return rand(1, 30);
 }
 
-function getRandomInstitutions() {
+function getRandomInstitutions()
+{
     return rand(5, 10);
 }
 
-function getRandomStudents() {
+function getRandomStudents()
+{
     return rand(1, 5);
 }
 
-function getRandomLetterNumber() {
+function getRandomLetterNumber()
+{
     return 'SRT/' . rand(1000, 9999) . '/' . date('Y');
 }
 
@@ -37,14 +44,14 @@ try {
         $config['username'],
         $config['password']
     );
-    
+
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     echo "Connected successfully\n";
 
     // Get all student and lecturer IDs
     $studentQuery = "SELECT u.Id FROM [User] u INNER JOIN Student s ON u.Id = s.UserId";
     $lecturerQuery = "SELECT Id FROM Lecturer";
-    
+
     $students = $conn->query($studentQuery)->fetchAll(PDO::FETCH_COLUMN);
     $lecturers = $conn->query($lecturerQuery)->fetchAll(PDO::FETCH_COLUMN);
 
@@ -63,10 +70,10 @@ try {
                 CompetitionEndDate, CompetitionRank, NumberOfInstitutions,
                 NumberOfStudents, LetterNumber, LetterDate, LetterFile,
                 CertificateFile, DocumentationFile, PosterFile,
-                SupervisorValidationStatus, AdminValidationStatus,
+                AdminValidationStatus,
                 CreatedAt, UpdatedAt
             ) OUTPUT INSERTED.Id VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 GETDATE(), GETDATE()
             )
         ");
@@ -108,7 +115,6 @@ try {
                 'certificate_' . ($i + 1) . '.pdf',
                 'documentation_' . ($i + 1) . '.jpg',
                 'poster_' . ($i + 1) . '.jpg',
-                'PENDING',
                 'PENDING'
             ]);
 
@@ -137,7 +143,7 @@ try {
             // Add 1 random supervisor
             $supervisorId = $lecturers[array_rand($lecturers)];
             $userAchievementStmt->execute([
-                $supervisorId, 
+                $supervisorId,
                 $achievementId,
                 3 // 3 = Supervisor
             ]);
