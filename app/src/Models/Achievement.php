@@ -183,6 +183,62 @@ class Achievement
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function getTotalOfAchievementsByProdi(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(DISTINCT a.Id) FROM [dbo].[Achievement] a JOIN [dbo].[Student] s ON a.UserId = s.UserId WHERE s.StudentMajor = :prodi AND a.DeletedAt IS NULL');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getPendingCount(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(DISTINCT a.Id) FROM [dbo].[Achievement] a JOIN [dbo].[Student] s ON a.UserId = s.UserId WHERE s.StudentMajor = :prodi AND a.AdminValidationStatus = \'PENDING\' AND a.DeletedAt IS NULL');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getAcceptedCount(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'APPROVED\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getRejectedCount(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'REJECTED\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getAcceptedCountPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'APPROVED\' AND DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public static function getRejectedCountPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'REJECTED\' AND DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public static function getPendingCountPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'PENDING\' AND DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public static function getTotalOfAchievementsPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function saveAchievement(PDO $db, array $supervisors = [], array $teamMembers = [])
     {
         $this->validateFileInputs();
@@ -573,17 +629,5 @@ class Achievement
         $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
         $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET DeletedAt = :deletedAt WHERE Id = :id AND DeletedAt IS NULL');
         return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
-    }
-
-    public static function getAcceptedCount(PDO $db)
-    {
-        $stmt = $db->query("SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = 'Accepted'");
-        return $stmt->fetchColumn();
-    }
-
-    public static function getRejectedCount(PDO $db)
-    {
-        $stmt = $db->query("SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = 'Rejected'");
-        return $stmt->fetchColumn();
     }
 }

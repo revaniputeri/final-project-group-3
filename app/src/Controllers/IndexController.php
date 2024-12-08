@@ -6,7 +6,7 @@ use PDO;
 use PrestaC\App\View;
 use PrestaC\Models\Achievement;
 
-class IndexController 
+class IndexController
 {
     protected PDO $db;
 
@@ -24,18 +24,28 @@ class IndexController
     }
 
     public function dashboardAdmin()
-{
-    // Fetch the counts of accepted and rejected students
-    $acceptedCount = Achievement::getAcceptedCount($this->db);
-    $rejectedCount = Achievement::getRejectedCount($this->db);
-    
-    // Fetch top achievements if needed
-    $topAchievements = Achievement::getTopAchievements($this->db, 10);
+    {
+        $acceptedCount = Achievement::getAcceptedCount($this->db, $_SESSION['user']['prodi']);
+        $rejectedCount = Achievement::getRejectedCount($this->db, $_SESSION['user']['prodi']);
+        $pendingCount = Achievement::getPendingCount($this->db, $_SESSION['user']['prodi']);
+        $totalOfAchievementsByProdi = Achievement::getTotalOfAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
+        $acceptedCountPusat = Achievement::getAcceptedCountPusat($this->db);
+        $rejectedCountPusat = Achievement::getRejectedCountPusat($this->db);
+        $pendingCountPusat = Achievement::getPendingCountPusat($this->db);
+        $totalOfAchievementsPusat = Achievement::getTotalOfAchievementsPusat($this->db);
 
-    View::render('dashboard-admin', [
-        'acceptedCount' => $acceptedCount,
-        'rejectedCount' => $rejectedCount,
-        'topAchievements' => $topAchievements
+        $topAchievements = Achievement::getTopAchievements($this->db, 10);
+
+        View::render('dashboard-admin', [
+            'acceptedCount' => $acceptedCount,
+            'rejectedCount' => $rejectedCount,
+            'topAchievements' => $topAchievements,
+            'pendingCount' => $pendingCount,
+            'totalOfAchievementsByProdi' => $totalOfAchievementsByProdi,
+            'acceptedCountPusat' => $acceptedCountPusat,
+            'rejectedCountPusat' => $rejectedCountPusat,
+            'pendingCountPusat' => $pendingCountPusat,
+            'totalOfAchievementsPusat' => $totalOfAchievementsPusat
         ]);
     }
 
