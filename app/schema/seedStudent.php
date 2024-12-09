@@ -11,6 +11,9 @@ function generateEmail($name)
     return $email . '@student.polinema.ac.id';
 }
 
+
+
+
 function getRandomMajor()
 {
     // Based on StudentMajor INT enum in create.sql
