@@ -65,9 +65,6 @@ class Achievement
         public DateTime $createdAt,
         public DateTime $updatedAt,
         public $id = null,
-        public $supervisorValidationStatus = 'PENDING',
-        public ?DateTime $supervisorValidationDate = null,
-        public ?string $supervisorValidationNote = null,
         public $adminValidationStatus = 'PENDING',
         public ?DateTime $adminValidationDate = null,
         public ?string $adminValidationNote = null,
@@ -101,7 +98,7 @@ class Achievement
         return self::COMPETITION_LEVELS[$levelId]['name'] ?? 'Unknown';
     }
 
-    public static function getAchievement(PDO $db, int $id)
+    public static function getAchievementById(PDO $db, int $id)
     {
         $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL');
         $stmt->execute([':id' => $id]);
@@ -144,10 +141,17 @@ class Achievement
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getAchievementsByUserId(PDO $db, int $userId)
+    public static function getAchievementsByProdi(PDO $db, int $prodi)
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL');
-        $stmt->execute([':userId' => $userId]);
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi) AND DeletedAt IS NULL AND AdminValidationStatus = \'PENDING\'');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getAllAchievements(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE DeletedAt IS NULL');
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -183,17 +187,66 @@ class Achievement
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function getTotalOfAchievementsByProdi(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(DISTINCT a.Id) FROM [dbo].[Achievement] a JOIN [dbo].[Student] s ON a.UserId = s.UserId WHERE s.StudentMajor = :prodi AND a.DeletedAt IS NULL');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getPendingCount(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(DISTINCT a.Id) FROM [dbo].[Achievement] a JOIN [dbo].[Student] s ON a.UserId = s.UserId WHERE s.StudentMajor = :prodi AND a.AdminValidationStatus = \'PENDING\' AND a.DeletedAt IS NULL');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getAcceptedCount(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'APPROVED\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getRejectedCount(PDO $db, int $prodi)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'REJECTED\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
+        $stmt->execute([':prodi' => $prodi]);
+        return $stmt->fetchColumn();
+    }
+
+    public static function getAcceptedCountPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'APPROVED\' AND DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public static function getRejectedCountPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'REJECTED\' AND DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public static function getPendingCountPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'PENDING\' AND DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public static function getTotalOfAchievementsPusat(PDO $db)
+    {
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE DeletedAt IS NULL');
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function saveAchievement(PDO $db, array $supervisors = [], array $teamMembers = [])
     {
         $this->validateFileInputs();
         $this->competitionPoints = $this->calculateCompetitionPoints();
-
-        // Set supervisor validation status to null if no supervisors
-        if (empty($supervisors)) {
-            $this->supervisorValidationStatus = null;
-            $this->supervisorValidationDate = null;
-            $this->supervisorValidationNote = null;
-        }
 
         $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $updatedAt = (new DateTime())->format('Y-m-d H:i:s');
@@ -219,9 +272,6 @@ class Achievement
             DocumentationFile,
             PosterFile,
             CompetitionPoints,
-            SupervisorValidationStatus,
-            SupervisorValidationDate,
-            SupervisorValidationNote,
             AdminValidationStatus,
             AdminValidationDate,
             AdminValidationNote,
@@ -248,9 +298,6 @@ class Achievement
             :documentationFile,
             :posterFile,
             :competitionPoints,
-            :supervisorValidationStatus,
-            :supervisorValidationDate,
-            :supervisorValidationNote,
             :adminValidationStatus,
             :adminValidationDate,
             :adminValidationNote,
@@ -279,9 +326,6 @@ class Achievement
             ':documentationFile' => $this->documentationFile,
             ':posterFile' => $this->posterFile,
             ':competitionPoints' => $this->competitionPoints,
-            ':supervisorValidationStatus' => $this->supervisorValidationStatus,
-            ':supervisorValidationDate' => $this->supervisorValidationDate?->format('Y-m-d H:i:s'),
-            ':supervisorValidationNote' => $this->supervisorValidationNote,
             ':adminValidationStatus' => $this->adminValidationStatus,
             ':adminValidationDate' => $this->adminValidationDate?->format('Y-m-d H:i:s'),
             ':adminValidationNote' => $this->adminValidationNote,
@@ -473,22 +517,6 @@ class Achievement
         return $folder . '/' . $fileName;
     }
 
-    public static function updateSupervisorValidation(PDO $db, int $achievementId, string $status, string $note)
-    {
-        $date = (new DateTime())->format('Y-m-d H:i:s');
-        $stmt = $db->prepare('UPDATE [dbo].[Achievement] 
-            SET SupervisorValidationStatus = :status, 
-                SupervisorValidationDate = :date, 
-                SupervisorValidationNote = :note 
-        WHERE Id = :achievementId');
-        return $stmt->execute([
-            ':achievementId' => $achievementId,
-            ':status' => $status,
-            ':date' => $date,
-            ':note' => $note
-        ]);
-    }
-
     public static function updateAdminValidation(PDO $db, int $achievementId, string $status, string $note)
     {
         $date = (new DateTime())->format('Y-m-d H:i:s');
@@ -573,17 +601,5 @@ class Achievement
         $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
         $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET DeletedAt = :deletedAt WHERE Id = :id AND DeletedAt IS NULL');
         return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
-    }
-
-    public static function getAcceptedCount(PDO $db)
-    {
-        $stmt = $db->query("SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = 'Accepted'");
-        return $stmt->fetchColumn();
-    }
-
-    public static function getRejectedCount(PDO $db)
-    {
-        $stmt = $db->query("SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = 'Rejected'");
-        return $stmt->fetchColumn();
     }
 }
