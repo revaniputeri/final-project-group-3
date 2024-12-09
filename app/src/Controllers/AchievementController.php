@@ -34,12 +34,10 @@ class AchievementController
 
     public function achievementHistory()
     {
-        if (!isset($_SESSION['user']['id'])) {
-            header('Location: /login');
-            exit;
-        }
-        
-        $achievements = Achievement::getAchievementById($this->db, $_SESSION['user']['id']);
+        $this->validateUser();
+
+        $id = $_SESSION['user']['id'];
+        $achievements = Achievement::getAchievementsByUserId($this->db, $id);
 
         //approval
         $achievementsByProdi = Achievement::getAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
@@ -133,7 +131,7 @@ class AchievementController
                 }
             }
 
-            $this->validateTeamMembers($teamMembers, $numberOfStudents);
+            // $this->validateTeamMembers($teamMembers, $numberOfStudents);
 
             $achievement = new Achievement(
                 $userId,

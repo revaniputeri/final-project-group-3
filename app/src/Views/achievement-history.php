@@ -33,7 +33,7 @@
                                         <tbody>
                                             <?php if (empty($achievements)): ?>
                                                 <tr>
-                                                    <td colspan="6" class="text-center">Belum ada data prestasi yang tersedia</td>
+                                                    <td colspan="7" class="text-center">Belum ada data prestasi yang tersedia</td>
                                                 </tr>
                                             <?php else: ?>
                                                 <?php foreach ($achievements as $achievement): ?>
@@ -51,14 +51,8 @@
                                                                 'REJECTED' => 'badge-danger'
                                                             ];
 
-                                                            $supervisorBadgeClass = $statusClasses[$achievement['SupervisorValidationStatus']] ?? 'badge-secondary';
                                                             $adminBadgeClass = $statusClasses[$achievement['AdminValidationStatus']] ?? 'badge-secondary';
                                                             ?>
-                                                            <div>
-                                                                <label class="badge <?= $supervisorBadgeClass ?>">
-                                                                    Supervisor: <?= $achievement['SupervisorValidationStatus'] ?>
-                                                                </label>
-                                                            </div>
                                                             <div class="mt-1">
                                                                 <label class="badge <?= $adminBadgeClass ?>">
                                                                     Admin: <?= $achievement['AdminValidationStatus'] ?>
@@ -70,7 +64,7 @@
                                                                 <a href="/dashboard/achievement/view/<?= $achievement['Id'] ?>" class="btn btn-info btn-sm" title="View">
                                                                     <i class="ti-eye"></i>
                                                                 </a>
-                                                                <?php if ($achievement['SupervisorValidationStatus'] === 'PENDING' && $achievement['AdminValidationStatus'] === 'PENDING'): ?>
+                                                                <?php if ($achievement['AdminValidationStatus'] === 'PENDING'): ?>
                                                                     <a href="/dashboard/achievement/edit/<?= $achievement['Id'] ?>" class="btn btn-warning btn-sm" title="Edit">
                                                                         <i class="ti-pencil"></i>
                                                                     </a>
@@ -117,21 +111,21 @@
     </div>
 
     <script>
-    let achievementIdToDelete = null;
+        let achievementIdToDelete = null;
 
-    function confirmDelete(id) {
-        achievementIdToDelete = id;
-        $('#deleteModal').modal('show');
-    }
-
-    document.getElementById('confirmDelete').addEventListener('click', function() {
-        if (achievementIdToDelete) {
-            // Create and submit a form programmatically
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/dashboard/achievement/delete/${achievementIdToDelete}`;
-            document.body.appendChild(form);
-            form.submit();
+        function confirmDelete(id) {
+            achievementIdToDelete = id;
+            $('#deleteModal').modal('show');
         }
-    });
+
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (achievementIdToDelete) {
+                // Create and submit a form programmatically
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/dashboard/achievement/delete/${achievementIdToDelete}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     </script>
