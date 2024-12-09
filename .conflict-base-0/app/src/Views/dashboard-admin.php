@@ -1,4 +1,3 @@
-<<<<<<< ours
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,10 +9,10 @@
 </head>
 
 <body>
-    <?php include __DIR__ . '/partials/navbar.php'; ?>
+    <?php include _DIR_ . '/partials/navbar.php'; ?>
 
     <div class="container-fluid page-body-wrapper">
-        <?php include __DIR__ . '/partials/sidebar-admin.php'; ?>
+        <?php include _DIR_ . '/partials/sidebar-admin.php'; ?>
         <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
             <div class="content-wrapper">
                 <div class="row pt-5">
@@ -138,28 +137,9 @@
                         </div>
                     </div>
                 </div>
-                <?php require __DIR__ . '/partials/footer-page.php'; ?>
+                <?php require _DIR_ . '/partials/footer-page.php'; ?>
             </div>
         </div>
 </body>
 
 </html>
-|||||||
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
-</head>
-<body>
-    <div style="text-align: center; margin-top: 20%;">
-        <h1>ini dashboard Admin</h1>
-        <form action="/logout" method="post">
-            <button type="submit">Logout</button>
-        </form>
-    </div>
-</body>
-</html>
->>>>>>> theirs

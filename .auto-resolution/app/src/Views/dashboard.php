@@ -8,7 +8,7 @@
                 <div class="col-md-12 grid-margin">
                     <div class="row">
                         <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                            <h1 class="font-weight-bold">Selamat Datang, <?= isset($_SESSION['user']['fullName']) ? $_SESSION['user']['fullName'] : '' ?></h1>
+                            <h1 class="font-weight-bold">Selamat Datang di PrestaC</h1>
                             <p class="text-muted">Pantau dan kelola prestasi Anda melalui dashboard yang mudah digunakan</p>
                         </div>
                     </div>
