@@ -25,10 +25,13 @@ class IndexController
 
     public function dashboardAdmin()
     {
+        //each prodi
         $acceptedCount = Achievement::getAcceptedCount($this->db, $_SESSION['user']['prodi']);
         $rejectedCount = Achievement::getRejectedCount($this->db, $_SESSION['user']['prodi']);
         $pendingCount = Achievement::getPendingCount($this->db, $_SESSION['user']['prodi']);
         $totalOfAchievementsByProdi = Achievement::getTotalOfAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
+
+        //pusat
         $acceptedCountPusat = Achievement::getAcceptedCountPusat($this->db);
         $rejectedCountPusat = Achievement::getRejectedCountPusat($this->db);
         $pendingCountPusat = Achievement::getPendingCountPusat($this->db);
@@ -37,15 +40,18 @@ class IndexController
         $topAchievements = Achievement::getTopAchievements($this->db, 10);
 
         View::render('dashboard-admin', [
+            //render each prodi
             'acceptedCount' => $acceptedCount,
             'rejectedCount' => $rejectedCount,
-            'topAchievements' => $topAchievements,
             'pendingCount' => $pendingCount,
             'totalOfAchievementsByProdi' => $totalOfAchievementsByProdi,
+            //render pusat
             'acceptedCountPusat' => $acceptedCountPusat,
             'rejectedCountPusat' => $rejectedCountPusat,
             'pendingCountPusat' => $pendingCountPusat,
-            'totalOfAchievementsPusat' => $totalOfAchievementsPusat
+            'totalOfAchievementsPusat' => $totalOfAchievementsPusat,
+            //render top achievement
+            'topAchievements' => $topAchievements
         ]);
     }
 
