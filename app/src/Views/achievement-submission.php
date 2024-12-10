@@ -1,5 +1,12 @@
 <?php include __DIR__ . '/partials/navbar.php'; ?>
 
+<?php
+$formData = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
+if (isset($_SESSION['form_data'])) {
+  unset($_SESSION['form_data']);
+}
+?>
+
 <div class="container-fluid page-body-wrapper">
   <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
 
@@ -7,7 +14,7 @@
     <div class="content-wrapper">
       <div class="row pt-5">
         <?php if (isset($_SESSION['error'])): ?>
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <div class="alert alert-danger alert-dismissible fade show ml-3" role="alert">
             <?= $_SESSION['error'] ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -34,22 +41,26 @@
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="competitionTitle">Judul Kompetisi <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionTitle" name="competitionTitle" placeholder="Judul Kompetisi dalam Bahasa Indonesia" required>
+                          <input type="text" class="form-control" id="competitionTitle" name="competitionTitle"
+                            value="<?= isset($formData['competitionTitle']) ? htmlspecialchars($formData['competitionTitle']) : '' ?>"
+                            placeholder="Judul Kompetisi dalam Bahasa Indonesia" required>
                         </div>
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="competitionTitleEnglish">Judul Kompetisi (Bahasa Inggris) <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionTitleEnglish" name="competitionTitleEnglish" placeholder="Judul Kompetisi dalam Bahasa Inggris" required>
+                          <input type="text" class="form-control" id="competitionTitleEnglish" name="competitionTitleEnglish"
+                            value="<?= isset($formData['competitionTitleEnglish']) ? htmlspecialchars($formData['competitionTitleEnglish']) : '' ?>"
+                            placeholder="Judul Kompetisi dalam Bahasa Inggris" required>
                         </div>
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="competitionType">Jenis Kompetisi <span class="text-danger">*</span></label>
                           <select class="form-control" id="competitionType" name="competitionType" required>
                             <option value="">Pilih Jenis Kompetisi</option>
-                            <option value="Sains">Sains</option>
-                            <option value="Seni">Seni</option>
-                            <option value="Olahraga">Olahraga</option>
-                            <option value="Lain-Lain">Lain-Lain</option>
+                            <option value="Sains" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Sains') ? 'selected' : '' ?>>Sains</option>
+                            <option value="Seni" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Seni') ? 'selected' : '' ?>>Seni</option>
+                            <option value="Olahraga" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Olahraga') ? 'selected' : '' ?>>Olahraga</option>
+                            <option value="Lain-Lain" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Lain-Lain') ? 'selected' : '' ?>>Lain-Lain</option>
                           </select>
                         </div>
 
@@ -58,7 +69,9 @@
                           <select class="form-control" id="competitionLevel" name="competitionLevel" required>
                             <option value="">Pilih Tingkat Kompetisi</option>
                             <?php foreach ($competitionLevels as $id => $level): ?>
-                              <option value="<?= $id ?>"><?= $level['name'] ?></option>
+                              <option value="<?= $id ?>" <?= (isset($formData['competitionLevel']) && $formData['competitionLevel'] == $id) ? 'selected' : '' ?>>
+                                <?= $level['name'] ?>
+                              </option>
                             <?php endforeach; ?>
                           </select>
                         </div>
@@ -68,7 +81,9 @@
                           <select class="form-control" id="competitionRank" name="competitionRank" required>
                             <option value="">Pilih Peringkat Kompetisi</option>
                             <?php foreach ($competitionRanks as $id => $rank): ?>
-                              <option value="<?= $id ?>"><?= $rank['name'] ?></option>
+                              <option value="<?= $id ?>" <?= (isset($formData['competitionRank']) && $formData['competitionRank'] == $id) ? 'selected' : '' ?>>
+                                <?= $rank['name'] ?>
+                              </option>
                             <?php endforeach; ?>
                           </select>
                         </div>
@@ -82,17 +97,23 @@
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="competitionPlace">Tempat/Penyelenggara Kompetisi <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionPlace" name="competitionPlace" placeholder="Tempat Kompetisi dalam Bahasa Indonesia" required>
+                          <input type="text" class="form-control" id="competitionPlace" name="competitionPlace"
+                            value="<?= isset($formData['competitionPlace']) ? htmlspecialchars($formData['competitionPlace']) : '' ?>"
+                            placeholder="Tempat Kompetisi dalam Bahasa Indonesia" required>
                         </div>
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="competitionPlaceEnglish">Tempat/Penyelenggara Kompetisi (Bahasa Inggris) <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionPlaceEnglish" name="competitionPlaceEnglish" placeholder="Tempat Kompetisi dalam Bahasa Inggris" required>
+                          <input type="text" class="form-control" id="competitionPlaceEnglish" name="competitionPlaceEnglish"
+                            value="<?= isset($formData['competitionPlaceEnglish']) ? htmlspecialchars($formData['competitionPlaceEnglish']) : '' ?>"
+                            placeholder="Tempat Kompetisi dalam Bahasa Inggris" required>
                         </div>
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="competitionUrl">URL Kompetisi <span class="text-danger">*</span></label>
-                          <input type="url" class="form-control" id="competitionUrl" name="competitionUrl" placeholder="Alamat Website Kompetisi" required>
+                          <input type="url" class="form-control" id="competitionUrl" name="competitionUrl"
+                            value="<?= isset($formData['competitionUrl']) ? htmlspecialchars($formData['competitionUrl']) : '' ?>"
+                            placeholder="Alamat Website Kompetisi" required>
                         </div>
 
                         <div class="form-group mb-3">
@@ -101,13 +122,17 @@
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="form-label" for="competitionStartDate">Tanggal Mulai</label>
-                                <input type="date" class="form-control" id="competitionStartDate" name="competitionStartDate" required>
+                                <input type="date" class="form-control" id="competitionStartDate" name="competitionStartDate"
+                                  value="<?= isset($formData['competitionStartDate']) ? htmlspecialchars($formData['competitionStartDate']) : '' ?>"
+                                  required>
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="form-label" for="competitionEndDate">Tanggal Selesai</label>
-                                <input type="date" class="form-control" id="competitionEndDate" name="competitionEndDate" required>
+                                <input type="date" class="form-control" id="competitionEndDate" name="competitionEndDate"
+                                  value="<?= isset($formData['competitionEndDate']) ? htmlspecialchars($formData['competitionEndDate']) : '' ?>"
+                                  required>
                               </div>
                             </div>
                           </div>
@@ -125,22 +150,30 @@
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="numberOfInstitutions">Jumlah Institusi Peserta <span class="text-danger">*</span></label>
-                          <input type="number" class="form-control" id="numberOfInstitutions" name="numberOfInstitutions" placeholder="Total jumlah institusi" min="0" required>
+                          <input type="number" class="form-control" id="numberOfInstitutions" name="numberOfInstitutions"
+                            value="<?= isset($formData['numberOfInstitutions']) ? htmlspecialchars($formData['numberOfInstitutions']) : '' ?>"
+                            placeholder="Total jumlah institusi" min="0" required>
                         </div>
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="numberOfStudents">Jumlah Siswa Peserta <span class="text-danger">*</span></label>
-                          <input type="number" class="form-control" id="numberOfStudents" name="numberOfStudents" placeholder="Total jumlah siswa" min="1" required>
+                          <input type="number" class="form-control" id="numberOfStudents" name="numberOfStudents"
+                            value="<?= isset($formData['numberOfStudents']) ? htmlspecialchars($formData['numberOfStudents']) : '' ?>"
+                            placeholder="Total jumlah siswa" min="1" required>
                         </div>
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="letterNumber">Nomor Surat <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="letterNumber" name="letterNumber" placeholder="Nomor Surat Resmi" required>
+                          <input type="text" class="form-control" id="letterNumber" name="letterNumber"
+                            value="<?= isset($formData['letterNumber']) ? htmlspecialchars($formData['letterNumber']) : '' ?>"
+                            placeholder="Nomor Surat Resmi" required>
                         </div>
 
                         <div class="form-group mb-3">
                           <label class="form-label" for="letterDate">Tanggal Surat <span class="text-danger">*</span></label>
-                          <input type="date" class="form-control" id="letterDate" name="letterDate" required>
+                          <input type="date" class="form-control" id="letterDate" name="letterDate"
+                            value="<?= isset($formData['letterDate']) ? htmlspecialchars($formData['letterDate']) : '' ?>"
+                            required>
                         </div>
                       </div>
                     </div>
@@ -200,7 +233,10 @@
                               <select class="form-control dosen-pembimbing" name="supervisors[]">
                                 <option value="">Pilih Dosen Pembimbing</option>
                                 <?php foreach ($lecturers as $lecturer): ?>
-                                  <option value="<?= $lecturer['Id'] ?>"><?= $lecturer['FullName'] ?></option>
+                                  <option value="<?= $lecturer['Id'] ?>"
+                                    <?= (isset($formData['supervisors']) && in_array($lecturer['Id'], $formData['supervisors'])) ? 'selected' : '' ?>>
+                                    <?= $lecturer['FullName'] ?>
+                                  </option>
                                 <?php endforeach; ?>
                               </select>
                               <div class="input-group-append">
@@ -220,14 +256,17 @@
                               <select class="form-control anggota-tim" name="teamMembers[]" required>
                                 <option value="">Pilih Anggota Tim</option>
                                 <?php foreach ($students as $student): ?>
-                                  <option value="<?= $student['Id'] ?>"><?= $student['FullName'] ?></option>
+                                  <option value="<?= $student['Id'] ?>"
+                                    <?= (isset($formData['teamMembers']) && in_array($student['Id'], $formData['teamMembers'])) ? 'selected' : '' ?>>
+                                    <?= $student['FullName'] ?>
+                                  </option>
                                 <?php endforeach; ?>
                               </select>
                               <select class="form-control anggota-tim-peran" name="teamMemberRoles[]" required>
                                 <option value="">Pilih Peran</option>
-                                <option value="Ketua">Ketua</option>
-                                <option value="Anggota">Anggota</option>
-                                <option value="Personal">Personal</option>
+                                <option value="Ketua" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Ketua') ? 'selected' : '' ?>>Ketua</option>
+                                <option value="Anggota" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Anggota') ? 'selected' : '' ?>>Anggota</option>
+                                <option value="Personal" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Personal') ? 'selected' : '' ?>>Personal</option>
                               </select>
                               <div class="input-group-append">
                                 <button type="button" class="btn btn-success" onclick="achievementForm.addTeamMember()">
