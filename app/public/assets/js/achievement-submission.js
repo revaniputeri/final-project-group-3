@@ -22,24 +22,23 @@ class AchievementForm {
     }
 
     initEventListeners() {
-        // File input listeners
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', this.handleFileInput);
         });
 
         // Initial setup for supervisors and team members
-        const supervisorSelect = document.querySelector('select[name="supervisors[]"]');
-        const teamMemberSelect = document.querySelector('select[name="teamMembers[]"]');
+        const supervisorSelects = document.querySelectorAll('select[name="supervisors[]"]');
+        const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
 
-        if (supervisorSelect) {
-            supervisorSelect.addEventListener('change', this.updateSupervisorOptions);
-        }
+        supervisorSelects.forEach(select => {
+            select.addEventListener('change', this.updateSupervisorOptions);
+        });
 
-        if (teamMemberSelect) {
-            teamMemberSelect.addEventListener('change', this.updateTeamMemberOptions);
-        }
+        teamMemberSelects.forEach(select => {
+            select.addEventListener('change', this.updateTeamMemberOptions);
+        });
 
-        // Number of students change handler
+        // jumlah siswa change handler
         const numberOfStudentsInput = document.getElementById('numberOfStudentsEdit') ?? document.getElementById('numberOfStudents');
         if (numberOfStudentsInput) {
             numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
@@ -128,7 +127,7 @@ class AchievementForm {
                 ${window.LECTURER_OPTIONS || ''}
             </select>
             <div class="input-group-append">
-                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeTeamMember(this)">
+                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeSupervisor(this)">
                     <i class="fas fa-minus">-</i>
                 </button>
                 <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">

@@ -131,7 +131,7 @@ class AchievementController
                 }
             }
 
-            // $this->validateTeamMembers($teamMembers, $numberOfStudents);
+            $this->validateTeamMembers($teamMembers, $numberOfStudents);
 
             $achievement = new Achievement(
                 $userId,
@@ -168,6 +168,7 @@ class AchievementController
             header('Location: /dashboard/achievement/history');
         } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
+            $_SESSION['form_data'] = $_POST;
             header('Location: /dashboard/achievement/form');
         }
         exit();
@@ -502,5 +503,8 @@ class AchievementController
 
     public function achievementInfo()
     {
+        $this->validateUser();
     }
+
+    
 }
