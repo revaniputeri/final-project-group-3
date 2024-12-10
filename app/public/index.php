@@ -132,6 +132,14 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+Router:: add(
+    method: "GET",
+    path: "/dashboard/achievement/view/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "viewAchievement",
+    dependencies: ['db' => $connection]
+);
+
 // profile customization page
 Router::add(
     method: "GET",
@@ -195,17 +203,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-
-//SUPERVISOR
-//supervisor validation process
-Router::add(
-    method: "POST",
-    path: "/dashboard/supervisor/validation",
-    controller: AchievementController::class,
-    function: "supervisorValidationProcess",
-    dependencies: ['db' => $connection]
-);
-
 //ADMIN
 //admin validation process
 Router::add(
@@ -249,12 +246,5 @@ Router::add(
     function: "info",
     dependencies: ['db' => $connection]
 );
-// Router::add(
-//     method: "GET",
-//     path: "/dashboard/dosen/home",
-//     controller: LecturerController::class,
-//     function: "index",
-//     dependencies: ['db' => $connection]
-// );
 
 Router::run();
