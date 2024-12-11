@@ -662,24 +662,23 @@ class AchievementForm {
     }
 
     initEventListeners() {
-        // File input listeners
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', this.handleFileInput);
         });
 
         // Initial setup for supervisors and team members
-        const supervisorSelect = document.querySelector('select[name="supervisors[]"]');
-        const teamMemberSelect = document.querySelector('select[name="teamMembers[]"]');
+        const supervisorSelects = document.querySelectorAll('select[name="supervisors[]"]');
+        const teamMemberSelects = document.querySelectorAll('select[name="teamMembers[]"]');
 
-        if (supervisorSelect) {
-            supervisorSelect.addEventListener('change', this.updateSupervisorOptions);
-        }
+        supervisorSelects.forEach(select => {
+            select.addEventListener('change', this.updateSupervisorOptions);
+        });
 
-        if (teamMemberSelect) {
-            teamMemberSelect.addEventListener('change', this.updateTeamMemberOptions);
-        }
+        teamMemberSelects.forEach(select => {
+            select.addEventListener('change', this.updateTeamMemberOptions);
+        });
 
-        // Number of students change handler
+        // jumlah siswa change handler
         const numberOfStudentsInput = document.getElementById('numberOfStudentsEdit') ?? document.getElementById('numberOfStudents');
         if (numberOfStudentsInput) {
             numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
@@ -691,7 +690,7 @@ class AchievementForm {
         const submitButton = document.getElementById('submitButton');
         if (submitButton) {
             submitButton.addEventListener('click', (event) => {
-                if (!this.validateTeamMembers()) {
+                if (!this.validateTeamMembers() || !this.validateDates()) {
                     event.preventDefault();
                 }
             });
@@ -768,7 +767,7 @@ class AchievementForm {
                 ${window.LECTURER_OPTIONS || ''}
             </select>
             <div class="input-group-append">
-                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeTeamMember(this)">
+                <button type="button" class="btn btn-danger" onclick="window.achievementForm.removeSupervisor(this)">
                     <i class="fas fa-minus">-</i>
                 </button>
                 <button type="button" class="btn btn-success" onclick="achievementForm.addSupervisor()">
@@ -901,15 +900,15 @@ class AchievementForm {
         const numberOfStudentsInput = document.getElementById('numberOfStudents') ?? document.getElementById('numberOfStudentsEdit');
         const teamMemberInputs = document.querySelectorAll('select[name="teamMembers[]"]');
         const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
-
+    
         const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
         const currentMembers = Array.from(teamMemberInputs).filter(select => select.value !== '').length;
-
+    
         if (currentMembers !== numberOfStudents) {
             alert(`Jumlah anggota tim (${currentMembers}) harus sesuai dengan jumlah siswa peserta (${numberOfStudents}).`);
             return false;
         }
-
+    
         if (currentMembers > 1) {
             const hasLeader = Array.from(roleSelects).some(select => select.value === 'Ketua');
             if (!hasLeader) {
@@ -917,7 +916,63 @@ class AchievementForm {
                 return false; 
             }
         }
+    
+        // Retrieve roles of team members
+        const roles = Array.from(roleSelects).map(select => select.value);
+    
+        // Validate number of students for personal achievement
+        if (numberOfStudents > 1) {
+            if (roles.some(role => role === 'Personal')) {
+                alert('Prestasi personal hanya dapat dipilih untuk jumlah peserta 1 orang.');
+                return false;
+            }
+        }
+    
+        // Ensure roles are not mixed between Personal and Team
+        let hasPersonal = roles.some(role => role === 'Personal');
+        let hasTeam = roles.some(role => role !== 'Personal');
+    
+        if (hasPersonal && hasTeam) {
+            alert('Prestasi tidak dapat berupa personal dan tim secara bersamaan.');
+            return false;
+        }
+    
+        // Validate number of leaders
+        if (hasTeam) {
+            const leaderCount = roles.filter(role => role === 'Ketua').length;
+            if (leaderCount !== 1) {
+                alert('Tim harus memiliki satu ketua.');
+                return false;
+            }
+        }
+    
         this.handleNumberOfStudentsChange();
+        return true;
+    }
+
+    validateDates = () => {
+        const competitionStartDate = document.getElementById('competitionStartDate');
+        const competitionEndDate = document.getElementById('competitionEndDate');
+        const letterDate = document.getElementById('letterDate');
+
+        const today = new Date();
+        const currentDate = today.toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+        if (competitionStartDate.value > currentDate) {
+            alert('Tanggal mulai kompetisi tidak boleh lebih dari tanggal saat ini.');
+            return false;
+        }
+
+        if (competitionEndDate.value > currentDate) {
+            alert('Tanggal selesai kompetisi tidak boleh lebih dari tanggal saat ini.');
+            return false;
+        }
+
+        if (letterDate.value > currentDate) {
+            alert('Tanggal surat tidak boleh lebih dari tanggal saat ini.');
+            return false;
+        }
+
         return true;
     }
 }

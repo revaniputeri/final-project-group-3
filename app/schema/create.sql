@@ -1,7 +1,5 @@
 USE prestac;
 
-select * from [dbo].[User];
-
 CREATE TABLE [dbo].[User] (
     [Id]                 INT          NOT NULL IDENTITY (1, 1),
     [FullName]           VARCHAR(255) NOT NULL,
