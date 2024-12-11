@@ -34,12 +34,10 @@ class AchievementController
 
     public function achievementHistory()
     {
-        if (!isset($_SESSION['user']['id'])) {
-            header('Location: /login');
-            exit;
-        }
-        
-        $achievements = Achievement::getAchievementById($this->db, $_SESSION['user']['id']);
+        $this->validateUser();
+
+        $id = $_SESSION['user']['id'];
+        $achievements = Achievement::getAchievementsByUserId($this->db, $id);
 
         //approval
         $achievementsByProdi = Achievement::getAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
@@ -94,7 +92,7 @@ class AchievementController
             // Validate required files
             $requiredFiles = [
                 'letterFile',
-                'certificateFile', 
+                'certificateFile',
                 'documentationFile',
                 'posterFile'
             ];
@@ -170,6 +168,7 @@ class AchievementController
             header('Location: /dashboard/achievement/history');
         } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
+            $_SESSION['form_data'] = $_POST;
             header('Location: /dashboard/achievement/form');
         }
         exit();
@@ -208,7 +207,8 @@ class AchievementController
         exit();
     }
 
-    public function edit($data) {
+    public function edit($data)
+    {
         // Verify if user is logged in
         if (!isset($_SESSION['user']['id'])) {
             header('Location: /login');
@@ -222,7 +222,7 @@ class AchievementController
             try {
                 // Fetch the achievement data
                 $achievement = Achievement::getAchievementById($this->db, $id);
-                
+
                 // Verify if achievement exists and belongs to the user
                 if (!$achievement || $achievement['UserId'] != $_SESSION['user']['id']) {
                     throw new \Exception('Prestasi tidak ditemukan atau Anda tidak memiliki akses.');
@@ -232,7 +232,7 @@ class AchievementController
                 $supervisors = Achievement::getSupervisorsByAchievementId($this->db, $id);
                 $teamLeaders = Achievement::getTeamMembersByAchievementId($this->db, $id, 2); // Role 2 for leaders
                 $teamMembers = Achievement::getTeamMembersByAchievementId($this->db, $id, 3); // Role 3 for members
-                
+
                 // Load other necessary data
                 $lecturers = User::getAllActiveLecturers($this->db);
                 $students = User::getAllActiveStudents($this->db);
@@ -256,12 +256,12 @@ class AchievementController
                 exit;
             }
         }
-        
+
         // For POST request - handle the form submission
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $achievementId = (int)$_POST['achievementId'];
-                
+
                 // Verify ownership again
                 $achievement = Achievement::getAchievementById($this->db, $achievementId);
                 if (!$achievement || $achievement['UserId'] != $_SESSION['user']['id']) {
@@ -302,17 +302,17 @@ class AchievementController
 
                 // Update the achievement
                 $success = Achievement::updateAchievement($this->db, $achievementId, $updateData);
-                
+
                 // Update supervisors and team members
                 if ($success) {
                     // Update supervisors
                     if (isset($_POST['supervisors'])) {
                         Achievement::updateSupervisors($this->db, $achievementId, $_POST['supervisors']);
                     }
-                    
+
                     // Update team members
                     if (isset($_POST['teamMembers']) && isset($_POST['teamMemberRoles'])) {
-                        $teamData = array_map(function($member, $role) {
+                        $teamData = array_map(function ($member, $role) {
                             return ['memberId' => $member, 'role' => $role];
                         }, $_POST['teamMembers'], $_POST['teamMemberRoles']);
                         Achievement::updateTeamMembers($this->db, $achievementId, $teamData);
@@ -332,18 +332,42 @@ class AchievementController
         }
     }
 
-    public function editFormProcess($data)
+    public function viewAchievement($data)
     {
-        if (!isset($_SESSION['user']['id'])) {
-            header('Location: /login');
-            exit;
+        $achievementId = (int)$data['id'];
+        $achievement = Achievement::getAchievementById($this->db, $achievementId);
+        $supervisors = Achievement::getSupervisorsByAchievementId($this->db, $achievementId);
+        $teamLeaders = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 2); // Role 2 for leaders
+        $teamMembers = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 3); // Role 3 for members
+
+        View::render('viewAchievement', ['achievement' => $achievement, 'supervisors' => $supervisors, 'teamLeaders' => $teamLeaders, 'teamMembers' => $teamMembers]);
+    }
+
+    private function validateDates($competitionStartDate, $competitionEndDate, $letterDate)
+    {
+        $today = new \DateTime();
+        $currentDate = $today->format('Y-m-d');
+
+        if ($competitionStartDate > $currentDate) {
+            throw new \Exception('Tanggal mulai kompetisi tidak boleh lebih dari tanggal saat ini.');
         }
 
+        if ($competitionEndDate > $currentDate) {
+            throw new \Exception('Tanggal selesai kompetisi tidak boleh lebih dari tanggal saat ini.');
+        }
+
+        if ($letterDate > $currentDate) {
+            throw new \Exception('Tanggal surat tidak boleh lebih dari tanggal saat ini.');
+        }
+    }
+
+    public function editFormProcess($data)
+    {
+        $this->validateUser();
         $achievementId = (int)$data['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                // Verify ownership
                 $achievement = Achievement::getAchievementById($this->db, $achievementId);
                 if (!$achievement) {
                     throw new \Exception('Prestasi tidak ditemukan.');
@@ -355,8 +379,7 @@ class AchievementController
                 }
 
                 // Check if achievement is still in PENDING status
-                if ($achievement['SupervisorValidationStatus'] !== 'PENDING' || 
-                    $achievement['AdminValidationStatus'] !== 'PENDING') {
+                if ($achievement['AdminValidationStatus'] !== 'PENDING') {
                     throw new \Exception('Hanya prestasi dengan status PENDING yang dapat diedit.');
                 }
 
@@ -378,6 +401,13 @@ class AchievementController
                     'LetterDate' => $_POST['letterDate']
                 ];
 
+                // Validate dates
+                $this->validateDates(
+                    $_POST['competitionStartDate'],
+                    $_POST['competitionEndDate'],
+                    $_POST['letterDate']
+                );
+
                 // Handle file uploads if new files are provided
                 if (!empty($_FILES['letterFile']['name'])) {
                     $updateData['LetterFile'] = Achievement::handleFileUpload($_FILES['letterFile'], 'letters');
@@ -392,33 +422,50 @@ class AchievementController
                     $updateData['PosterFile'] = Achievement::handleFileUpload($_FILES['posterFile'], 'posters');
                 }
 
+                // Process team members
+                $teamMembers = [];
+                if (isset($_POST['teamMembers']) && is_array($_POST['teamMembers'])) {
+                    foreach ($_POST['teamMembers'] as $index => $memberId) {
+                        if (!empty($memberId)) {
+                            $teamMembers[] = [
+                                'userId' => (int)$memberId,
+                                'role' => $_POST['teamMemberRoles'][$index] ?? 'Anggota'
+                            ];
+                        }
+                    }
+                }
+
+                // Validate team members
+                $numberOfStudents = (int)$_POST['numberOfStudents'];
+                $this->validateTeamMembers($teamMembers, $numberOfStudents); // Panggil fungsi validasi
+
                 // Update the achievement
                 $success = Achievement::updateAchievement($this->db, $achievementId, $updateData);
-                
+
                 // Update supervisors and team members
                 if ($success) {
                     // Update supervisors
                     if (isset($_POST['supervisors'])) {
                         Achievement::updateSupervisors($this->db, $achievementId, $_POST['supervisors']);
                     }
-                    
+
                     // Update team members
                     if (isset($_POST['teamMembers']) && isset($_POST['teamMemberRoles'])) {
-                        $teamData = array_map(function($member, $role) {
+                        $teamData = array_map(function ($member, $role) {
                             return ['memberId' => $member, 'role' => $role];
                         }, $_POST['teamMembers'], $_POST['teamMemberRoles']);
                         Achievement::updateTeamMembers($this->db, $achievementId, $teamData);
                     }
 
                     $_SESSION['success'] = 'Prestasi berhasil diperbarui.';
+                    header('Location: /dashboard/achievement/history');
                 } else {
                     throw new \Exception('Gagal memperbarui prestasi.');
                 }
-
-                header('Location: /dashboard/achievement/history');
             } catch (\Exception $e) {
                 $_SESSION['error'] = $e->getMessage();
-                header('Location: /dashboard/achievement/history');
+                $_SESSION['form_data'] = $_POST;
+                header('Location: /dashboard/achievement/edit/' . $achievementId);
             }
             exit;
         }
@@ -461,7 +508,8 @@ class AchievementController
         exit;
     }
 
-    private function validateTeamMembers($teamMembers, $numberOfStudents) {
+    private function validateTeamMembers($teamMembers, $numberOfStudents)
+    {
         $hasPersonal = false;
         $hasTeam = false;
 
@@ -504,5 +552,6 @@ class AchievementController
 
     public function achievementInfo()
     {
+        $this->validateUser();
     }
 }

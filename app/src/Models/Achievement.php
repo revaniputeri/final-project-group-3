@@ -115,14 +115,20 @@ class Achievement
         return $achievement;
     }
 
+    public static function getAchievementsByUserId(PDO $db, int $userId)
+    {
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL');
+        $stmt->execute([':userId' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function getTopAchievements(PDO $db, int $limit = 10, int $userId = null)
     {
         $sql = '
             SELECT TOP (:limit) * 
             FROM [dbo].[Achievement] 
             WHERE DeletedAt IS NULL 
-            AND AdminValidationStatus = \'APPROVED\'
-            AND SupervisorValidationStatus = \'APPROVED\'';
+            AND AdminValidationStatus = \'APPROVED\'';
 
         if ($userId) {
             $sql .= ' AND UserId = :userId';
@@ -458,8 +464,7 @@ class Achievement
         }
     }
 
-    private function storeFile($file, $fileType)
-    {
+    private function storeFile($file, $fileType){
         $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
         $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
 
@@ -552,13 +557,13 @@ class Achievement
 
     public static function updateSupervisors(PDO $db, int $achievementId, array $supervisorIds): bool
     {
-        // Delete existing supervisors
+        // ngehapus supervisor yang sudah ada sebelumnya
         $db->prepare("DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = ? AND AchievementRole = ?")->execute([
             $achievementId,
             self::ROLE_SUPERVISOR
         ]);
 
-        // Insert new supervisors
+        // terus di insert lagi sama yang baru
         $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
         foreach ($supervisorIds as $supervisorId) {
             if (!empty($supervisorId)) {
