@@ -1,6 +1,6 @@
 <?php
 
-$config = require_once _DIR_ . '/../config.php';
+$config = require_once __DIR__ . '/../config.php';
 
 function generateEmail($name)
 {

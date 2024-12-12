@@ -9,10 +9,10 @@
 </head>
 
 <body>
-    <?php include _DIR_ . '/partials/navbar.php'; ?>
+    <?php include __DIR__ . '/partials/navbar.php'; ?>
 
     <div class="container-fluid page-body-wrapper">
-        <?php include _DIR_ . '/partials/sidebar-admin.php'; ?>
+        <?php include __DIR__ . '/partials/sidebar-admin.php'; ?>
         <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
             <div class="content-wrapper">
                 <div class="row pt-5">
@@ -20,7 +20,8 @@
                         <div class="row">
                             <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                                 <h1 class="font-weight-bold">Selamat Datang di PrestaC</h1>
-                                <p class="text-muted">Pantau dan kelola prestasi mahasiswa melalui dashboard yang mudah digunakan</p>
+                                <p class="text-muted">Pantau dan kelola prestasi mahasiswa melalui dashboard yang mudah
+                                    digunakan</p>
                             </div>
                         </div>
                     </div>
@@ -49,9 +50,13 @@
                                 <div class="card card-tale" style="background-color: #6EC207;">
                                     <div class="card-body">
                                         <p class="mb-4">Total Prestasi Diterima</p>
-                                        <p class="fs-30 mb-2"><?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $acceptedCountPusat : $acceptedCount ?></p>
-                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat') : ?>
-                                            <p>Prodi: <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?></p>
+                                        <p class="fs-30 mb-2">
+                                            <?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $acceptedCountPusat : $acceptedCount ?>
+                                        </p>
+                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat'): ?>
+                                            <p>Prodi:
+                                                <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?>
+                                            </p>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -60,9 +65,13 @@
                                 <div class="card card-dark-blue" style="background-color: #B8001F; color: white;">
                                     <div class="card-body">
                                         <p class="mb-4">Total Prestasi Ditolak</p>
-                                        <p class="fs-30 mb-2"><?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $rejectedCountPusat : $rejectedCount ?></p>
-                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat') : ?>
-                                            <p>Prodi: <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?></p>
+                                        <p class="fs-30 mb-2">
+                                            <?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $rejectedCountPusat : $rejectedCount ?>
+                                        </p>
+                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat'): ?>
+                                            <p>Prodi:
+                                                <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?>
+                                            </p>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -73,9 +82,13 @@
                                 <div class="card card-light-blue" style="background-color: #4B49AC;">
                                     <div class="card-body">
                                         <p class="mb-4">Total Prestasi</p>
-                                        <p class="fs-30 mb-2"><?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $totalOfAchievementsPusat : $totalOfAchievementsByProdi ?></p>
-                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat') : ?>
-                                            <p>Prodi: <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?></p>
+                                        <p class="fs-30 mb-2">
+                                            <?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $totalOfAchievementsPusat : $totalOfAchievementsByProdi ?>
+                                        </p>
+                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat'): ?>
+                                            <p>Prodi:
+                                                <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?>
+                                            </p>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -84,9 +97,13 @@
                                 <div class="card card-light-danger" style="background-color: #FFB200;">
                                     <div class="card-body">
                                         <p class="mb-4">Total Prestasi Pending</p>
-                                        <p class="fs-30 mb-2"><?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $pendingCountPusat : $pendingCount ?></p>
-                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat') : ?>
-                                            <p>Prodi: <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?></p>
+                                        <p class="fs-30 mb-2">
+                                            <?= $_SESSION['user']['fullName'] == 'Admin Pusat' ? $pendingCountPusat : $pendingCount ?>
+                                        </p>
+                                        <?php if ($_SESSION['user']['fullName'] != 'Admin Pusat'): ?>
+                                            <p>Prodi:
+                                                <?= str_replace("Admin Program Studi ", "", $_SESSION['user']['fullName']) ?>
+                                            </p>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -116,14 +133,15 @@
                                                 if (!empty($topAchievements)) {
                                                     $no = 1;
                                                     foreach ($topAchievements as $achievement) {
-                                                ?>
+                                                        ?>
                                                         <tr>
                                                             <td><?= $no++ ?></td>
                                                             <td><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>
                                                             <td><?= htmlspecialchars($achievement['CompetitionLevel']) ?></td>
-                                                            <td><?= number_format($achievement['CompetitionPoints'], 0, ',', '.') ?></td>
+                                                            <td><?= number_format($achievement['CompetitionPoints'], 0, ',', '.') ?>
+                                                            </td>
                                                         </tr>
-                                                <?php
+                                                        <?php
                                                     }
                                                 } else {
                                                     echo '<tr><td colspan="4" class="text-center">Tidak ada prestasi yang ditemukan.</td></tr>';
@@ -137,7 +155,7 @@
                         </div>
                     </div>
                 </div>
-                <?php require _DIR_ . '/partials/footer-page.php'; ?>
+                <?php require __DIR__ . '/partials/footer-page.php'; ?>
             </div>
         </div>
 </body>
