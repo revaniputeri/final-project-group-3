@@ -334,6 +334,7 @@ class AuthController
         $_SESSION['user'] = [
             'id' => $user->id,
             'fullName' => $user->fullName,
+            'username' => $username,
             'role' => (int)$user->role,
             'prodi' => ($user->fullName == 'Admin Program Studi Sistem Informasi Bisnis') ? 2 : 1
         ];

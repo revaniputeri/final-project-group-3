@@ -973,6 +973,11 @@ class AchievementForm {
             return false;
         }
 
+        if (competitionStartDate.value > competitionEndDate.value) {
+            alert('Tanggal mulai kompetisi tidak boleh lebih dari tanggal selesai kompetisi.');
+            return false;
+        }
+
         return true;
     }
 }
