@@ -174,39 +174,6 @@ class AchievementController
         exit();
     }
 
-    public function adminValidation()
-    {
-        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
-            header('Location: /login');
-            exit;
-        }
-
-        View::render('achievement-history-admin', []);
-    }
-
-    public function adminValidationProcess()
-    {
-        // Check if user is admin
-        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
-            header('Location: /login');
-            exit;
-        }
-
-        $achievementId = (int)$_POST['achievementId'];
-        $status = trim($_POST['status']);
-        $note = trim($_POST['note']);
-
-        try {
-            Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
-            $_SESSION['success'] = 'Validation updated successfully';
-        } catch (\Exception $e) {
-            $_SESSION['error'] = $e->getMessage();
-        }
-
-        header('Location: /dashboard/achievement/admin');
-        exit();
-    }
-
     public function edit($data)
     {
         // Verify if user is logged in
@@ -232,6 +199,7 @@ class AchievementController
                 $supervisors = Achievement::getSupervisorsByAchievementId($this->db, $id);
                 $teamLeaders = Achievement::getTeamMembersByAchievementId($this->db, $id, 2); // Role 2 for leaders
                 $teamMembers = Achievement::getTeamMembersByAchievementId($this->db, $id, 3); // Role 3 for members
+                $teamMembersPersonal = Achievement::getTeamMembersByAchievementId($this->db, $id, 4); // Role 4 for personal
 
                 // Load other necessary data
                 $lecturers = User::getAllActiveLecturers($this->db);
@@ -245,6 +213,7 @@ class AchievementController
                     'supervisors' => $supervisors,
                     'teamLeaders' => $teamLeaders,
                     'teamMembers' => $teamMembers,
+                    'teamMembersPersonal' => $teamMembersPersonal,
                     'lecturers' => $lecturers,
                     'students' => $students,
                     'competitionLevels' => $competitionLevels,
@@ -339,8 +308,9 @@ class AchievementController
         $supervisors = Achievement::getSupervisorsByAchievementId($this->db, $achievementId);
         $teamLeaders = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 2); // Role 2 for leaders
         $teamMembers = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 3); // Role 3 for members
+        $teamMembersPersonal = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 4); // Role 4 for personal
 
-        View::render('viewAchievement', ['achievement' => $achievement, 'supervisors' => $supervisors, 'teamLeaders' => $teamLeaders, 'teamMembers' => $teamMembers]);
+        View::render('viewAchievement', ['achievement' => $achievement, 'supervisors' => $supervisors, 'teamLeaders' => $teamLeaders, 'teamMembers' => $teamMembers, 'teamMembersPersonal' => $teamMembersPersonal]);
     }
 
     private function validateDates($competitionStartDate, $competitionEndDate, $letterDate)
@@ -553,5 +523,53 @@ class AchievementController
     public function achievementInfo()
     {
         $this->validateUser();
+    }
+
+    //admin
+    public function adminValidationProcess()
+    {
+        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 1) {
+            header('Location: /login');
+            exit;
+        }
+
+        $achievementId = (int)$_POST['achievementId'];
+        $status = trim($_POST['status']);
+        $note = trim($_POST['note']);
+
+        try {
+            Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
+            $_SESSION['success'] = 'Validation updated successfully';
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        header('Location: /admin/achievement/history');
+        exit();
+    }
+
+    public function adminHistory()
+    {
+        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 1) {
+            header('Location: /login');
+            exit;
+        }
+
+        if ($_SESSION['user']['fullName'] == 'Admin Pusat') {
+            $achievements = Achievement::getAllAchievements($this->db);
+        } elseif ($_SESSION['user']['fullName'] == 'Admin Program Studi Sistem Informasi Bisnis') {
+            $achievements = Achievement::getAchievementsByProdi($this->db, 2);
+        } else {
+            $achievements = Achievement::getAchievementsByProdi($this->db, 1);
+        }
+
+        View::render('achievement-history-admin', ['achievements' => $achievements]);
+    }
+
+    public function adminView($data)
+    {
+        $achievementId = (int)$data['id'];
+        $achievement = Achievement::getAchievementById($this->db, $achievementId);
+        View::render('viewAchievement', ['achievement' => $achievement]);
     }
 }

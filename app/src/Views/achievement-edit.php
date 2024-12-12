@@ -268,7 +268,7 @@
                                                     <div id="teamMemberContainer">
                                                         <?php
                                                         // Jika tidak ada anggota tim, tampilkan satu baris form kosong
-                                                        if (empty($teamLeaders) && empty($teamMembers)):
+                                                        if (empty($teamLeaders) && empty($teamMembers) && empty($teamMembersPersonal)):
                                                         ?>
                                                             <div class="input-group mb-2">
                                                                 <select class="form-control anggota-tim" name="teamMembers[]" required>
@@ -294,7 +294,8 @@
                                                         else:
                                                             $allMembers = array_merge(
                                                                 is_array($teamLeaders) ? $teamLeaders : [],
-                                                                is_array($teamMembers) ? $teamMembers : []
+                                                                is_array($teamMembers) ? $teamMembers : [],
+                                                                is_array($teamMembersPersonal) ? $teamMembersPersonal : []
                                                             );
                                                             foreach ($allMembers as $index => $member):
                                                             ?>

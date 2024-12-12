@@ -580,25 +580,39 @@ class Achievement
 
     public static function updateTeamMembers(PDO $db, int $achievementId, array $teamData): bool
     {
-        $db->prepare("DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = ? AND AchievementRole IN (?, ?)")->execute([
-            $achievementId,
-            self::ROLE_TEAM_LEADER,
-            self::ROLE_TEAM_MEMBER
-        ]);
+        try {
+            $db->beginTransaction();
 
-        $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
-        foreach ($teamData as $member) {
-            if (!empty($member['memberId'])) {
-                $role = $member['role'] === 'Ketua' ? self::ROLE_TEAM_LEADER : self::ROLE_TEAM_MEMBER;
-                $stmt->execute([
-                    $achievementId,
-                    $member['memberId'],
-                    $role
-                ]);
+            $db->prepare("DELETE FROM [dbo].[UserAchievement] WHERE AchievementId = ? AND AchievementRole IN (?, ?, ?)")->execute([
+                $achievementId,
+                self::ROLE_TEAM_LEADER,
+                self::ROLE_TEAM_MEMBER,
+                self::ROLE_PERSONAL
+            ]);
+
+            $stmt = $db->prepare("INSERT INTO [dbo].[UserAchievement] (AchievementId, UserId, AchievementRole) VALUES (?, ?, ?)");
+            foreach ($teamData as $member) {
+                if (!empty($member['memberId'])) {
+                    $role = match ($member['role']) {
+                        'Ketua' => self::ROLE_TEAM_LEADER,
+                        'Anggota' => self::ROLE_TEAM_MEMBER,
+                        'Personal' => self::ROLE_PERSONAL,
+                        default => self::ROLE_TEAM_MEMBER,
+                    };
+                    $stmt->execute([
+                        $achievementId,
+                        $member['memberId'],
+                        $role
+                    ]);
+                }
             }
-        }
 
-        return true;
+            $db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
 
     public static function deleteAchievement(PDO $db, int $id)
