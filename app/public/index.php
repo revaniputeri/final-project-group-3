@@ -1,6 +1,6 @@
 <?php
 
-require _DIR_ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use PrestaC\App\Connection;
 use PrestaC\App\Router;
@@ -12,7 +12,7 @@ use PrestaC\Controllers\AssetsController;
 use PrestaC\Controllers\ProfileController;
 use PrestaC\Middleware\AuthMiddleware;
 
-$config = require _DIR_ . '/../config.php';
+$config = require __DIR__ . '/../config.php';
 $connection = new Connection(
     host: $config['host'],
     name: $config['name'],
