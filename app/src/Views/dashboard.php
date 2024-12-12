@@ -17,7 +17,7 @@
             <div class="row">
                 <!-- Submission Form Menu Box -->
                 <div class="col-md-4 grid-margin stretch-card">
-                    <div class="card">
+                    <div class="card gradient-box">
                         <div class="card-body">
                             <h4 class="card-title">Tambah Prestasi</h4>
                             <p class="card-description">
@@ -33,7 +33,9 @@
 
                 <!-- Kotak Menu Riwayat Prestasi -->
                 <div class="col-md-4 grid-margin stretch-card">
+                
                     <div class="card">
+                    
                         <div class="card-body">
                             <h4 class="card-title">Riwayat Prestasi</h4>
                             <p class="card-description">
@@ -49,6 +51,7 @@
 
                 <!-- Info Menu Box -->
                 <div class="col-md-4 grid-margin stretch-card">
+                
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Buku Panduan Prestasi</h4>
@@ -67,7 +70,7 @@
             <div class="row mt-4">
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body-top">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="card-title">Top 10 Prestasi Tertinggi</h4>
                             </div>
@@ -123,3 +126,25 @@
         window.location.href = `/dashboard?tahun=${tahun}`;
     }
 </script>
+
+<style>
+    .gradient-box {
+    background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
+    color: white; /* Mengubah warna teks agar kontras dengan latar belakang */
+    border-radius: 10px; /* Menambahkan border-radius untuk tampilan lebih halus */
+}
+
+.card-body{
+    padding: 1.25rem;
+    background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
+    border-radius: 10px;
+}
+
+.card-body-top{
+    flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
+
+
+</style>
