@@ -238,14 +238,20 @@
                                             echo '<a href="/admin/achievement/history" class="btn btn-light btn-lg px-4">
                                             <i class="fas fa-arrow-left mr-2"></i> Terima Prestasi
                                         </a>';
-                                        } else {
                                             echo '<a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
                                             <i class="fas fa-arrow-left mr-2"></i> Tolak Prestasi
                                         </a>';
+                                        } else {
+                                            if ($_SESSION['user']['role'] === 1) {
+                                                echo '<a href="/admin/achievement/history" class="btn btn-light btn-lg px-4">
+                                                <i class="fas fa-arrow-left mr-2"></i> Kembali
+                                            </a>';
+                                            } else {
+                                                echo '<a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
+                                                <i class="fas fa-arrow-left mr-2"></i> Kembali
+                                            </a>';
+                                            }
                                         } ?>
-                                        <a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
-                                            <i class="fas fa-arrow-left mr-2"></i> Kembali
-                                        </a>
                                     </div>
                                 </div>
                             </form>

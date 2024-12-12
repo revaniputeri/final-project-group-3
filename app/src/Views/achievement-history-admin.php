@@ -51,16 +51,6 @@
                                                         <a href="/dashboard/achievement/view/<?= $achievement['Id'] ?>" class="btn btn-info btn-sm" title="View">
                                                             <i class="ti-eye"></i>
                                                         </a>
-                                                        <?php if ($achievement['Status'] === 'Pending'): ?>
-                                                            <button type="button" class="btn btn-success btn-sm" title="Approve"
-                                                                onclick="confirmApprove(<?= $achievement['Id'] ?>)">
-                                                                <i class="ti-check"></i>
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger btn-sm" title="Reject"
-                                                                onclick="confirmReject(<?= $achievement['Id'] ?>)">
-                                                                <i class="ti-close"></i>
-                                                            </button>
-                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
                                             </tr>
