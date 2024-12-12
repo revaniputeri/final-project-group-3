@@ -36,7 +36,7 @@ class ProfileController
             ]);
         } catch (\Exception $e) {
             $_SESSION['error'] = "An error occurred while fetching profile data.";
-            header('Location: /dashboard');
+            header('Location: /dashboard/home');
             exit();
         }
     }

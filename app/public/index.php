@@ -5,9 +5,11 @@ require __DIR__ . '/../vendor/autoload.php';
 use PrestaC\App\Connection;
 use PrestaC\App\Router;
 use PrestaC\Controllers\AchievementController;
+use PrestaC\Controllers\StudentController;
 use PrestaC\Controllers\AuthController;
 use PrestaC\Controllers\IndexController;
 use PrestaC\Controllers\AssetsController;
+use PrestaC\Controllers\ProfileController;
 use PrestaC\Middleware\AuthMiddleware;
 
 $config = require __DIR__ . '/../config.php';
@@ -100,6 +102,34 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+// profile customization page
+Router::add(
+    method: "GET",
+    path: "/dashboard/profile",
+    controller: ProfileController::class,
+    function: "viewProfile",
+    dependencies: ['db' => $connection]
+);
+
+// Profile customization process
+Router::add(
+    method: "POST",
+    path: "/dashboard/profile",
+    controller: IndexController::class,
+    function: "profileCustomizationProcess",
+    dependencies: ['db' => $connection]
+);
+
+// assets route
+Router::add(
+    method: "GET",
+    path: "/assets/(?<path>.*)",
+    controller: AssetsController::class,
+    function: "serve",
+    dependencies: []
+);
+
+// submission form within achievement submission
 Router::add(
     method: "GET",
     path: "/dashboard/achievement/form",

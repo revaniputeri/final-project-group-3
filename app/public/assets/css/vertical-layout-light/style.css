@@ -13774,6 +13774,9 @@ input[type="button"].btn-block {
   color: #fff;
 }
 
+
+
+
 .card {
   position: relative;
   display: flex;
@@ -13812,12 +13815,13 @@ input[type="button"].btn-block {
 .card > .list-group + .card-footer {
   border-top: 0;
 }
-
+/*
 .card-body {
   flex: 1 1 auto;
   min-height: 1px;
   padding: 1.25rem;
 }
+  */
 
 .card-title {
   margin-bottom: 0.75rem;
@@ -19771,7 +19775,7 @@ code {
   width: 26px;
   height: 26px;
 }
-
+/*
 .stretch-card {
   display: -webkit-flex;
   display: flex;
@@ -19780,7 +19784,7 @@ code {
   -webkit-justify-content: stretch;
   justify-content: stretch;
 }
-
+*/
 .stretch-card > .card {
   width: 100%;
   min-width: 100%;
@@ -28817,23 +28821,14 @@ div.tagsinput span.tag a {
   color: #1b2658;
 }
 
-.navbar .navbar-brand-wrapper .navbar-brand img {
-  max-width: 100%;
-  height: 34px;
-  margin: auto;
-  vertical-align: middle;
-}
+
 
 .navbar .navbar-brand-wrapper .brand-logo-mini {
   padding-left: 0;
   text-align: center;
 }
 
-.navbar .navbar-brand-wrapper .brand-logo-mini img {
-  width: calc(70px - 30px);
-  max-width: 100%;
-  margin: auto;
-}
+
 
 .navbar .navbar-menu-wrapper {
   background: #ffffff;
