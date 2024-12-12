@@ -202,17 +202,29 @@
                                                 <div class="form-group mb-3">
                                                     <label class="form-label">Anggota Tim</label>
                                                     <div id="teamMemberContainer">
-                                                        <?php if (is_array($teamMembers)): ?>
-                                                            <?php foreach ($teamMembers as $member): ?>
-                                                                <div class="input-group mb-2">
-                                                                    <input type="text" class="form-control" value="<?= $member['FullName'] ?> (<?= $member['AchievementRole'] ?>)" readonly>
-                                                                </div>
-                                                            <?php endforeach; ?>
-                                                        <?php else: ?>
+                                                        <?php
+                                                        if (empty($teamLeaders) && empty($teamMembers) && empty($teamMembersPersonal)):
+                                                        ?>
                                                             <div class="input-group mb-2">
-                                                                <input type="text" class="form-control" value="No team members available" readonly>
+                                                                <input type="text" class="form-control" value="Tidak ada anggota tim" readonly>
                                                             </div>
-                                                        <?php endif; ?>
+                                                            <?php
+                                                        else:
+                                                            $allMembers = array_merge(
+                                                                is_array($teamLeaders) ? $teamLeaders : [],
+                                                                is_array($teamMembers) ? $teamMembers : [],
+                                                                is_array($teamMembersPersonal) ? $teamMembersPersonal : []
+                                                            );
+                                                            foreach ($allMembers as $index => $member):
+                                                            ?>
+                                                                <div class="input-group mb-2">
+                                                                    <input type="text" class="form-control" value="<?= htmlspecialchars($member['FullName']) ?>" readonly>
+                                                                    <input type="text" class="form-control anggota-tim-peran ml-0   " value="<?= $member['AchievementRole'] == '2' ? 'Ketua' : ($member['AchievementRole'] == '3' ? 'Anggota' : ($member['AchievementRole'] == '4' ? 'Personal' : '')) ?>" readonly>
+                                                                </div>
+                                                        <?php
+                                                            endforeach;
+                                                        endif;
+                                                        ?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -222,6 +234,15 @@
 
                                 <div class="row mt-4">
                                     <div class="col-12 text-right">
+                                        <?php if ($_SESSION['user']['role'] === 1) {
+                                            echo '<a href="/admin/achievement/history" class="btn btn-light btn-lg px-4">
+                                            <i class="fas fa-arrow-left mr-2"></i> Terima Prestasi
+                                        </a>';
+                                        } else {
+                                            echo '<a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
+                                            <i class="fas fa-arrow-left mr-2"></i> Tolak Prestasi
+                                        </a>';
+                                        } ?>
                                         <a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
                                             <i class="fas fa-arrow-left mr-2"></i> Kembali
                                         </a>

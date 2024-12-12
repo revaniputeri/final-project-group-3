@@ -18,6 +18,7 @@ $connection = new Connection(
     password: $config['password']
 );
 
+// AuthController routes
 Router::add(
     method: "GET",
     path: "/",
@@ -26,7 +27,6 @@ Router::add(
     dependencies: ["db" => $connection]
 );
 
-//guest page
 Router::add(
     method: "GET",
     path: "/guest",
@@ -35,7 +35,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//login page
 Router::add(
     method: "GET",
     path: "/login",
@@ -44,7 +43,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//login process
 Router::add(
     method: "POST",
     path: "/login",
@@ -53,7 +51,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//logout process
 Router::add(
     method: "POST",
     path: "/logout",
@@ -62,7 +59,7 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//leaderboard page
+// AchievementController routes
 Router::add(
     method: "GET",
     path: "/leaderboard",
@@ -71,48 +68,11 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//leaderboard process
 Router::add(
     method: "POST",
     path: "/leaderboard",
     controller: AchievementController::class,
     function: "leaderboardProcess",
-    dependencies: ['db' => $connection]
-);
-
-//dashboard page
-Router::add(
-    method: "GET",
-    path: "/dashboard/home",
-    controller: IndexController::class,
-    function: "getDataTableAchievements",
-    dependencies: ['db' => $connection]
-);
-
-//dashboard process
-Router::add(
-    method: "POST",
-    path: "/dashboard/home",
-    controller: IndexController::class,
-    function: "getDataTableAchievements",
-    dependencies: ['db' => $connection]
-);
-
-//dashboard admin
-Router::add(
-    method: "GET",
-    path: "/admin/dashboard",
-    controller: IndexController::class,
-    function: "dashboardAdmin",
-    dependencies: ['db' => $connection]
-);
-
-//dashboard lecturer
-Router::add(
-    method: "GET",
-    path: "/lecturer/dashboard",
-    controller: IndexController::class,
-    function: "dashboardLecturer",
     dependencies: ['db' => $connection]
 );
 
@@ -132,7 +92,7 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-Router:: add(
+Router::add(
     method: "GET",
     path: "/dashboard/achievement/view/(?<id>[0-9]+)",
     controller: AchievementController::class,
@@ -140,34 +100,6 @@ Router:: add(
     dependencies: ['db' => $connection]
 );
 
-// profile customization page
-Router::add(
-    method: "GET",
-    path: "/dashboard/profile",
-    controller: IndexController::class,
-    function: "profileCustomization",
-    dependencies: ['db' => $connection]
-);
-
-// Profile customization process
-Router::add(
-    method: "POST",
-    path: "/dashboard/profile",
-    controller: IndexController::class,
-    function: "profileCustomizationProcess",
-    dependencies: ['db' => $connection]
-);
-
-// assets route
-Router::add(
-    method: "GET",
-    path: "/assets/(?<path>.*)",
-    controller: AssetsController::class,
-    function: "serve",
-    dependencies: []
-);
-
-// submission form within achievement submission
 Router::add(
     method: "GET",
     path: "/dashboard/achievement/form",
@@ -176,7 +108,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// submission form process
 Router::add(
     method: "POST",
     path: "/dashboard/achievement/form",
@@ -185,7 +116,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// achievement history page
 Router::add(
     method: "GET",
     path: "/dashboard/achievement/history",
@@ -194,7 +124,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// info page within achievement submission
 Router::add(
     method: "GET",
     path: "/dashboard/achievement/info",
@@ -203,31 +132,76 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-//ADMIN
-//admin validation process
 Router::add(
     method: "POST",
-    path: "/dashboard/admin/validation",
+    path: "/admin/achievement/history",
+    controller: AchievementController::class,
+    function: "adminHistory",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "GET",
+    path: "/admin/achievement/view/(?<id>[0-9]+)",
+    controller: AchievementController::class,
+    function: "adminView",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "POST",
+    path: "/admin/achievement/view/(?<id>[0-9]+)",
     controller: AchievementController::class,
     function: "adminValidationProcess",
     dependencies: ['db' => $connection]
 );
 
-// Add this route for serving uploaded files
-Router::add(
-    method: "GET",
-    path: "/storage/achievements/(?<path>.*)",
-    controller: AssetsController::class,
-    function: "serveUploadedFile",
-    dependencies: []
-);
-
-// achievement delete process
 Router::add(
     method: "POST",
     path: "/dashboard/achievement/delete/(?<id>[0-9]+)",
     controller: AchievementController::class,
     function: "deleteAchievement",
+    dependencies: ['db' => $connection]
+);
+
+// IndexController routes
+Router::add(
+    method: "GET",
+    path: "/dashboard/home",
+    controller: IndexController::class,
+    function: "getDataTableAchievements",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "POST",
+    path: "/dashboard/home",
+    controller: IndexController::class,
+    function: "getDataTableAchievements",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "GET",
+    path: "/admin/dashboard",
+    controller: IndexController::class,
+    function: "dashboardAdmin",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "GET",
+    path: "/dashboard/profile",
+    controller: IndexController::class,
+    function: "profileCustomization",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "POST",
+    path: "/dashboard/profile",
+    controller: IndexController::class,
+    function: "profileCustomizationProcess",
     dependencies: ['db' => $connection]
 );
 
@@ -239,12 +213,21 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+// AssetsController routes
 Router::add(
     method: "GET",
-    path: "/dashboard/info",
-    controller: AchievementController::class,
-    function: "info",
-    dependencies: ['db' => $connection]
+    path: "/assets/(?<path>.*)",
+    controller: AssetsController::class,
+    function: "serve",
+    dependencies: []
+);
+
+Router::add(
+    method: "GET",
+    path: "/storage/achievements/(?<path>.*)",
+    controller: AssetsController::class,
+    function: "serveUploadedFile",
+    dependencies: []
 );
 
 Router::run();
