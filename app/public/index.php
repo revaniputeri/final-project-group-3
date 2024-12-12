@@ -156,14 +156,6 @@ Router::add(
 
 Router::add(
     method: "GET",
-    path: "/dashboard/achievement/info",
-    controller: AchievementController::class,
-    function: "achievementInfo",
-    dependencies: ['db' => $connection]
-);
-
-Router::add(
-    method: "POST",
     path: "/admin/achievement/history",
     controller: AchievementController::class,
     function: "adminHistory",

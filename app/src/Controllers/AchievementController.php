@@ -520,11 +520,6 @@ class AchievementController
         }
     }
 
-    public function achievementInfo()
-    {
-        $this->validateUser();
-    }
-
     //admin
     public function adminValidationProcess()
     {

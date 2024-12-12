@@ -488,7 +488,7 @@ class Achievement
 
     public static function handleFileUpload(array $file, string $folder): string
     {
-        $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
+        $uploadDir = DIR . '/../../../app/public/storage/achievements/' . $folder . '/';
 
         // Create directory if it doesn't exist
         if (!file_exists($uploadDir)) {
