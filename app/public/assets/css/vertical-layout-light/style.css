@@ -83211,7 +83211,7 @@ code {
 }
 
 .card .card-title {
-  color: #010101;
+  color: #ffffff;
   margin-bottom: 1.2rem;
   text-transform: capitalize;
   font-size: 1.125rem;
@@ -83227,7 +83227,7 @@ code {
 .card .card-description {
   margin-bottom: .875rem;
   font-weight: 400;
-  color: #76838f;
+  color: #ffffff;
 }
 
 .card.card-outline-success {

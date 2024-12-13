@@ -9,8 +9,7 @@
                     <div class="row">
                         <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                             <h1 class="font-weight-bold">Selamat Datang di PrestaC</h1>
-                            <p class="text-muted">Pantau dan kelola prestasi Anda melalui dashboard yang mudah digunakan
-                            </p>
+                            <p class="text-muted">Pantau dan kelola prestasi Anda melalui dashboard yang mudah digunakan</p>
                         </div>
                     </div>
                 </div>
@@ -57,7 +56,7 @@
                         <div class="card-body">
                             <h4 class="card-title">Buku Panduan Prestasi</h4>
                             <p class="card-description">
-                                Pelajari kebijakan dan informasi seputar prestasi mahasiswa
+                                Baca kebijakan dan informasi dibawah!
                             </p>
                             <a href="/dashboard/info" class="btn btn-info btn-lg btn-block">
                                 <i class="ti-book mr-2"></i>
@@ -131,24 +130,26 @@
 
 <style>
     .gradient-box {
-        background: linear-gradient(to right, #8490f0, #87b7fd);
-        /* Ganti warna sesuai preferensi */
-        color: white;
-        /* Mengubah warna teks agar kontras dengan latar belakang */
-        border-radius: 10px;
-        /* Menambahkan border-radius untuk tampilan lebih halus */
-    }
+    background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
+    color: white; /* Mengubah warna teks agar kontras dengan latar belakang */
+    border-radius: 10px; /* Menambahkan border-radius untuk tampilan lebih halus */
+}
 
-    .card-body {
-        padding: 1.25rem;
-        background: linear-gradient(to right, #8490f0, #87b7fd);
-        /* Ganti warna sesuai preferensi */
-        border-radius: 10px;
-    }
+.card-body{
+    padding: 1.25rem;
+    background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
+    border-radius: 10px;
+}
 
-    .card-body-top {
-        flex: 1 1 auto;
-        min-height: 1px;
-        padding: 1.25rem;
-    }
+.card-body-top{
+    flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
+
+
+body{
+    font-family: 'Poppins', sans-serif;
+}
+
 </style>
