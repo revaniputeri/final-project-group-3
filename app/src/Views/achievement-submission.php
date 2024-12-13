@@ -6,6 +6,7 @@ if (isset($_SESSION['form_data'])) {
   unset($_SESSION['form_data']);
 }
 ?>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <div class="container-fluid page-body-wrapper">
   <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
@@ -339,6 +340,12 @@ if (isset($_SESSION['form_data'])) {
   window.COMPETITION_RANKS = <?= json_encode($competitionRanks) ?>;
   window.COMPETITION_LEVELS = <?= json_encode($competitionLevels) ?>;
 </script>
+
+<style>
+  body{
+    font-family: 'Poppins', sans-serif;
+  }
+</style>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="/assets/css/achievement-submission.css" rel="stylesheet" />
