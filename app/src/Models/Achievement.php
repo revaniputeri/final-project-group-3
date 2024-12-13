@@ -150,7 +150,7 @@ class Achievement
     public static function getAchievementsByProdi(PDO $db, int $prodi)
     {
         $stmt = $db->prepare('
-            SELECT a.*, u.FullName 
+            SELECT a.*, u.FullName, s.StudentStatus
             FROM [dbo].[Achievement] a
             JOIN [dbo].[Student] s ON a.UserId = s.UserId
             JOIN [dbo].[User] u ON a.UserId = u.Id
