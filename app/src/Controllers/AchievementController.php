@@ -554,6 +554,11 @@ class AchievementController
             $achievements = Achievement::getAchievementsByProdi($this->db, 1);
         }
 
+        foreach ($achievements as &$achievement) {
+            $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
+            $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
+        }
+
         View::render('achievement-history-admin', ['achievements' => $achievements]);
     }
 

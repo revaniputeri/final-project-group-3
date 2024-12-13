@@ -349,4 +349,5 @@ class AchievementForm {
     }
 }
 
+//instance of AchievementForm
 window.achievementForm = new AchievementForm();

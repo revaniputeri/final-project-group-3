@@ -161,7 +161,7 @@
             </div><br>
             <!-- Tombol Unduh PDF -->
             <div class="text-center mt-5 mb-5">
-                <a href="generate-pdf.php" class="btn btn-info btn-lg shadow-lg">Unduh PDF</a>
+                <a href="/app/public/assets/Skema Poin Mahasiswa.pdf" class="btn btn-info btn-lg shadow-lg" download>Unduh PDF</a>
             </div>
             <?php require __DIR__ . '/partials/footer-page.php'; ?>
         </div>
