@@ -30,11 +30,11 @@
                                     <tbody>
                                         <?php foreach ($achievements as $achievement): ?>
                                             <tr>
-                                                <td><?= date('d M Y', strtotime($achievement['SubmissionDate'])) ?></td>
-                                                <td><?= $achievement['StudentName'] ?></td>
+                                                <td><?= date('d M Y', strtotime($achievement['CreatedAt'])) ?></td>
+                                                <td><?= $achievement['FullName'] ?></td>
                                                 <td><?= $achievement['CompetitionTitle'] ?></td>
-                                                <td><?= $achievement['CompetitionLevel'] ?></td>
-                                                <td><?= $achievement['CompetitionRank'] ?></td>
+                                                <td><?= $achievement['CompetitionLevelName'] ?></td>
+                                                <td><?= $achievement['CompetitionRankName'] ?></td>
                                                 <td>
                                                     <?php
                                                     $statusClasses = [
@@ -42,9 +42,9 @@
                                                         'Approved' => 'badge-success',
                                                         'Rejected' => 'badge-danger'
                                                     ];
-                                                    $badgeClass = $statusClasses[$achievement['Status']] ?? 'badge-secondary';
+                                                    $badgeClass = $statusClasses[$achievement['StudentStatus']] ?? 'badge-secondary';
                                                     ?>
-                                                    <label class="badge <?= $badgeClass ?>"><?= $achievement['Status'] ?></label>
+                                                    <label class="badge <?= $badgeClass ?>"><?= $achievement['StudentStatus'] ?></label>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group" role="group">

@@ -1,3 +1,5 @@
+
+
 /*------------------------------------------------------------------
  [Master Stylesheet]
 
@@ -116,6 +118,8 @@
 /* === Import template variables === */
 /*-------------------------------------------------------------------*/
 /* === SCSS Compass Functions === */
+
+/*
 @-moz-keyframes flash {
   0% {
     opacity: 1;
@@ -8847,8 +8851,12 @@ figure {
 }
 
 img {
-  vertical-align: middle;
-  border-style: none;
+position: absolute;
+top: -6px;
+left: 0px;
+width: 50px;
+height: auto;
+display: block;
 }
 
 svg {
@@ -28824,16 +28832,8 @@ div.tagsinput span.tag a {
   vertical-align: middle;
 }
 
-.navbar .navbar-brand-wrapper .brand-logo-mini {
-  padding-left: 0;
-  text-align: center;
-}
 
-.navbar .navbar-brand-wrapper .brand-logo-mini img {
-  width: calc(70px - 30px);
-  max-width: 100%;
-  margin: auto;
-}
+
 
 .navbar .navbar-menu-wrapper {
   background: #ffffff;
@@ -30593,3 +30593,4 @@ div.tagsinput span.tag a {
 }
 
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */
+*/
