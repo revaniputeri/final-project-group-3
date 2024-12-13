@@ -19,8 +19,8 @@
                 <div class="col-md-4 grid-margin stretch-card">
                     <div class="card gradient-box">
                         <div class="card-body">
-                            <h4 class="card-title">Tambah Prestasi</h4>
-                            <p class="card-description">
+                            <h4 class="card-title" style="color: white;" >Tambah Prestasi</h4>
+                            <p class="card-description" style="color: white;" >
                                 Klik disini untuk menambah prestasi baru
                             </p>
                             <a href="/dashboard/achievement/form" class="btn btn-primary btn-lg btn-block">
@@ -37,8 +37,8 @@
                     <div class="card">
                     
                         <div class="card-body">
-                            <h4 class="card-title">Riwayat Prestasi</h4>
-                            <p class="card-description">
+                            <h4 class="card-title" style="color: white;"  >Riwayat Prestasi</h4>
+                            <p class="card-description"  style="color: white;" >
                                 Lihat riwayat prestasi Anda
                             </p>
                             <a href="/dashboard/achievement/history" class="btn btn-info btn-lg btn-block">
@@ -54,8 +54,8 @@
                 
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Buku Panduan Prestasi</h4>
-                            <p class="card-description">
+                            <h4 class="card-title" style="color: white;" >Buku Panduan Prestasi</h4>
+                            <p class="card-description" style="color: white;" >
                                 Baca kebijakan dan informasi dibawah!
                             </p>
                             <a href="/dashboard/info" class="btn btn-info btn-lg btn-block">
@@ -149,22 +149,4 @@
 body{
     font-family: 'Poppins', sans-serif;
 }
-=======
-
-.card-body{
-    padding: 1.25rem;
-    background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
-    border-radius: 10px;
-}
-
-.card-body-top{
-    flex: 1 1 auto;
-  min-height: 1px;
-  padding: 1.25rem;
-}
-
-body{
-    font-family: 'Poppins', sans-serif;
-}
-
 </style>
