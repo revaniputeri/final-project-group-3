@@ -2,7 +2,7 @@
 
 // change with your credentials
 return [
-    'host' => 'REVANIPUTERI',
+    'host' => 'LAPTOP-IGVJVOT0\SQLEXPRESS',
     'name' => 'prestac',
     'username' => '',
     'password' => ''
