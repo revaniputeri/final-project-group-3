@@ -33,9 +33,9 @@
 
                 <!-- Kotak Menu Riwayat Prestasi -->
                 <div class="col-md-4 grid-margin stretch-card">
-
+                
                     <div class="card">
-
+                    
                         <div class="card-body">
                             <h4 class="card-title">Riwayat Prestasi</h4>
                             <p class="card-description">
@@ -51,7 +51,7 @@
 
                 <!-- Info Menu Box -->
                 <div class="col-md-4 grid-margin stretch-card">
-
+                
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Buku Panduan Prestasi</h4>
@@ -89,15 +89,14 @@
                                         if (!empty($topAchievements)) {
                                             $no = 1;
                                             foreach ($topAchievements as $achievement) {
-                                                ?>
+                                        ?>
                                                 <tr>
                                                     <td><?= $no++ ?></td>
                                                     <td><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>
                                                     <td><?= htmlspecialchars($achievement['CompetitionLevel']) ?></td>
-                                                    <td><?= number_format($achievement['CompetitionPoints'], 0, ',', '.') ?>
-                                                    </td>
+                                                    <td><?= number_format($achievement['CompetitionPoints'], 0, ',', '.') ?></td>
                                                 </tr>
-                                                <?php
+                                            <?php
                                             }
                                         } else {
                                             ?>
@@ -119,10 +118,10 @@
 
 <script>
     document.getElementById('tahun').addEventListener('change', updateTopAchievements);
-
+    
     function updateTopAchievements() {
         const tahun = document.getElementById('tahun').value;
-
+        
         // Redirect or Ajax call
         window.location.href = `/dashboard?tahun=${tahun}`;
     }
@@ -134,7 +133,6 @@
     color: white; /* Mengubah warna teks agar kontras dengan latar belakang */
     border-radius: 10px; /* Menambahkan border-radius untuk tampilan lebih halus */
 }
-
 .card-body{
     padding: 1.25rem;
     background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
@@ -147,6 +145,23 @@
   padding: 1.25rem;
 }
 
+
+body{
+    font-family: 'Poppins', sans-serif;
+}
+=======
+
+.card-body{
+    padding: 1.25rem;
+    background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
+    border-radius: 10px;
+}
+
+.card-body-top{
+    flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
 
 body{
     font-family: 'Poppins', sans-serif;

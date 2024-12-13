@@ -80257,6 +80257,7 @@ a.text-dark:hover, a.text-dark:focus {
   }
   body {
     min-width: 992px !important;
+    font-family: 'Poppins', sans-serif;
   }
   .container {
     min-width: 992px !important;
