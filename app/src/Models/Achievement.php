@@ -8,10 +8,10 @@ use PDO;
 
 class Achievement
 {
-    private const MAX_FILE_SIZE = 5242880; // 5MB
-    private const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
-    private const UPLOAD_BASE_PATH = '@storage/achievements/';
-    private const UPLOAD_FOLDERS = [
+    private const MAX_FILE_SIZE = 5242880; // 5MB //Batas Ukuran file maksisimum 5 MB
+    private const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png']; // Tipe file yang boleh 
+    private const UPLOAD_BASE_PATH = '@storage/achievements/'; //Path untuk simpan dokumen 
+    private const UPLOAD_FOLDERS = [ // folder untuk simpan unggahan file
         'letterFile' => 'letters',
         'certificateFile' => 'certificates',
         'documentationFile' => 'documentation',
@@ -41,7 +41,7 @@ class Achievement
     private const ROLE_TEAM_MEMBER = 3;
     private const ROLE_PERSONAL = 4;
 
-    public function __construct(
+    public function __construct( // Konstruktor untuk membuat instansiasi baru dgn atribut parameter terkait
         public $userId,
         public $competitionType,
         public $competitionLevel,
@@ -71,7 +71,7 @@ class Achievement
         public ?DateTime $deletedAt = null
     ) {}
 
-    private function calculateCompetitionPoints(): float
+    private function calculateCompetitionPoints(): float //method hitung total poin
     {
         $rankPoints = self::COMPETITION_RANKS[$this->competitionRank]['points'] ?? 0;
         $levelPoints = self::COMPETITION_LEVELS[$this->competitionLevel]['points'] ?? 0;
@@ -79,7 +79,7 @@ class Achievement
         return $rankPoints + $levelPoints;
     }
 
-    public static function getCompetitionRanks(): array
+    public static function getCompetitionRanks(): array //enkapsulasi - method utk dpt data
     {
         return self::COMPETITION_RANKS;
     }
@@ -100,7 +100,7 @@ class Achievement
 
     public static function getAchievementById(PDO $db, int $id)
     {
-        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL');
+        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL'); //prepare > untuk mengamankan kueri dari sql injection //deletedAt : untuk softdelete
         $stmt->execute([':id' => $id]);
         $achievement = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -114,7 +114,7 @@ class Achievement
 
         return $achievement;
     }
-
+//batas
     public static function getAchievementsByUserId(PDO $db, int $userId)
     {
         $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL');
@@ -488,7 +488,7 @@ class Achievement
 
     public static function handleFileUpload(array $file, string $folder): string
     {
-        $uploadDir = DIR . '/../../../app/public/storage/achievements/' . $folder . '/';
+        $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
 
         // Create directory if it doesn't exist
         if (!file_exists($uploadDir)) {
