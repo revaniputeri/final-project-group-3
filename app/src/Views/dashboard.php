@@ -56,7 +56,7 @@
                         <div class="card-body">
                             <h4 class="card-title">Buku Panduan Prestasi</h4>
                             <p class="card-description">
-                                Pelajari kebijakan dan informasi seputar prestasi mahasiswa
+                                Baca kebijakan dan informasi dibawah!
                             </p>
                             <a href="/dashboard/info" class="btn btn-info btn-lg btn-block">
                                 <i class="ti-book mr-2"></i>
@@ -133,6 +133,23 @@
     color: white; /* Mengubah warna teks agar kontras dengan latar belakang */
     border-radius: 10px; /* Menambahkan border-radius untuk tampilan lebih halus */
 }
+.card-body{
+    padding: 1.25rem;
+    background: linear-gradient(to right, #8490f0, #87b7fd); /* Ganti warna sesuai preferensi */
+    border-radius: 10px;
+}
+
+.card-body-top{
+    flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
+
+
+body{
+    font-family: 'Poppins', sans-serif;
+}
+=======
 
 .card-body{
     padding: 1.25rem;
@@ -149,6 +166,5 @@
 body{
     font-family: 'Poppins', sans-serif;
 }
-
 
 </style>
