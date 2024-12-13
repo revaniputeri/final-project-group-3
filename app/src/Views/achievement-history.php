@@ -1,5 +1,5 @@
     <?php include __DIR__ . '/partials/navbar.php'; ?>
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <div class="container-fluid page-body-wrapper">
         <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
 
@@ -129,3 +129,8 @@
             }
         });
     </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
