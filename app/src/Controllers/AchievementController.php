@@ -39,10 +39,6 @@ class AchievementController
         $id = $_SESSION['user']['id'];
         $achievements = Achievement::getAchievementsByUserId($this->db, $id);
 
-        //approval
-        $achievementsByProdi = Achievement::getAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
-        $achievementsPusat = Achievement::getAllAchievements($this->db);
-
         // Convert rank and level IDs to names
         foreach ($achievements as &$achievement) {
             $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
