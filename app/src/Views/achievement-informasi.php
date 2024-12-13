@@ -1,5 +1,5 @@
 <?php include __DIR__ . '/partials/navbar.php'; ?>
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <div class="container-fluid page-body-wrapper">
     <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
 
@@ -25,6 +25,7 @@
                                 mahasiswa dalam
                                 menghadapi tantangan.
                             </p>
+                            <br>
                             <p class="fs-5"><strong>Jenis Prestasi Mahasiswa:</strong></p>
                             <div class="row text-center">
                                 <div class="col-md-3">
@@ -165,3 +166,8 @@
             <?php require __DIR__ . '/partials/footer-page.php'; ?>
         </div>
     </div>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
