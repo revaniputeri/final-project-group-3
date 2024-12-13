@@ -149,7 +149,15 @@ class Achievement
 
     public static function getAchievementsByProdi(PDO $db, int $prodi)
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi) AND DeletedAt IS NULL AND AdminValidationStatus = \'PENDING\'');
+        $stmt = $db->prepare('
+            SELECT a.*, u.FullName 
+            FROM [dbo].[Achievement] a
+            JOIN [dbo].[Student] s ON a.UserId = s.UserId
+            JOIN [dbo].[User] u ON a.UserId = u.Id
+            WHERE s.StudentMajor = :prodi 
+            AND a.DeletedAt IS NULL 
+            AND a.AdminValidationStatus = \'PENDING\'
+        ');
         $stmt->execute([':prodi' => $prodi]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -488,7 +496,7 @@ class Achievement
 
     public static function handleFileUpload(array $file, string $folder): string
     {
-        $uploadDir = DIR . '/../../../app/public/storage/achievements/' . $folder . '/';
+        $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
 
         // Create directory if it doesn't exist
         if (!file_exists($uploadDir)) {
