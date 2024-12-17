@@ -9,8 +9,8 @@
   <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
     <div class="menu-right">
         <a href="/login" class="nav-link" style="margin-right: 0;">
-        <i class="icon-head menu-icon mb-1" id="profile-icon"></i>
-        Login
+            <i class="icon-head menu-icon mb-1" id="profile-icon"></i>
+            <?php echo isset($_SESSION['user']['fullName']) ? htmlspecialchars($_SESSION['user']['fullName']) : 'Login'; ?>
         </a>
     </div>
   </div>
