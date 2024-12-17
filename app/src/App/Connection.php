@@ -6,8 +6,10 @@ use PDO;
 
 class Connection
 {
+	//property connectionnya
 	private ?PDO $connection = null;
 
+	//constructor buat nyimpen credentialnya
 	public function __construct(
 		private string $host,
 		private string $name,
@@ -15,6 +17,7 @@ class Connection
 		private string $password,
 	) {}
 
+	//method buat ngecek apakah connectionnya sudah ada atau belum, kalo belum ada, buat connection baru
 	public function getConnection()
 	{
 		if ($this->connection === null) {
@@ -23,6 +26,7 @@ class Connection
 		return $this->connection;
 	}
 
+	//method buat ngebuat connection baru
 	private function connect()
 	{
 		$dbConnection = new PDO("sqlsrv:server=$this->host;Database=$this->name", $this->username, $this->password);

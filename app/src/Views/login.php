@@ -179,9 +179,9 @@
 
             <form  action="/login" method="post" style="margin-top: 0px;">
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="NIM/NIDN/NIP" required 
+                    <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="NIM/NIP" required 
                            style="border-radius: 12px; border: 1px solid #d1d8e0; padding: 15px; transition: box-shadow 0.3s;">
-                    <small class="form-text text-muted ml-2">Masukkan NIM (untuk mahasiswa), NIDN (untuk dosen), atau NIP (untuk admin)</small>
+                    <small class="form-text text-muted ml-2">Masukkan NIM (untuk mahasiswa) atau NIP (untuk admin)</small>
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password" required
