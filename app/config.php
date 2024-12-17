@@ -1,8 +1,8 @@
 <?php
 
-// change with your credentials
+//buat nyimpen detail database
 return [
-    'host' => 'LAPTOP-IGVJVOT0\SQLEXPRESS',
+    'host' => 'REVANIPUTERI',
     'name' => 'prestac',
     'username' => '',
     'password' => ''

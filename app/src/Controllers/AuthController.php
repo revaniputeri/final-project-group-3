@@ -8,13 +8,16 @@ use PrestaC\Models\User;
 
 class AuthController
 {
+    //property buat nyimpen connectionnya
     protected PDO $db;
 
+    //constructor buat nyimpen connectionnya
     function __construct(array $dependencies)
     {
         $this->db = $dependencies['db']->getConnection();
     }
 
+    //method buat redirect ke dashboard/home kalo udah login
     public function redirect()
     {
         session_start();
@@ -40,7 +43,7 @@ class AuthController
             $role = $_SESSION['user']['role'];
             switch ($role) {
                 case 1:
-                    header('Location: /dashboard/admin');
+                    header('Location: /admin/dashboard');
                     break;
                 case 2:
                     header('Location: /dashboard/home');
