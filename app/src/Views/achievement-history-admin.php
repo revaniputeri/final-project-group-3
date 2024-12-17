@@ -1,7 +1,7 @@
 <?php include __DIR__ . '/partials/navbar.php'; ?>
 
 <div class="container-fluid page-body-wrapper">
-    <?php include __DIR__ . '/partials/sidebar-admin.php'; ?>
+    <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
 
     <!-- Main Panel -->
     <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
