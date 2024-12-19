@@ -129,6 +129,14 @@ Router::add(
     dependencies: []
 );
 
+Router::add(
+    method: "GET",
+    path: "/download/skema-poin",
+    controller: AssetsController::class,
+    function: "downloadSkemaPoin",
+    dependencies: []
+);
+
 // submission form within achievement submission
 Router::add(
     method: "GET",

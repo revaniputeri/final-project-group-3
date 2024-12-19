@@ -91,4 +91,26 @@ class AssetsController
         readfile($filePath);
         exit;
     }
+    public function downloadSkemaPoin()
+    {
+        $filePath = __DIR__ . '/../../public/assets/Skema_Poin_Mahasiswa.pdf';
+
+        error_log("Requested file path: " . $filePath);
+
+        if (file_exists($filePath)) {
+            error_log("File exists at path: " . $filePath);
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($filePath));
+            readfile($filePath);
+            exit;
+        } else {
+            error_log("File not found at path: " . $filePath);
+            echo "File tidak ditemukan.";
+        }
+    }
 }
