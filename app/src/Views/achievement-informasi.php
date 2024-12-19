@@ -1,4 +1,6 @@
-<?php include __DIR__ . '/partials/navbar.php'; ?>
+<?php
+include __DIR__ . '/partials/navbar.php';
+?>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <div class="container-fluid page-body-wrapper">
     <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
@@ -161,7 +163,7 @@
             </div><br>
             <!-- Tombol Unduh PDF -->
             <div class="text-center mt-5 mb-5">
-                <a href="/app/public/assets/Skema Poin Mahasiswa.pdf" class="btn btn-info btn-lg shadow-lg" download>Unduh PDF</a>
+                <a href="/download/skema-poin" class="btn btn-info btn-lg shadow-lg" download>Unduh PDF</a>
             </div>
             <?php require __DIR__ . '/partials/footer-page.php'; ?>
         </div>
