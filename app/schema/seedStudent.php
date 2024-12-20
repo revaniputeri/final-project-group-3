@@ -2,7 +2,7 @@
 
 $config = require_once __DIR__ . '/../config.php';
 
-function generateEmail($name) 
+function generateEmail($name)
 {
     $name = explode(' ', $name);
     $name = $name[0] . '.' . $name[1];
@@ -10,20 +10,18 @@ function generateEmail($name)
     $email = trim($name);
     return $email . '@student.polinema.ac.id';
 }
-
-
-
-
 function getRandomMajor()
 {
     // Based on StudentMajor INT enum in create.sql
     return rand(1, 2); // 1 = D-IV Informatics, 2 = D-IV Business Information System
 }
-
-function getRandomStatus()
+function getRandomStatus($username)
 {
-    // Based on StudentStatus INT enum in create.sql
-    return rand(1, 2); // 1 = Active, 2 = Non Active
+    $yearOfEntry = (int)substr($username, 0, 2);
+    $currentYear = (int)date("y");
+    $inactiveYear = $yearOfEntry + 4;
+
+    return ($inactiveYear > $currentYear) ? 1 : 0; // 1 = Active, 0 = Inactive
 }
 
 try {
@@ -39,9 +37,9 @@ try {
     // Student data array
     $students = [
         ['2341760056', 'Revani Nanda Putri'],
-        ['2341760124','Ardhelia Putri Maharani'],
-        ['2341760191','Alvi Choirinnikmah'],
-        ['2341760095','Susilowati Syafa Adilah'],
+        ['2341760124', 'Ardhelia Putri Maharani'],
+        ['2341760191', 'Alvi Choirinnikmah'],
+        ['2341760095', 'Susilowati Syafa Adilah'],
         ['2341760057', 'Ahmad Fauzi'],
         ['2341760058', 'Alya Putri'],
         ['2341760059', 'Anisa Rahma'],
@@ -113,7 +111,7 @@ try {
             $name = $student[1];
             $email = generateEmail($name);
             $phone = '08' . str_pad(rand(10000000, 99999999), 8, '0', STR_PAD_LEFT);
-            
+
             // Insert user and get ID directly
             $userStmt->execute([
                 $name,
@@ -122,16 +120,16 @@ try {
                 $email,
                 $phone,
             ]);
-            
+
             // Get the inserted ID directly from the OUTPUT clause
             $userId = $userStmt->fetch(PDO::FETCH_COLUMN);
-            
+
             $major = getRandomMajor();
-            $status = getRandomStatus();
-            
+            $status = getRandomStatus($nim);
+
             // Debug output
             echo "Inserting student with UserId: $userId\n";
-            
+
             // Insert student
             $studentStmt->execute([
                 $userId,

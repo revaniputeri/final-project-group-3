@@ -18,9 +18,31 @@ function getRandomCompetitionRank()
     return rand(1, 5); // 1 = 1st, 2 = 2nd, 3 = 3rd, 4 = Honorable Mention, 5 = Finalist
 }
 
-function getRandomPoints()
+function getPoints()
 {
-    return rand(1, 30);
+    $competitionLevel = getRandomCompetitionLevel();
+    $competitionRank = getRandomCompetitionRank();
+
+    $levelPoints = [
+        1 => 4.0, // Internasional
+        2 => 3.0, // Nasional
+        3 => 2.0, // Provinsi
+        4 => 1.5, // Kab/Kota
+        5 => 1.0, // Kecamatan
+        6 => 1.0, // Sekolah
+        7 => 0.5  // Jurusan
+    ];
+
+    $rankPoints = [
+        1 => 3.5, // Juara 1
+        2 => 3.0, // Juara 2
+        3 => 2.5, // Juara 3
+        4 => 2.0, // Penghargaan
+        5 => 1.0  // Juara Harapan
+    ];
+
+    $totalPoints = $levelPoints[$competitionLevel] + $rankPoints[$competitionRank];
+    return $totalPoints;
 }
 
 function getRandomInstitutions()
@@ -30,7 +52,8 @@ function getRandomInstitutions()
 
 function getRandomStudents()
 {
-    return rand(1, 5);
+    $numberOfStudents = rand(1, 5);
+    return $numberOfStudents;
 }
 
 function getRandomLetterNumber()
@@ -88,6 +111,7 @@ try {
             $userId = $students[array_rand($students)];
             $competitionType = getRandomCompetitionType();
             $competitionLevel = getRandomCompetitionLevel();
+            $numberOfStudents = getRandomStudents();
             $startDate = new DateTime(date('Y-m-d', strtotime('-' . rand(1, 365) . ' days')));
             $endDate = clone $startDate;
             $endDate->modify('+' . rand(1, 7) . ' days');
@@ -98,7 +122,7 @@ try {
                 $userId,
                 $competitionType,
                 $competitionLevel,
-                getRandomPoints(),
+                getPoints(),
                 "Competition Title " . ($i + 1),
                 "Competition Title English " . ($i + 1),
                 "Competition Place " . ($i + 1),
@@ -108,7 +132,7 @@ try {
                 $endDate->format('Y-m-d H:i:s'),
                 getRandomCompetitionRank(),
                 getRandomInstitutions(),
-                getRandomStudents(),
+                $numberOfStudents,
                 getRandomLetterNumber(),
                 $letterDate->format('Y-m-d H:i:s'),
                 'letter_' . ($i + 1) . '.pdf',
@@ -120,23 +144,31 @@ try {
 
             $achievementId = $achievementStmt->fetch(PDO::FETCH_COLUMN);
 
-            // Insert leader
-            $userAchievementStmt->execute([
-                $userId,
-                $achievementId,
-                2 // 2 = Leader
-            ]);
+            // Randomly add team members based on numberOfStudents
+            $teamMembers = $numberOfStudents; // ketua
+            if ($teamMembers == 1) {
+                $userAchievementStmt->execute([
+                    $userId,
+                    $achievementId,
+                    4 // 4 = Personal
+                ]);
+            } else {
+                $userAchievementStmt->execute([
+                    $userId,
+                    $achievementId,
+                    2 // 2 = Team Leader
+                ]);
 
-            // Randomly add 1-5 team members
-            $teamMembers = rand(1, 5);
-            for ($j = 0; $j < $teamMembers; $j++) {
-                $teamMemberId = $students[array_rand($students)];
-                if ($teamMemberId != $userId) {
-                    $userAchievementStmt->execute([
-                        $teamMemberId,
-                        $achievementId,
-                        1 // 1 = Member
-                    ]);
+                // Add team members
+                for ($j = 0; $j < $teamMembers - 1; $j++) {
+                    $teamMemberId = $students[array_rand($students)];
+                    if ($teamMemberId != $userId) {
+                        $userAchievementStmt->execute([
+                            $teamMemberId,
+                            $achievementId,
+                            3 // 3 = Team Member
+                        ]);
+                    }
                 }
             }
 
@@ -145,7 +177,7 @@ try {
             $userAchievementStmt->execute([
                 $supervisorId,
                 $achievementId,
-                3 // 3 = Supervisor
+                1 // 1 = Supervisor
             ]);
         }
 
