@@ -30,4 +30,13 @@ IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Student')
 IF EXISTS (SELECT * FROM sys.tables WHERE name = 'User')
     DROP TABLE [dbo].[User];
 
+-- Delete data from UserAchievement
+-- IF EXISTS (SELECT * FROM sys.tables WHERE name = 'UserAchievement')
+--     DELETE FROM [dbo].[UserAchievement];
+
+-- -- Delete data from Achievement
+-- IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Achievement')
+--     DELETE FROM [dbo].[Achievement];
+
+
 
