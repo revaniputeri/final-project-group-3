@@ -39,8 +39,8 @@
                                                 <?php foreach ($achievements as $achievement): ?>
                                                     <tr>
                                                         <td><?= date('d M Y', strtotime($achievement['CreatedAt'])) ?></td>
-                                                        <td><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>
-                                                        <td><?= htmlspecialchars($achievement['CompetitionPlace']) ?></td>
+                                                        <td class="truncate-text"><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>
+                                                        <td class="truncate-text"><?= htmlspecialchars($achievement['CompetitionPlace']) ?></td>
                                                         <td><?= htmlspecialchars($achievement['CompetitionRankName']) ?></td>
                                                         <td><?= htmlspecialchars($achievement['CompetitionLevelName']) ?></td>
                                                         <td>
@@ -55,7 +55,7 @@
                                                             ?>
                                                             <div class="mt-1">
                                                                 <label class="badge <?= $adminBadgeClass ?>">
-                                                                    Admin: <?= $achievement['AdminValidationStatus'] ?>
+                                                                    <?= $achievement['AdminValidationStatus'] ?>
                                                                 </label>
                                                             </div>
                                                         </td>
@@ -132,5 +132,13 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+        }
+
+        .truncate-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+            /* Sesuaikan dengan lebar yang diinginkan */
         }
     </style>
