@@ -301,12 +301,20 @@ class AchievementController
     {
         $achievementId = (int)$data['id'];
         $achievement = Achievement::getAchievementById($this->db, $achievementId);
+        $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
+        $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
         $supervisors = Achievement::getSupervisorsByAchievementId($this->db, $achievementId);
         $teamLeaders = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 2); // Role 2 for leaders
         $teamMembers = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 3); // Role 3 for members
         $teamMembersPersonal = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 4); // Role 4 for personal
 
-        View::render('viewAchievement', ['achievement' => $achievement, 'supervisors' => $supervisors, 'teamLeaders' => $teamLeaders, 'teamMembers' => $teamMembers, 'teamMembersPersonal' => $teamMembersPersonal]);
+        View::render('viewAchievement', [
+            'achievement' => $achievement,
+            'supervisors' => $supervisors,
+            'teamLeaders' => $teamLeaders,
+            'teamMembers' => $teamMembers,
+            'teamMembersPersonal' => $teamMembersPersonal
+        ]);
     }
 
     private function validateDates($competitionStartDate, $competitionEndDate, $letterDate)
