@@ -57,7 +57,7 @@
                                                         <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="competitionLevel"
                                                         name="competitionLevel"
-                                                        value="<?= $achievement['CompetitionLevel'] ?>" readonly>
+                                                        value="<?= $achievement['CompetitionLevelName'] ?>" readonly>
                                                 </div>
 
                                                 <div class="form-group mb-3">
@@ -65,7 +65,7 @@
                                                         <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="competitionRank"
                                                         name="competitionRank"
-                                                        value="<?= $achievement['CompetitionRank'] ?>" readonly>
+                                                        value="<?= $achievement['CompetitionRankName'] ?>" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -284,7 +284,7 @@
                                                     <div id="teamMemberContainer">
                                                         <?php
                                                         if (empty($teamLeaders) && empty($teamMembers) && empty($teamMembersPersonal)):
-                                                            ?>
+                                                        ?>
                                                             <div class="input-group mb-2">
                                                                 <input type="text" class="form-control"
                                                                     value="Tidak ada anggota tim" readonly>
@@ -297,7 +297,7 @@
                                                                 is_array($teamMembersPersonal) ? $teamMembersPersonal : []
                                                             );
                                                             foreach ($allMembers as $index => $member):
-                                                                ?>
+                                                            ?>
                                                                 <div class="input-group mb-2">
                                                                     <input type="text" class="form-control"
                                                                         value="<?= htmlspecialchars($member['FullName']) ?>"
@@ -307,7 +307,7 @@
                                                                         value="<?= $member['AchievementRole'] == '2' ? 'Ketua' : ($member['AchievementRole'] == '3' ? 'Anggota' : ($member['AchievementRole'] == '4' ? 'Personal' : '')) ?>"
                                                                         readonly>
                                                                 </div>
-                                                                <?php
+                                                        <?php
                                                             endforeach;
                                                         endif;
                                                         ?>
@@ -317,27 +317,40 @@
                                         </div>
                                     </div>
                                 </div>
-
+                            </form>
+                            <form method="POST" action="/admin/achievement/update-validation">
+                                <input type="hidden" name="achievementId" value="<?= $achievement['Id'] ?>">
+                                <?php if ($_SESSION['user']['role'] === 1): ?>
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-4">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-primary mb-4">Komentar Admin</h5>
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" id="adminComment" name="adminComment" rows="4" placeholder="Tulis komentar di sini..."></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="row mt-4">
                                     <div class="col-12 text-right">
-                                        <?php if ($_SESSION['user']['role'] === 1) {
-                                            echo '<a href="/admin/achievement/history" class="btn btn-light btn-lg px-4">
-                                            <i class="fas fa-arrow-left mr-2"></i> Terima Prestasi
-                                        </a>';
-                                            echo '<a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
-                                            <i class="fas fa-arrow-left mr-2"></i> Tolak Prestasi
-                                        </a>';
-                                        } else {
-                                            if ($_SESSION['user']['role'] === 1) {
-                                                echo '<a href="/admin/achievement/history" class="btn btn-light btn-lg px-4">
-                                                <i class="fas fa-arrow-left mr-2"></i> Kembali
-                                            </a>';
-                                            } else {
-                                                echo '<a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
-                                                <i class="fas fa-arrow-left mr-2"></i> Kembali
-                                            </a>';
-                                            }
-                                        } ?>
+                                        <?php if ($_SESSION['user']['role'] === 1): ?>
+                                            <button type="submit" name="status" value="APPROVED" class="btn btn-success btn-md px-3">
+                                                <i class="fas fa-check"></i> Terima
+                                            </button>
+                                            <button type="submit" name="status" value="REJECTED" class="btn btn-danger btn-md px-3">
+                                                <i class="fas fa-times"></i> Tolak
+                                            </button>
+                                            <a href="/admin/achievement/history" class="btn btn-secondary btn-md px-3">
+                                                <i class="fas fa-arrow-left"></i> Kembali
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="/dashboard/achievement/history" class="btn btn-primary btn-md px-3">
+                                                <i class="fas fa-arrow-left"></i> Kembali
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </form>
@@ -349,3 +362,6 @@
         <?php include __DIR__ . '/partials/footer-page.php'; ?>
     </div>
 </div>
+<script>
+
+</script>

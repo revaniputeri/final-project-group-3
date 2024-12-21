@@ -48,9 +48,6 @@ class AuthController
                 case 2:
                     header('Location: /dashboard/home');
                     break;
-                case 3:
-                    header('Location: /dashboard/lecturer');
-                    break;
                 default:
                     header('Location: /guest');
             }
@@ -63,7 +60,7 @@ class AuthController
     {
         $username = $_POST['username'];
         $password = $_POST['password'];
-        
+
         session_start();
 
         // Validate username exists
@@ -97,9 +94,6 @@ class AuthController
             case 2: // Student
                 header('Location: /dashboard/home');
                 break;
-            case 3: // Lecturer
-                header('Location: /lecturer/dashboard');;
-                break;
             default:
                 header('Location: /guest');
                 break;
@@ -116,7 +110,7 @@ class AuthController
         session_start();
         session_unset();
         session_destroy();
-        
+
         header('Location: /guest');
         exit();
     }
