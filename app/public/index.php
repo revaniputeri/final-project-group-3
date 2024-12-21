@@ -8,6 +8,7 @@ use PrestaC\Controllers\AchievementController;
 use PrestaC\Controllers\AuthController;
 use PrestaC\Controllers\IndexController;
 use PrestaC\Controllers\AssetsController;
+use PrestaC\Controllers\ProfileController;
 use PrestaC\Middleware\AuthMiddleware;
 
 $config = require __DIR__ . '/../config.php';
@@ -229,5 +230,23 @@ Router::add(
     function: "serveUploadedFile",
     dependencies: []
 );
+
+// For viewing the profile edit form
+Router::add(
+    method: "GET",
+    path: "/profile/view",
+    controller: ProfileController::class,
+    function: "viewProfile",
+    dependencies: ['db' => $connection] // Tambahkan dependency 'db'
+);
+
+// // For processing the profile update (maybe with an action like '/submit' or '/update')
+// Router::add(
+//     method: "POST",
+//     path: "/profile/edit",  // New distinct path
+//     controller: ProfileController::class,
+//     function: "profile",
+//     dependencies: ['db' => $connection]
+// );
 
 Router::run();

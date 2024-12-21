@@ -14,7 +14,7 @@
           <i class="icon-head menu-icon mb-1" id="profile-icon"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-          <a class="dropdown-item" href="/dashboard/profile-customization">
+          <a class="dropdown-item" href="/profile/view">
             <i class="ti-settings text-primary"></i>
             Profile
           </a>
