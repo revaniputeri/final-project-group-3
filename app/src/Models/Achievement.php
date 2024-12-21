@@ -156,7 +156,6 @@ class Achievement
             JOIN [dbo].[User] u ON a.UserId = u.Id
             WHERE s.StudentMajor = :prodi 
             AND a.DeletedAt IS NULL 
-            AND a.AdminValidationStatus = \'PENDING\'
             ORDER BY CreatedAt DESC
         ');
         $stmt->execute([':prodi' => $prodi]);

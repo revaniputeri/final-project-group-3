@@ -532,9 +532,9 @@ class AchievementController
             exit;
         }
 
-        $achievementId = (int)$_POST['achievementId'];
-        $status = trim($_POST['status']);
-        $note = trim($_POST['note']);
+        $achievementId = (int)$_POST['Id'];
+        $status = $_POST['APPROVED'] ? 'APPROVED' : 'REJECTED';
+        $note = trim($_POST['adminComment']);
 
         try {
             Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
@@ -557,7 +557,7 @@ class AchievementController
         if ($_SESSION['user']['fullName'] == 'Admin Pusat') {
             $achievements = Achievement::getAllAchievements($this->db);
         } elseif ($_SESSION['user']['fullName'] == 'Admin Program Studi Sistem Informasi Bisnis') {
-            $achievements = Achievement::getAchievementsByProdi($this->db, 2);
+            $achievements = Achievement::getAchievementsByProdi($this->db, prodi: 2);
         } else {
             $achievements = Achievement::getAchievementsByProdi($this->db, 1);
         }

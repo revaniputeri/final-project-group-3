@@ -194,6 +194,14 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
+Router::add(
+    method: "POST",
+    path: "/admin/achievement/update-validation",
+    controller: AchievementController::class,
+    function: "adminValidationProcess",
+    dependencies: ['db' => $connection]
+);
+
 // IndexController routes
 Router::add(
     method: "GET",
