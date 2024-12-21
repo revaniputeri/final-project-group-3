@@ -39,10 +39,6 @@ class AchievementController
         $id = $_SESSION['user']['id'];
         $achievements = Achievement::getAchievementsByUserId($this->db, $id);
 
-        //approval
-        $achievementsByProdi = Achievement::getAchievementsByProdi($this->db, $_SESSION['user']['prodi']);
-        $achievementsPusat = Achievement::getAllAchievements($this->db);
-
         // Convert rank and level IDs to names
         foreach ($achievements as &$achievement) {
             $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
@@ -520,11 +516,6 @@ class AchievementController
         }
     }
 
-    public function achievementInfo()
-    {
-        $this->validateUser();
-    }
-
     //admin
     public function adminValidationProcess()
     {
@@ -561,6 +552,11 @@ class AchievementController
             $achievements = Achievement::getAchievementsByProdi($this->db, 2);
         } else {
             $achievements = Achievement::getAchievementsByProdi($this->db, 1);
+        }
+
+        foreach ($achievements as &$achievement) {
+            $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
+            $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
         }
 
         View::render('achievement-history-admin', ['achievements' => $achievements]);

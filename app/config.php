@@ -1,6 +1,6 @@
 <?php
 
-// change with your credentials
+//buat nyimpen detail database
 return [
     'host' => 'REVANIPUTERI',
     'name' => 'prestac',

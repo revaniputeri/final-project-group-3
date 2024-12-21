@@ -22,6 +22,7 @@ class AchievementForm {
     }
 
     initEventListeners() {
+        // File input listeners
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', this.handleFileInput);
         });
@@ -38,7 +39,13 @@ class AchievementForm {
             select.addEventListener('change', this.updateTeamMemberOptions);
         });
 
-        // jumlah siswa change handler
+        // Competition points calculation
+        const rankSelect = document.getElementById('competitionRank');
+        const levelSelect = document.getElementById('competitionLevel');
+        rankSelect.addEventListener('change', this.calculatePoints);
+        levelSelect.addEventListener('change', this.calculatePoints);
+
+        // Number of students change handler
         const numberOfStudentsInput = document.getElementById('numberOfStudentsEdit') ?? document.getElementById('numberOfStudents');
         if (numberOfStudentsInput) {
             numberOfStudentsInput.addEventListener('change', this.handleNumberOfStudentsChange);
@@ -342,4 +349,5 @@ class AchievementForm {
     }
 }
 
+//instance of AchievementForm
 window.achievementForm = new AchievementForm();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Login</title>
+    <title>Skydash Admin</title>
     <!-- Link Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -24,7 +24,7 @@
             justify-content: center;
             align-items: center;
             background-image: url("../assets/img/background-pict-login.jpg");
-            background-size: cover;  /* Gambar menutupi seluruh layar */
+            background-size: cover;  
             background-position: center;
             background-repeat: no-repeat;
         }
@@ -34,7 +34,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             background-color: #ffffff;
             width: 100%;
-            max-width: 500px;  /* Lebar maksimum dari form */
+            max-width: 500px;  
             padding: 40px;
             text-align: center;
             display: flex;
@@ -44,9 +44,11 @@
             margin-bottom: 5vh;
             min-height: 650px;
             position: relative;
-            z-index: 1; /* Memastikan kotak putih tetap di atas gambar */
+            z-index: 1; 
             margin-left: 70%;
         }
+   
+       
         /* Khusus bagian kiri form login 
         .right-side{
 
@@ -157,8 +159,8 @@
         <div class="right-side">
         <div class="auth-form-light text-left py-3 px-5 px-sm-7">
             <div class="brand-logo text-center mb-4">
-                <img src="../assets/img/logo-prestacc.png" alt="logo" 
-                     style="width: 200px; height: auto; transition: transform 0.3s; cursor: pointer;" 
+                <img src="../assets/img/prestac-newest.png" alt="logo" 
+                     style="width: 270px; height: auto; margin-bottom: 40px; transition: transform 0.3s; cursor: pointer;" 
                      onmouseover="this.style.transform='scale(1.1)'" 
                      onmouseout="this.style.transform='scale(1)'">
             </div>
@@ -175,11 +177,11 @@
                 </div>
             <?php endif; ?>
 
-            <form class="pt-3" action="/login" method="post" style="margin-top: 0px;">
+            <form  action="/login" method="post" style="margin-top: 0px;">
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="NIM/NIDN/NIP" required 
+                    <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="NIM/NIP" required 
                            style="border-radius: 12px; border: 1px solid #d1d8e0; padding: 15px; transition: box-shadow 0.3s;">
-                    <small class="form-text text-muted ml-2">Masukkan NIM (untuk mahasiswa), NIDN (untuk dosen), atau NIP (untuk admin)</small>
+                    <small class="form-text text-muted ml-2">Masukkan NIM (untuk mahasiswa) atau NIP (untuk admin)</small>
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password" required
@@ -187,7 +189,7 @@
                 </div>
                 <div class="mt-4">
                     <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" 
-                            style="border-radius: 12px; padding: 12px; background: linear-gradient(to right, #4facfe, #00f2fe); border: none; 
+                            style="border-radius: 12px; padding: 12px; background: linear-gradient(to right, #4facfe, #00f2fe); border: none; margin-top: 50px;
                                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: all 0.3s;">
                         Masuk
                     </button>

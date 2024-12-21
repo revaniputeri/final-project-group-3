@@ -2,20 +2,22 @@
 
 namespace PrestaC\Controllers;
 
-use DateTime;
 use PDO;
 use PrestaC\App\View;
 use PrestaC\Models\User;
 
 class AuthController
 {
+    //property buat nyimpen connectionnya
     protected PDO $db;
 
+    //constructor buat nyimpen connectionnya
     function __construct(array $dependencies)
     {
         $this->db = $dependencies['db']->getConnection();
     }
 
+    //method buat redirect ke dashboard/home kalo udah login
     public function redirect()
     {
         session_start();
@@ -41,7 +43,7 @@ class AuthController
             $role = $_SESSION['user']['role'];
             switch ($role) {
                 case 1:
-                    header('Location: /dashboard/admin');
+                    header('Location: /admin/dashboard');
                     break;
                 case 2:
                     header('Location: /dashboard/home');
@@ -56,38 +58,6 @@ class AuthController
         }
         View::render('login', []);
     }
-
-    // public function loginProcess()
-    // {
-    //     $username = $_POST['username'];
-    //     $password = $_POST['password'];
-
-    //     session_start();
-
-    //     // Validate username exists
-    //     $user = User::findByUsername($this->db, $username);
-    //     if (!$user) {
-    //         $_SESSION['error'] = "Invalid username or password";
-    //         header('Location: /login');
-    //         return;
-    //     }
-
-    //     // Validate password
-    //     $isPasswordCorrect = $user->validatePassword($password);
-    //     if (!$isPasswordCorrect) {
-    //         $_SESSION['error'] = "Invalid username or password"; 
-    //         header('Location: /login');
-    //         return;
-    //     }
-
-    //     // Login successful
-    //     $_SESSION['user'] = [
-    //         'id' => $user->id,
-    //         'fullName' => $user->fullName
-    //     ];
-    //     header('Location: /dashboard/home');
-    // }
-
 
     public function loginProcess()
     {
@@ -147,7 +117,7 @@ class AuthController
         session_start();
         session_unset();
         session_destroy();
-
+        
         header('Location: /guest');
         exit();
     }
