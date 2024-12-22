@@ -10,19 +10,19 @@ function getRandomCompetitionType()
 
 function getRandomCompetitionLevel()
 {
-    return rand(1, 6); // 1 = International, 2 = National, 3 = Provincial, 4 = City, 5 = District, 6 = School
+    
+    $randomCompetitionLevel = rand(1, 6); // 1 = International, 2 = National, 3 = Provincial, 4 = City, 5 = District, 6 = School
+    return $randomCompetitionLevel;
 }
 
 function getRandomCompetitionRank()
 {
-    return rand(1, 5); // 1 = 1st, 2 = 2nd, 3 = 3rd, 4 = Honorable Mention, 5 = Finalist
+    $randomCompetitionRank =  rand(1, 5); // 1 = 1st, 2 = 2nd, 3 = 3rd, 4 = Honorable Mention, 5 = Finalist
+    return $randomCompetitionRank;
 }
 
-function getPoints()
+function getPoints(int $competitionLevel, int $competitionRank )
 {
-    $competitionLevel = getRandomCompetitionLevel();
-    $competitionRank = getRandomCompetitionRank();
-
     $levelPoints = [
         1 => 4.0, // Internasional
         2 => 3.0, // Nasional
@@ -122,7 +122,7 @@ try {
                 $userId,
                 $competitionType,
                 $competitionLevel,
-                getPoints(),
+                getPoints($competitionLevel, $competitionType),
                 "Competition Title " . ($i + 1),
                 "Competition Title English " . ($i + 1),
                 "Competition Place " . ($i + 1),
