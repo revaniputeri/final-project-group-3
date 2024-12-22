@@ -64,14 +64,12 @@
                                                                 <a href="/dashboard/achievement/view/<?= $achievement['Id'] ?>" class="btn btn-info btn-sm" title="View">
                                                                     <i class="ti-eye"></i>
                                                                 </a>
-                                                                <?php if ($achievement['AdminValidationStatus'] === 'PENDING'): ?>
-                                                                    <a href="/dashboard/achievement/edit/<?= $achievement['Id'] ?>" class="btn btn-warning btn-sm" title="Edit">
-                                                                        <i class="ti-pencil"></i>
-                                                                    </a>
-                                                                    <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete(<?= $achievement['Id'] ?>)">
-                                                                        <i class="ti-trash"></i>
-                                                                    </button>
-                                                                <?php endif; ?>
+                                                                <?= ($achievement['AdminValidationStatus'] === 'APPROVED') 
+                                                                    ? '<a href="#" class="btn btn-warning btn-sm disabled" title="Edit" aria-disabled="true"><i class="ti-pencil"></i></a>' 
+                                                                    : '<a href="/dashboard/achievement/edit/' . $achievement['Id'] . '" class="btn btn-warning btn-sm" title="Edit"><i class="ti-pencil"></i></a>'; ?>
+                                                                <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete(<?= $achievement['Id'] ?>)">
+                                                                    <i class="ti-trash"></i>
+                                                                </button>
                                                             </div>
                                                         </td>
                                                     </tr>
