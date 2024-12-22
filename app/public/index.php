@@ -5,7 +5,6 @@ require __DIR__ . '/../vendor/autoload.php';
 use PrestaC\App\Connection;
 use PrestaC\App\Router;
 use PrestaC\Controllers\AchievementController;
-use PrestaC\Controllers\StudentController;
 use PrestaC\Controllers\AuthController;
 use PrestaC\Controllers\IndexController;
 use PrestaC\Controllers\AssetsController;
@@ -164,6 +163,14 @@ Router::add(
 
 Router::add(
     method: "GET",
+    path: "/dashboard/achievement/info",
+    controller: AchievementController::class,
+    function: "achievementInfo",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "POST",
     path: "/admin/achievement/history",
     controller: AchievementController::class,
     function: "adminHistory",
@@ -219,21 +226,21 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-Router::add(
-    method: "GET",
-    path: "/dashboard/profile",
-    controller: IndexController::class,
-    function: "profileCustomization",
-    dependencies: ['db' => $connection]
-);
+// Router::add(
+//     method: "GET",
+//     path: "/dashboard/profile",
+//     controller: IndexController::class,
+//     function: "profileCustomization",
+//     dependencies: ['db' => $connection]
+// );
 
-Router::add(
-    method: "POST",
-    path: "/dashboard/profile",
-    controller: IndexController::class,
-    function: "profileCustomizationProcess",
-    dependencies: ['db' => $connection]
-);
+// Router::add(
+//     method: "POST",
+//     path: "/dashboard/profile",
+//     controller: IndexController::class,
+//     function: "profileCustomizationProcess",
+//     dependencies: ['db' => $connection]
+// );
 
 Router::add(
     method: "GET",
@@ -258,6 +265,24 @@ Router::add(
     controller: AssetsController::class,
     function: "serveUploadedFile",
     dependencies: []
+);
+
+// For viewing the profile edit form
+Router::add(
+    method: "GET",
+    path: "/dashboard/profile",
+    controller: ProfileController::class,
+    function: "viewProfile",
+    dependencies: ['db' => $connection] // Tambahkan dependency 'db'
+);
+
+// For processing the profile update (maybe with an action like '/submit' or '/update')
+Router::add(
+    method: "POST",
+    path: "/edit/profile",  // New distinct path
+    controller: ProfileController::class,
+    function: "profile",
+    dependencies: ['db' => $connection]
 );
 
 Router::run();

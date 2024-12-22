@@ -33,9 +33,9 @@
     
         .right-side{
             flex: 0;
-            background: rgba(255, 255, 255, 0.6);
-            width: 600px;
-            height: 100%;
+            /* background: rgba(255, 255, 255, 0.6); */
+            width: 900px;
+            height: 200%;
             display: block ruby;
             justify-content: center;
             align-items: center;
@@ -57,62 +57,84 @@
             margin: 50px auto;
             background: rgba(255, 255, 255, 1); /* Warna putih dengan transparansi 80% */
             border-radius: 15px;
-            padding: 30px; /* Menambah padding agar lebih luas */
+            padding: -50px; /* Menambah padding agar lebih luas */
         }
 
         .podium {
             display: flex;
             justify-content: center;
-            align-items: flex-end;
-            gap: 80px; /* Menambah jarak antar podium */
+            align-items: flex-end; /* Untuk sejajar dari bawah */
+            gap: 30px; /* Jarak antar podium */
+            margin-top: 120px;
         }
 
         .rank {
             text-align: center;
+            width: 170px; /* Lebar podium */
             position: relative;
-            padding: 15px; /* Menambah padding untuk ruang lebih besar di sekitar elemen */
+            border-radius: 5px 5px 0 0; /* Membuat sudut atas melengkung */
+            display: flex; /* Aktifkan flexbox */
+            flex-direction: column; /* Susunan elemen secara vertikal */
+            justify-content: center; 
+            align-items: center; /* Posisikan konten di tengah secara horizontal */
+            padding-top: 40px; /* Memberi ruang untuk gambar di atas podium */
+            padding-bottom: 20px; /* Memberi ruang di bagian bawah podium */
+        }
+
+        .rank.first {
+            height: 270px; /* Tinggi podium pertama */
+            background-color: #FFCE34; /* Warna emas */
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            border: 5px solid #e6b800;
+        }
+
+        .rank.second {
+            height: 220px; /* Tinggi podium kedua */
+            background-color: #C0C0C0; /* Warna perak */
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            border: 5px solid #a8a8a8;
+        }
+
+        .rank.third {
+            height: 170px; /* Tinggi podium ketiga */
+            background-color: #CD7F32; /* Warna perunggu */
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            border: 5px solid #b0652e;
         }
 
         .rank img {
-            width: 185px; /* Perbesar ukuran gambar */
-            height: 190px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 3px solid white;
-        }
-
-        .rank.first img {
-            width: 205px; /* Perbesar gambar podium pertama */
-            height: 210px;
-            border: 5px solid white;
+            position: absolute;
+            top: -60px; /* Posisi gambar keluar dari podium */
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .rank h2 {
-            margin: 15px 0 10px; /* Mengatur margin untuk judul */
-            font-size: 1.5em; /* Mengecilkan ukuran font judul */
-            font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
+            text-align: center; 
+            margin: 10px 0;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+            color: black;
+            width: 100%;
         }
 
         .rank .points {
-            font-size: 1.4em; /* Mengecilkan ukuran font poin */
+            font-size: 2em; /* Perbesar ukuran angka */
             font-weight: bold;
-            color: #054676;
-            font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
-        }
-
-        .rank.first .points {
-            font-size: 2em; /* Membesarkan poin pada podium pertama */
-        }
-
-        .rank p {
-            margin: 0;
-            font-size: 1.2em; /* Membesarkan ukuran font deskripsi */
-            color: #d9d9d9;
-        }
-
-        .card {
-            background-color: white;
-            padding: 0;
-            border: none;
+            color: black;
+            margin: 5px 0;
+            text-align: center;
+            width: 100%;
         }
 
         .card-img-top {
@@ -122,6 +144,14 @@
 
         .card-body {
             padding: 15px;
+        }
+
+        .card-title.top-achievements-title {
+            font-size: 25px; /* Ubah ukuran font */
+            font-weight: bold; /* Membuat teks tebal */
+            color: #3b5998; 
+            font-family: 'Poppins', sans-serif; /* Font yang lebih elegan */
+            margin-bottom: 5px; /* Memberikan jarak bawah */
         }
 
         /* Styling untuk container */
@@ -146,9 +176,9 @@
 
 <!-- Pengenalan Halaman PrestaC  -->
 <div class="jumbotron">
-    <!-- <div class="right-side" style="text-align: right;">
+    <div class="right-side" style="text-align: right;">
         <img src="../assets/img/vector-right.png" alt="vector-right" class="login-vector">
-    </div> -->
+    </div>
     <div style="text-align: left; margin-top: 4%; padding: 10%; font-family: 'Poppins', sans-serif; color: #fff;">
         <h1 style="font-family: 'Roboto', sans-serif; font-size: 4em; font-weight: 700; color: #fff;">Welcome to PrestaC</h1>
         <h2 style="font-family: 'Poppins', sans-serif; font-size: 3.5em; font-weight: 600; color: #f2f2f2;">Sistem Prestasi Mahasiswa</h2><br>
@@ -172,7 +202,7 @@
         </div>
         <div class="rank first">
             <img src="./assets/img/foto1.jpg" alt="User 1">
-            <div class="medal">🥇</div>
+            <div class="medal"></div>
             <h2>Revani Nanda Putri</h2>
             <p class="points">20</p>
         </div>
@@ -395,7 +425,7 @@ $topAchievements = array_slice($topAchievements, 0, 10);
     
     // Data for the two lines (points for each category per month)
     const lineDataSistemInformasiBisnis = [50, 70, 55, 40, 30, 20, 10];  // Data for "Sistem Informasi Bisnis"
-    const lineDataTeknologiInformasi = [40, 60, 45, 35, 25, 15, 5];     // Data for "Teknologi Informasi"
+    const lineDataTeknikInformatika = [40, 60, 45, 35, 25, 15, 5];     // Data for "Teknik Informatika"
 
     const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -404,21 +434,23 @@ $topAchievements = array_slice($topAchievements, 0, 10);
     new Chart(lineCtx, {
         type: 'line',
         data: {
-            labels: bulan,
+            labels: bulan, // Months for the x-axis
             datasets: [
                 {
                     label: 'Sistem Informasi Bisnis',
                     data: lineDataSistemInformasiBisnis,
-                    fill: false,
-                    borderColor: 'rgba(153, 102, 255, 1)',  // Color for "Sistem Informasi Bisnis"
-                    tension: 0.1
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true, // Area under the line will be filled
+                    tension: 0.3 // Smooth out the line curve
                 },
                 {
-                    label: 'Teknologi Informasi',
-                    data: lineDataTeknologiInformasi,
-                    fill: false,
-                    borderColor: 'rgba(75, 192, 192, 1)',  // Color for "Teknologi Informasi"
-                    tension: 0.1
+                    label: 'Teknik Informatika',
+                    data: lineDataTeknikInformatika,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                    tension: 0.3
                 }
             ]
         },
@@ -442,7 +474,7 @@ $topAchievements = array_slice($topAchievements, 0, 10);
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Total Poin'
+                        text: 'Poin Kompetisi'
                     }
                 },
                 x: {

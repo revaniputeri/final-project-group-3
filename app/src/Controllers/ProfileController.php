@@ -5,8 +5,6 @@ namespace PrestaC\Controllers;
 use PDO;
 use PrestaC\App\View;
 use PrestaC\Models\Student;
-use PrestaC\Models\Dosen;
-use PrestaC\Models\Admin;
 
 class ProfileController
 {
@@ -15,164 +13,99 @@ class ProfileController
     function __construct(array $dependencies)
     {
         $this->db = $dependencies['db']->getConnection();
+        $this->ensureSession(); // Initialize session for all controller methods
     }
 
-    // Create a new profile
-    public function createProfile()
+    private function ensureSession()
     {
-        session_start();
-
-        // Retrieve input data
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $bio = $_POST['bio'];
-        $profilePicture = $_FILES['profilePicture']['tmp_name'] ?? null;
-
-        try {
-            // Insert new profile data in each model as applicable
-            $studentId = Student::createStudent($this->db, [
-                'username' => $username,
-                'email' => $email,
-                'bio' => $bio,
-                'profilePicture' => $profilePicture
-            ]);
-
-            $dosenId = Dosen::createDosen($this->db, [
-                'username' => $username,
-                'email' => $email,
-                'bio' => $bio,
-                'profilePicture' => $profilePicture
-            ]);
-
-            $adminId = Admin::createAdmin($this->db, [
-                'username' => $username,
-                'email' => $email,
-                'bio' => $bio,
-                'profilePicture' => $profilePicture
-            ]);
-
-            $_SESSION['success'] = "Profil berhasil dibuat.";
-            header('Location: /dashboard/profile/view/' . $studentId); // Redirect ke halaman profil
-            exit();
-
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "Terjadi kesalahan saat membuat profil: " . $e->getMessage();
-            header('Location: /dashboard/profile/create');
-            exit();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
     }
 
-    // View profile page (Read)
     public function viewProfile()
-    {
-        session_start();
-        $userId = $_SESSION['user']['id'];
-
-        try {
-            // Fetch data from multiple models
-            $student = Student::getStudentById($this->db, $userId);
-            $dosen = Dosen::getDosenById($this->db, $userId);
-            $admin = Admin::getAdminById($this->db, $userId);
-
-            View::render('profile/view', [
-                'student' => $student,
-                'dosen' => $dosen,
-                'admin' => $admin
-            ]);
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "Terjadi kesalahan saat mengambil data profil.";
-            header('Location: /dashboard/home');
-            exit();
+    {   
+        // Check if the session is already started before calling session_start()
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
         }
-    }
-
-    // Display profile edit form (for Update)
-    public function editProfileForm()
-    {
-        session_start();
-        $userId = $_SESSION['user']['id'];
-
-        try {
-            // Fetch user data for editing from different models
-            $student = Student::getStudentById($this->db, $userId);
-            $dosen = Dosen::getDosenById($this->db, $userId);
-            $admin = Admin::getAdminById($this->db, $userId);
-
-            View::render('profile/edit', [
-                'student' => $student,
-                'dosen' => $dosen,
-                'admin' => $admin
-            ]);
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "Terjadi kesalahan saat mengambil data profil untuk diedit.";
-            header('Location: /dashboard/profile');
-            exit();
-        }
-    }
-
-    // Process profile update (Update)
-    public function editProfileProcess()
-    {
-        session_start();
-        $userId = $_SESSION['user']['id'];
         
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $bio = $_POST['bio'];
-        $profilePicture = $_FILES['profilePicture']['tmp_name'] ?? null;
-
-        try {
-            // Update profile for each model as applicable
-            Student::updateStudentProfile($this->db, $userId, [
-                'username' => $username,
-                'email' => $email,
-                'bio' => $bio,
-                'profilePicture' => $profilePicture
-            ]);
-            
-            Dosen::updateDosenProfile($this->db, $userId, [
-                'username' => $username,
-                'email' => $email,
-                'bio' => $bio,
-                'profilePicture' => $profilePicture
-            ]);
-            
-            Admin::updateAdminProfile($this->db, $userId, [
-                'username' => $username,
-                'email' => $email,
-                'bio' => $bio,
-                'profilePicture' => $profilePicture
-            ]);
-
-            $_SESSION['success'] = "Profil berhasil diperbarui.";
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "Gagal memperbarui profil: " . $e->getMessage();
-        }
-
-        header('Location: /dashboard/profile');
-        exit();
+        View::render('profileEdit', []);
     }
 
-    // Delete a profile (Delete)
-    public function deleteProfile()
+    // Profile method for handling profile rendering
+    public function profile()
     {
-        session_start();
-        $userId = $_SESSION['user']['id'];
-
-        try {
-            // Soft delete profile from each model as applicable
-            Student::deleteStudent($this->db, $userId);
-            Dosen::deleteDosen($this->db, $userId);
-            Admin::deleteAdmin($this->db, $userId);
-
-            $_SESSION['success'] = "Profil berhasil dihapus.";
-            header('Location: /dashboard');
-            exit();
-
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "Terjadi kesalahan saat menghapus profil.";
-            header('Location: /dashboard/profile');
-            exit();
+        // Ensure session is started
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
         }
+
+        // Check if user is logged in (ensure session has user data)
+        if (!isset($_SESSION['user']['username'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        // Get username from session
+        $username = $_SESSION['user']['username'];
+
+        // Get student data from the database using getStudentByUsername
+        $profileData = Student::getStudentByUsername($this->db, $username);
+
+        // Default profile array if no data found
+        $profile = [
+            'name' => $_SESSION['user']['fullName'] ?? ($profileData['fullName'] ?? 'Nama tidak ditemukan'),
+            'nim' => $_SESSION['user']['username'] ?? ($profileData['username'] ?? 'NIM tidak ditemukan'),
+            'email' => $_SESSION['user']['email'] ?? ($profileData['email'] ?? ''),
+            'profile_image' => $_SESSION['user']['profile_image'] ?? ($profileData['profile_image'] ?? '/path/to/default-image.jpg'),
+        ];
+
+        // Render the profile view with the profile data
+        View::render('profileEdit', ['profile' => $profile]);
+    }
+    public function editProfile()
+    {
+        // Pastikan sesi dimulai
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Periksa apakah pengguna sudah login
+        if (!isset($_SESSION['user']['username'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        // Ambil data dari request POST
+        $email = $_POST['email'] ?? '';
+        $jurusan = $_POST['jurusan'] ?? '';
+
+        // Validasi input (contoh validasi sederhana)
+        if (empty($email) || empty($jurusan)) {
+            $_SESSION['flash'] = 'Email dan jurusan tidak boleh kosong!';
+            header('Location: /profileEdit/');
+            exit;
+        }
+
+        // Ambil username dari sesi
+        $username = $_SESSION['user']['username'];
+
+        // Simpan ke database
+        $updateStatus = Student::updateStudentProfile($this->db, $username, [
+            'email' => $email,
+            'jurusan' => $jurusan,
+        ]);
+
+        // Periksa apakah penyimpanan berhasil
+        if ($updateStatus) {
+            $_SESSION['flash'] = 'Profil berhasil diperbarui.';
+        } else {
+            $_SESSION['flash'] = 'Terjadi kesalahan saat memperbarui profil.';
+        }
+
+        // Redirect kembali ke halaman edit profil
+        header('Location: /profileEdit/');
+        exit;
     }
 }
