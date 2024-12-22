@@ -347,14 +347,13 @@ class AchievementController
                     throw new \Exception('Prestasi tidak ditemukan.');
                 }
 
-                // Check if user owns this achievement
                 if ($achievement['UserId'] != $_SESSION['user']['id']) {
                     throw new \Exception('Anda tidak memiliki akses untuk mengedit prestasi ini.');
                 }
 
-                // Check if achievement is still in PENDING status
-                if ($achievement['AdminValidationStatus'] !== 'PENDING') {
-                    throw new \Exception('Hanya prestasi dengan status PENDING yang dapat diedit.');
+                // Check if achievement is still in PENDING or REJECTED status
+                if ($achievement['AdminValidationStatus'] != 'PENDING' && $achievement['AdminValidationStatus'] != 'REJECTED') {
+                    throw new \Exception('Hanya prestasi dengan status PENDING atau REJECTED yang dapat diedit.');
                 }
 
                 // Prepare update data
@@ -429,6 +428,10 @@ class AchievementController
                             return ['memberId' => $member, 'role' => $role];
                         }, $_POST['teamMembers'], $_POST['teamMemberRoles']);
                         Achievement::updateTeamMembers($this->db, $achievementId, $teamData);
+                    }
+
+                    if ($achievement['AdminValidationStatus'] === 'REJECTED') {
+                        Achievement::updateRejectedAdminValidation($this->db, $achievementId, 'PENDING');
                     }
 
                     $_SESSION['success'] = 'Prestasi berhasil diperbarui.';
@@ -532,7 +535,7 @@ class AchievementController
             exit;
         }
 
-        $achievementId = (int)$_POST['Id'];
+        $achievementId = (int)$_POST['achievementId'];
         $status = $_POST['APPROVED'] ? 'APPROVED' : 'REJECTED';
         $note = trim($_POST['adminComment']);
 

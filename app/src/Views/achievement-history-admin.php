@@ -18,15 +18,15 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>NO</th>
-                                            <th>Tanggal</th>
-                                            <th>NIM</th>
-                                            <th>Nama Mahasiswa</th>
-                                            <th>Judul Kompetisi</th>
-                                            <th>Tingkat</th>
-                                            <th>Peringkat</th>
-                                            <th>Status</th>
-                                            <th>Aksi</th>
+                                            <th class="text-center" style="width: 5%; vertical-align: middle;">No</th>
+                                            <th class="text-center" style="width: 10%;">Tanggal<br>Dibuat</th>
+                                            <th class="text-center" style="width: 10%;">Tanggal<br>Diubah</th>
+                                            <th class="text-center" style="width: 15%;">Nama<br>Mahasiswa</th>
+                                            <th class="text-center" style="width: 20%;">Judul<br>Kompetisi</th>
+                                            <th class="text-center" style="width: 10%; vertical-align: middle;">Tingkat</th>
+                                            <th class="text-center" style="width: 10%; vertical-align: middle;">Peringkat</th>
+                                            <th class="text-center" style="width: 10%; vertical-align: middle;">Status</th>
+                                            <th class="text-center" style="width: 10%; vertical-align: middle;">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -39,8 +39,10 @@
                                                 <tr>
                                                     <td><?= $index + 1 ?></td>
                                                     <td><?= date('d/m/y', strtotime($achievement['CreatedAt'])) ?></td>
-                                                    <td><?= $achievement['username'] ?></td>
-                                                    <td><?= $achievement['FullName'] ?></td>
+                                                    <td>
+                                                        <div><strong><?= $achievement['FullName'] ?></strong></div>
+                                                        <div style="margin-top: 5px;"><?= $achievement['username'] ?></div>
+                                                    </td>
                                                     <td class="truncate-text"><?= $achievement['CompetitionTitle'] ?></td>
                                                     <td><?= $achievement['CompetitionLevelName'] ?></td>
                                                     <td><?= $achievement['CompetitionRankName'] ?></td>

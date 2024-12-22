@@ -35,7 +35,6 @@
                                         <div class="card shadow-sm mb-4">
                                             <div class="card-body">
                                                 <h5 class="card-title text-primary mb-4">Informasi Dasar</h5>
-
                                                 <div class="form-group mb-3">
                                                     <label class="form-label" for="competitionTitle">Judul Kompetisi
                                                         <span class="text-danger">*</span></label>
@@ -303,7 +302,7 @@
                                                     <div id="supervisorContainer">
                                                         <?php
                                                         if (empty($supervisors)):
-                                                            ?>
+                                                        ?>
                                                             <div class="input-group mb-2">
                                                                 <select class="form-control dosen-pembimbing"
                                                                     name="supervisors[]">
@@ -323,7 +322,7 @@
                                                             <?php
                                                         else:
                                                             foreach ($supervisors as $index => $supervisor):
-                                                                ?>
+                                                            ?>
                                                                 <div class="input-group mb-2">
                                                                     <select class="form-control dosen-pembimbing"
                                                                         name="supervisors[]">
@@ -346,7 +345,7 @@
                                                                         </button>
                                                                     </div>
                                                                 </div>
-                                                                <?php
+                                                        <?php
                                                             endforeach;
                                                         endif;
                                                         ?>
@@ -360,7 +359,7 @@
                                                         <?php
                                                         // Jika tidak ada anggota tim, tampilkan satu baris form kosong
                                                         if (empty($teamLeaders) && empty($teamMembers) && empty($teamMembersPersonal)):
-                                                            ?>
+                                                        ?>
                                                             <div class="input-group mb-2">
                                                                 <select class="form-control anggota-tim"
                                                                     name="teamMembers[]" required>
@@ -385,7 +384,7 @@
                                                                 </div>
                                                             </div>
                                                             <?php
-                                                            // Jika ada anggota tim, tampilkan data yang ada
+                                                        // Jika ada anggota tim, tampilkan data yang ada
                                                         else:
                                                             $allMembers = array_merge(
                                                                 is_array($teamLeaders) ? $teamLeaders : [],
@@ -393,7 +392,7 @@
                                                                 is_array($teamMembersPersonal) ? $teamMembersPersonal : []
                                                             );
                                                             foreach ($allMembers as $index => $member):
-                                                                ?>
+                                                            ?>
                                                                 <div class="input-group mb-2">
                                                                     <select class="form-control anggota-tim"
                                                                         name="teamMembers[]" required>
@@ -428,7 +427,7 @@
                                                                         </button>
                                                                     </div>
                                                                 </div>
-                                                                <?php
+                                                        <?php
                                                             endforeach;
                                                         endif;
                                                         ?>
@@ -438,7 +437,20 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <?php if ($achievement['AdminValidationStatus'] === 'REJECTED'): ?>
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="card shadow-sm mb-4">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-primary mb-4">Komentar Admin</h5>
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" id="adminComment" name="adminComment" rows="4" placeholder="Tulis komentar di sini..." readonly><?= htmlspecialchars($achievement['AdminComment']) ?></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="row mt-4">
                                     <div class="col-12 text-right">
                                         <button type="submit" id="submitButton"

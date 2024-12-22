@@ -14,8 +14,7 @@
                                 Detail prestasi Anda. Semua field bersifat read-only.
                             </p>
 
-                            <form class="forms-sample" method="GET"
-                                action="/dashboard/achievement/view/<?= $achievement['Id'] ?>">
+                            <div>
                                 <input type="hidden" name="achievementId" value="<?= $achievement['Id'] ?>">
                                 <div class="row">
                                     <!-- Kolom Kiri -->
@@ -317,10 +316,25 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
+                            <?php if ($achievement['AdminValidationStatus'] === 'REJECTED' || $achievement['AdminValidationStatus'] === 'APPROVED'): ?>
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="card shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-primary mb-4">Komentar Admin</h5>
+                                                <div class="form-group">
+                                                    <textarea class="form-control" id="adminComment" name="adminComment" rows="4" placeholder="Tulis komentar di sini..." readonly><?= htmlspecialchars($achievement['AdminComment']) ?></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="row mt-4"></div>
                             <form method="POST" action="/admin/achievement/update-validation">
                                 <input type="hidden" name="achievementId" value="<?= $achievement['Id'] ?>">
-                                <?php if ($_SESSION['user']['role'] === 1): ?>
+                                <?php if ($_SESSION['user']['role'] === 1 && $achievement['AdminValidationStatus'] === 'PENDING'): ?>
                                     <div class="row mt-4">
                                         <div class="col-12">
                                             <div class="card shadow-sm mb-4">
@@ -337,10 +351,10 @@
                                 <div class="row mt-4">
                                     <div class="col-12 text-right">
                                         <?php if ($_SESSION['user']['role'] === 1): ?>
-                                            <button type="submit" name="status" value="APPROVED" class="btn btn-success btn-md px-3">
+                                            <button type="submit" name="APPROVED" value="APPROVED" class="btn btn-success btn-md px-3" <?= $achievement['AdminValidationStatus'] !== 'PENDING' ? 'disabled' : '' ?>>
                                                 <i class="fas fa-check"></i> Terima
                                             </button>
-                                            <button type="submit" name="status" value="REJECTED" class="btn btn-danger btn-md px-3">
+                                            <button type="submit" name="REJECTED" value="REJECTED" class="btn btn-danger btn-md px-3" <?= $achievement['AdminValidationStatus'] !== 'PENDING' ? 'disabled' : '' ?>>
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>
                                             <a href="/admin/achievement/history" class="btn btn-secondary btn-md px-3">
