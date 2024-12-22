@@ -110,6 +110,7 @@ class Achievement
             error_log("CertificateFile: " . $achievement['CertificateFile']);
             error_log("DocumentationFile: " . $achievement['DocumentationFile']);
             error_log("PosterFile: " . $achievement['PosterFile']);
+            $achievement['AdminComment'] = $achievement['AdminValidationNote'] ?? '';
         }
 
         return $achievement;
@@ -545,6 +546,12 @@ class Achievement
             ':date' => $date,
             ':note' => $note
         ]);
+    }
+
+    public static function updateRejectedAdminValidation(PDO $db, int $achievementId, string $status): bool
+    {
+        $stmt = $db->prepare('UPDATE Achievement SET AdminValidationStatus = :status WHERE Id = :id');
+        return $stmt->execute([':status' => $status, ':id' => $achievementId]);
     }
 
     public static function updateAchievement(PDO $db, int $achievementId, array $updateData): bool
