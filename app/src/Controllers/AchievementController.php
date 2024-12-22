@@ -301,12 +301,20 @@ class AchievementController
     {
         $achievementId = (int)$data['id'];
         $achievement = Achievement::getAchievementById($this->db, $achievementId);
+        $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
+        $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
         $supervisors = Achievement::getSupervisorsByAchievementId($this->db, $achievementId);
         $teamLeaders = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 2); // Role 2 for leaders
         $teamMembers = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 3); // Role 3 for members
         $teamMembersPersonal = Achievement::getTeamMembersByAchievementId($this->db, $achievementId, 4); // Role 4 for personal
 
-        View::render('viewAchievement', ['achievement' => $achievement, 'supervisors' => $supervisors, 'teamLeaders' => $teamLeaders, 'teamMembers' => $teamMembers, 'teamMembersPersonal' => $teamMembersPersonal]);
+        View::render('viewAchievement', [
+            'achievement' => $achievement,
+            'supervisors' => $supervisors,
+            'teamLeaders' => $teamLeaders,
+            'teamMembers' => $teamMembers,
+            'teamMembersPersonal' => $teamMembersPersonal
+        ]);
     }
 
     private function validateDates($competitionStartDate, $competitionEndDate, $letterDate)
@@ -524,9 +532,9 @@ class AchievementController
             exit;
         }
 
-        $achievementId = (int)$_POST['achievementId'];
-        $status = trim($_POST['status']);
-        $note = trim($_POST['note']);
+        $achievementId = (int)$_POST['Id'];
+        $status = $_POST['APPROVED'] ? 'APPROVED' : 'REJECTED';
+        $note = trim($_POST['adminComment']);
 
         try {
             Achievement::updateAdminValidation($this->db, $achievementId, $status, $note);
@@ -549,7 +557,7 @@ class AchievementController
         if ($_SESSION['user']['fullName'] == 'Admin Pusat') {
             $achievements = Achievement::getAllAchievements($this->db);
         } elseif ($_SESSION['user']['fullName'] == 'Admin Program Studi Sistem Informasi Bisnis') {
-            $achievements = Achievement::getAchievementsByProdi($this->db, 2);
+            $achievements = Achievement::getAchievementsByProdi($this->db, prodi: 2);
         } else {
             $achievements = Achievement::getAchievementsByProdi($this->db, 1);
         }

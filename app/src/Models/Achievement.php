@@ -100,7 +100,7 @@ class Achievement
 
     public static function getAchievementById(PDO $db, int $id)
     {
-        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL'); //prepare > untuk mengamankan kueri dari sql injection //deletedAt : untuk softdelete
+        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL ORDER BY CreatedAt DESC'); //prepare > untuk mengamankan kueri dari sql injection //deletedAt : untuk softdelete
         $stmt->execute([':id' => $id]);
         $achievement = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -114,10 +114,10 @@ class Achievement
 
         return $achievement;
     }
-//batas
+    //batas
     public static function getAchievementsByUserId(PDO $db, int $userId)
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL');
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL ORDER BY CreatedAt DESC');
         $stmt->execute([':userId' => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -125,16 +125,16 @@ class Achievement
     public static function getTopAchievements(PDO $db, int $limit = 10, int $userId = null)
     {
         $sql = '
-            SELECT TOP (:limit) * 
-            FROM [dbo].[Achievement] 
-            WHERE DeletedAt IS NULL 
-            AND AdminValidationStatus = \'APPROVED\'';
+        SELECT TOP (:limit) * 
+        FROM [dbo].[Achievement] 
+        WHERE DeletedAt IS NULL 
+        AND AdminValidationStatus = \'APPROVED\'';
 
         if ($userId) {
             $sql .= ' AND UserId = :userId';
         }
 
-        $sql .= ' ORDER BY CompetitionPoints DESC';
+        $sql .= ' ORDER BY CreatedAt DESC, CompetitionPoints DESC';
 
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -150,13 +150,13 @@ class Achievement
     public static function getAchievementsByProdi(PDO $db, int $prodi)
     {
         $stmt = $db->prepare('
-            SELECT a.*, u.FullName, s.StudentStatus
+            SELECT a.*, u.FullName, u.username
             FROM [dbo].[Achievement] a
             JOIN [dbo].[Student] s ON a.UserId = s.UserId
             JOIN [dbo].[User] u ON a.UserId = u.Id
             WHERE s.StudentMajor = :prodi 
             AND a.DeletedAt IS NULL 
-            AND a.AdminValidationStatus = \'PENDING\'
+            ORDER BY CreatedAt DESC
         ');
         $stmt->execute([':prodi' => $prodi]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -164,7 +164,7 @@ class Achievement
 
     public static function getAllAchievements(PDO $db)
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE DeletedAt IS NULL');
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE DeletedAt IS NULL ORDER BY CreatedAt DESC');
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -472,7 +472,8 @@ class Achievement
         }
     }
 
-    private function storeFile($file, $fileType){
+    private function storeFile($file, $fileType)
+    {
         $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
         $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
 
@@ -481,7 +482,7 @@ class Achievement
         }
 
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = ($this->id ?? 'temp_' . uniqid()) . '_' . $fileType . '.' . $extension;
+        $filename = $folder . '_' . ($this->id ?? 'temp_' . uniqid()) . '.' . $extension;
 
         // Save full path for moving the file
         $destination = $uploadPath . $filename;
