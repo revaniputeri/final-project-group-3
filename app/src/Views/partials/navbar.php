@@ -14,10 +14,12 @@
           <i class="icon-head menu-icon mb-1" id="profile-icon"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-          <a class="dropdown-item" href="/dashboard/profile">
-            <i class="ti-settings text-primary"></i>
-            Profile
-          </a>
+          <?php if ($_SESSION['user']['role'] !== 1): ?>
+            <a class="dropdown-item" href="/dashboard/profile">
+              <i class="ti-settings text-primary"></i>
+              Profile
+            </a>
+          <?php endif; ?>
           <form action="/logout" method="post" style="display: inline;">
             <button type="submit" class="dropdown-item">
               <i class="ti-power-off text-primary"></i>
@@ -27,5 +29,6 @@
         </div>
       </li>
     </ul>
-  </div>
+      
+  </div>
 </nav>

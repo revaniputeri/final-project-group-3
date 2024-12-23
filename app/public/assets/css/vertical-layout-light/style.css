@@ -28529,7 +28529,8 @@
     color: inherit;
   }
   
-  .sidebar .nav .nav-item .nav-link i.menu-icon {
+  .sidebar .nav .nav-item .nav-link i.menu-icon,
+  .sidebar .nav .nav-item .nav-link svg {
     font-size: 1rem;
     line-height: 1;
     margin-right: 1rem;
@@ -28607,6 +28608,7 @@
   }
   
   .sidebar .nav .nav-item.active > .nav-link i,
+  .sidebar .nav .nav-item.active > .nav-link svg,
   .sidebar .nav .nav-item.active > .nav-link .menu-title,
   .sidebar .nav .nav-item.active > .nav-link .menu-arrow {
     color: #fff;
@@ -28617,6 +28619,7 @@
   }
   
   .sidebar .nav .nav-item:hover > .nav-link i,
+  .sidebar .nav .nav-item:hover > .nav-link svg,
   .sidebar .nav .nav-item:hover > .nav-link .menu-title,
   .sidebar .nav .nav-item:hover > .nav-link .menu-arrow {
     color: #fff;
@@ -29921,7 +29924,8 @@
       margin-left: 5px;
       display: none;
     }
-    .sidebar-mini .sidebar .nav .nav-item .nav-link i.menu-icon {
+    .sidebar-mini .sidebar .nav .nav-item .nav-link i.menu-icon,
+    .sidebar-mini .sidebar .nav .nav-item .nav-link svg {
       display: block;
       margin-right: auto;
       margin-left: auto;
@@ -30001,7 +30005,8 @@
     .rtl.sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-title {
       border-radius: 5px 0 0 5px;
     }
-    .sidebar-icon-only .sidebar .nav .nav-item .nav-link i.menu-icon {
+    .sidebar-icon-only .sidebar .nav .nav-item .nav-link i.menu-icon,
+    .sidebar-icon-only .sidebar .nav .nav-item .nav-link svg {
       margin-right: 0;
       margin-left: 0;
       margin-bottom: 0;
