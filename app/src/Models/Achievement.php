@@ -8,10 +8,10 @@ use PDO;
 
 class Achievement
 {
-    private const MAX_FILE_SIZE = 5242880; // 5MB //Batas Ukuran file maksisimum 5 MB
-    private const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png']; // Tipe file yang boleh 
-    private const UPLOAD_BASE_PATH = '@storage/achievements/'; //Path untuk simpan dokumen 
-    private const UPLOAD_FOLDERS = [ // folder untuk simpan unggahan file
+    private const MAX_FILE_SIZE = 5242880; // 5MB
+    private const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
+    private const UPLOAD_BASE_PATH = '@storage/achievements/';
+    private const UPLOAD_FOLDERS = [
         'letterFile' => 'letters',
         'certificateFile' => 'certificates',
         'documentationFile' => 'documentation',
@@ -41,7 +41,7 @@ class Achievement
     private const ROLE_TEAM_MEMBER = 3;
     private const ROLE_PERSONAL = 4;
 
-    public function __construct( // Konstruktor untuk membuat instansiasi baru dgn atribut parameter terkait
+    public function __construct(
         public $userId,
         public $competitionType,
         public $competitionLevel,
@@ -100,7 +100,7 @@ class Achievement
 
     public static function getAchievementById(PDO $db, int $id)
     {
-        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL ORDER BY CreatedAt DESC'); //prepare > untuk mengamankan kueri dari sql injection //deletedAt : untuk softdelete
+        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL ORDER BY UpdatedAt DESC'); //prepare > untuk mengamankan kueri dari sql injection //deletedAt : untuk softdelete
         $stmt->execute([':id' => $id]);
         $achievement = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -115,11 +115,19 @@ class Achievement
 
         return $achievement;
     }
-    //batas
-    public static function getAchievementsByUserId(PDO $db, int $userId)
+    public static function getAchievementsByUserId(PDO $db, int $userId, $period = null)
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL ORDER BY CreatedAt DESC');
-        $stmt->execute([':userId' => $userId]);
+        $sql = 'SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL ORDER BY UpdatedAt DESC';
+        $params = [':userId' => $userId];
+
+        if ($period) {
+            $sql .= ' AND CompetitionStartDate BETWEEN :start AND :end';
+            $params[':start'] = $period['start'];
+            $params[':end'] = $period['end'];
+        }
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -165,7 +173,7 @@ class Achievement
 
     public static function getAllAchievements(PDO $db)
     {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE DeletedAt IS NULL ORDER BY CreatedAt DESC');
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE DeletedAt IS NULL ORDER BY UpdatedAt DESC');
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

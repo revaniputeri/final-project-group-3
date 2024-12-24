@@ -39,6 +39,7 @@
                                                 <tr>
                                                     <td><?= $index + 1 ?></td>
                                                     <td><?= date('d/m/y', strtotime($achievement['CreatedAt'])) ?></td>
+                                                    <td><?= date('d/m/y', strtotime($achievement['UpdatedAt']))?></td>
                                                     <td>
                                                         <div><strong><?= $achievement['FullName'] ?></strong></div>
                                                         <div style="margin-top: 5px;"><?= $achievement['username'] ?></div>

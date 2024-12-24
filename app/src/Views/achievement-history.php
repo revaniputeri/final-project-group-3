@@ -10,24 +10,52 @@
                     <div class="col-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h4 class="card-title">Riwayat Prestasi Saya</h4>
-                                    <a href="/dashboard/achievement/form" class="btn btn-primary">
-                                        <i class="ti-plus"></i> Tambah Prestasi
-                                    </a>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="card-title mb-0">Riwayat Prestasi Saya</h4>
+                                    <div class="d-flex align-items-center">
+                                        <a href="/dashboard/achievement/form" class="btn btn-primary mr-2">
+                                            <i class="ti-plus"></i> Tambah Prestasi
+                                        </a>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown mr-2">
+                                        <button class="btn btn-white btn-sm dropdown-toggle shadow-sm" type="button" id="statusFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Filter Status
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="statusFilterDropdown">
+                                            <a class="dropdown-item" href="#">Semua</a>
+                                            <a class="dropdown-item" href="#">Pending</a>
+                                            <a class="dropdown-item" href="#">Approved</a>
+                                            <a class="dropdown-item" href="#">Rejected</a>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-white btn-sm dropdown-toggle shadow-sm" type="button" id="periodFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Filter Periode
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="periodFilterDropdown">
+                                            <a class="dropdown-item" href="/achievement/history?period=all">Semua</a>
+                                            <?php foreach ($periods as $period): ?>
+                                                <a class="dropdown-item" href="/achievement/history?period=<?= urlencode($period['label']) ?>"><?= $period['label'] ?></a>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive">
                                     <table class="table table-striped">
                                         <thead>
-                                            <tr>
-                                                <th>Tanggal</th>
-                                                <th>Judul Kompetisi</th>
-                                                <th>Tempat</th>
-                                                <th>Peringkat</th>
-                                                <th>Tingkat</th>
-                                                <th>Status</th>
-                                                <th>Aksi</th>
+                                            <tr class="text-center">
+                                                <th>Tanggal<br>Dibuat</th>
+                                                <th>Tanggal<br>Diubah</th>
+                                                <th style="vertical-align: middle;">Judul Kompetisi</th>
+                                                <th style="vertical-align: middle;">Tempat</th>
+                                                <th style="vertical-align: middle;">Peringkat</th>
+                                                <th style="vertical-align: middle;">Tingkat</th>
+                                                <th style="vertical-align: middle;">Status</th>
+                                                <th style="vertical-align: middle;">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -38,7 +66,8 @@
                                             <?php else: ?>
                                                 <?php foreach ($achievements as $achievement): ?>
                                                     <tr>
-                                                        <td><?= date('d M Y', strtotime($achievement['CreatedAt'])) ?></td>
+                                                        <td><?= date('d/m/y', strtotime($achievement['CreatedAt'])) ?></td>
+                                                        <td><?= date('d/m/y', strtotime($achievement['UpdatedAt'])) ?></td>
                                                         <td class="truncate-text"><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>
                                                         <td class="truncate-text"><?= htmlspecialchars($achievement['CompetitionPlace']) ?></td>
                                                         <td><?= htmlspecialchars($achievement['CompetitionRankName']) ?></td>
@@ -64,8 +93,8 @@
                                                                 <a href="/dashboard/achievement/view/<?= $achievement['Id'] ?>" class="btn btn-info btn-sm" title="View">
                                                                     <i class="ti-eye"></i>
                                                                 </a>
-                                                                <?= ($achievement['AdminValidationStatus'] === 'APPROVED') 
-                                                                    ? '<a href="#" class="btn btn-warning btn-sm disabled" title="Edit" aria-disabled="true"><i class="ti-pencil"></i></a>' 
+                                                                <?= ($achievement['AdminValidationStatus'] === 'APPROVED')
+                                                                    ? '<a href="#" class="btn btn-warning btn-sm disabled" title="Edit" aria-disabled="true"><i class="ti-pencil"></i></a>'
                                                                     : '<a href="/dashboard/achievement/edit/' . $achievement['Id'] . '" class="btn btn-warning btn-sm" title="Edit"><i class="ti-pencil"></i></a>'; ?>
                                                                 <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete(<?= $achievement['Id'] ?>)">
                                                                     <i class="ti-trash"></i>
@@ -136,7 +165,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 180px;
-            /* Sesuaikan dengan lebar yang diinginkan */
+            max-width: 120px;
         }
     </style>
+    <script defer src="/assets/js/achievement-history.js"></script>

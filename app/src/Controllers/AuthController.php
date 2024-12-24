@@ -82,6 +82,7 @@ class AuthController
         // Login successful
         $_SESSION['user'] = [
             'id' => $user->id,
+            'username' => $user->username,
             'fullName' => $user->fullName,
             'role' => (int)$user->role,
             'prodi' => ($user->fullName == 'Admin Program Studi Sistem Informasi Bisnis') ? 2 : 1
