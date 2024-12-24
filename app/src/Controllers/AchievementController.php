@@ -2,6 +2,7 @@
 
 namespace PrestaC\Controllers;
 
+use DateTime;
 use PDO;
 use PrestaC\App\View;
 use PrestaC\Models\Achievement;
@@ -32,22 +33,63 @@ class AchievementController
         }
     }
 
+    private function getStudentPeriods($username)
+    {
+        $startYear = (int)substr($username, 0, 2) + 2000;
+        $currentDate = new DateTime();
+        $periods = [];
+
+        for ($i = 0; $i < 4; $i++) {
+            $year = $startYear + $i;
+
+            //based on 2023/2024 academic year
+                // Odd semester: Aug 28 to Jan 26
+            $oddSemesterStart = new DateTime("$year-08-28");
+            $oddSemesterEnd = new DateTime("$year-01-26");
+
+                // Even semester: Feb 12 to Aug 02
+            $evenSemesterStart = new DateTime(($year + 1) . "-02-12");
+            $evenSemesterEnd = new DateTime(($year + 1) . "-08-02");
+
+            if ($currentDate >= $oddSemesterStart) {
+                $periods[] = [
+                    'label' => "$year/" . ($year + 1) . " Ganjil",
+                    'start' => $oddSemesterStart->format('Y-m-d'),
+                    'end' => $oddSemesterEnd->format('Y-m-d')
+                ];
+            }
+
+            if ($currentDate >= $evenSemesterStart) {
+                $periods[] = [
+                    'label' => "$year/" . ($year + 1) . " Genap",
+                    'start' => $evenSemesterStart->format('Y-m-d'),
+                    'end' => $evenSemesterEnd->format('Y-m-d')
+                ];
+            }
+        }
+
+        return $periods;
+    }
+
     public function achievementHistory()
     {
         $this->validateUser();
 
         $id = $_SESSION['user']['id'];
-        $achievements = Achievement::getAchievementsByUserId($this->db, $id);
+        $username = $_SESSION['user']['username'];
+        $periods = $this->getStudentPeriods($username);
 
-        // Convert rank and level IDs to names
+        $filterPeriod = $_GET['period'] ?? null;
+        $achievements = Achievement::getAchievementsByUserId($this->db, $id, $filterPeriod);
+
         foreach ($achievements as &$achievement) {
             $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
             $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
         }
 
-        // Send data to view
         View::render('achievement-history', [
-            'achievements' => $achievements
+            'achievements' => $achievements,
+            'periods' => $periods
         ]);
     }
 
@@ -371,7 +413,8 @@ class AchievementController
                     'NumberOfInstitutions' => (int)$_POST['numberOfInstitutions'],
                     'NumberOfStudents' => (int)$_POST['numberOfStudents'],
                     'LetterNumber' => trim($_POST['letterNumber']),
-                    'LetterDate' => $_POST['letterDate']
+                    'LetterDate' => $_POST['letterDate'],
+                    'UpdatedAt' => (new \DateTime())->format('Y-m-d H:i:s')
                 ];
 
                 // Validate dates

@@ -163,14 +163,6 @@ Router::add(
 
 Router::add(
     method: "GET",
-    path: "/dashboard/achievement/info",
-    controller: AchievementController::class,
-    function: "achievementInfo",
-    dependencies: ['db' => $connection]
-);
-
-Router::add(
-    method: "POST",
     path: "/admin/achievement/history",
     controller: AchievementController::class,
     function: "adminHistory",
@@ -182,14 +174,6 @@ Router::add(
     path: "/admin/achievement/view/(?<id>[0-9]+)",
     controller: AchievementController::class,
     function: "adminView",
-    dependencies: ['db' => $connection]
-);
-
-Router::add(
-    method: "POST",
-    path: "/admin/achievement/view/(?<id>[0-9]+)",
-    controller: AchievementController::class,
-    function: "adminValidationProcess",
     dependencies: ['db' => $connection]
 );
 
@@ -234,21 +218,13 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// Router::add(
-//     method: "GET",
-//     path: "/dashboard/profile",
-//     controller: IndexController::class,
-//     function: "profileCustomization",
-//     dependencies: ['db' => $connection]
-// );
-
-// Router::add(
-//     method: "POST",
-//     path: "/dashboard/profile",
-//     controller: IndexController::class,
-//     function: "profileCustomizationProcess",
-//     dependencies: ['db' => $connection]
-// );
+Router::add(
+    method: "GET",
+    path: "/admin/info",
+    controller: IndexController::class,
+    function: "info",
+    dependencies: ['db' => $connection]
+);
 
 Router::add(
     method: "GET",
