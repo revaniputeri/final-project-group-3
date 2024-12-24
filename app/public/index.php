@@ -38,6 +38,14 @@ Router::add(
 
 Router::add(
     method: "GET",
+    path: "/guest",
+    controller: AchievementController::class,
+    function: "getTopAchievementsForGuest",
+    dependencies: ['db' => $connection]
+);
+
+Router::add(
+    method: "GET",
     path: "/login",
     controller: AuthController::class,
     function: "login",

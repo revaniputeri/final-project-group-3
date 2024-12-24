@@ -156,6 +156,23 @@ class Achievement
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function getTopAchievementsForGuest(PDO $db, int $limit)
+    {
+        $sql = '
+        SELECT TOP (:limit) a.CompetitionPoints, u.FullName, s.StudentMajor 
+        FROM [dbo].[Achievement] a
+        JOIN [dbo].[User] u ON a.UserId = u.Id
+        JOIN [dbo].[Student] s ON a.UserId = s.UserId
+        WHERE a.DeletedAt IS NULL 
+        AND a.AdminValidationStatus = \'APPROVED\'
+        ORDER BY a.CompetitionPoints DESC';
+
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function getAchievementsByProdi(PDO $db, int $prodi)
     {
         $stmt = $db->prepare('

@@ -33,6 +33,12 @@ class AchievementController
         }
     }
 
+    public function getTopAchievementsForGuest()
+    {
+        $topAchievements = Achievement::getTopAchievementsForGuest($this->db, 10);
+        View::render('guest', ['topAchievements' => $topAchievements]);
+    }
+
     private function getStudentPeriods($username)
     {
         $startYear = (int)substr($username, 0, 2) + 2000;
@@ -43,11 +49,11 @@ class AchievementController
             $year = $startYear + $i;
 
             //based on 2023/2024 academic year
-                // Odd semester: Aug 28 to Jan 26
+            // Odd semester: Aug 28 to Jan 26
             $oddSemesterStart = new DateTime("$year-08-28");
             $oddSemesterEnd = new DateTime("$year-01-26");
 
-                // Even semester: Feb 12 to Aug 02
+            // Even semester: Feb 12 to Aug 02
             $evenSemesterStart = new DateTime(($year + 1) . "-02-12");
             $evenSemesterEnd = new DateTime(($year + 1) . "-08-02");
 
