@@ -95,25 +95,25 @@
                                 <div class="col-6 mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <div class="form-control">
-                                        <?= htmlspecialchars($student['Email'], ENT_QUOTES, 'UTF-8') ?>
+                                        <?= htmlspecialchars($profile['email'], ENT_QUOTES, 'UTF-8') ?>
                                     </div>
                                 </div>
                                 <div class="col-6 mb-3">
                                     <label for="jurusan" class="form-label">Jurusan</label>
                                     <div class="form-control">
-                                        <?= htmlspecialchars($student['StudentMajor'], ENT_QUOTES, 'UTF-8') ?>
+                                        <?= htmlspecialchars($profile['studentMajor'], ENT_QUOTES, 'UTF-8') ?>
                                     </div>
                                 </div>
                                  <div class="col-6 mb-3">
                                     <label for="email" class="form-label">No. Telepon</label>
                                     <div class="form-control">
-                                        <?= htmlspecialchars($student['Phone'], ENT_QUOTES, 'UTF-8') ?>
+                                        <?= htmlspecialchars($profile['phone'], ENT_QUOTES, 'UTF-8') ?>
                                     </div>
                                 </div>
                                 <div class="col-6 mb-3">
                                     <label for="jurusan" class="form-label">Status</label>
                                     <div class="form-control">
-                                        <?= htmlspecialchars($student['StudentStatus'], ENT_QUOTES, 'UTF-8') ?>
+                                        <?= htmlspecialchars($profile['studentStatus'], ENT_QUOTES, 'UTF-8') ?>
                                     </div>
                                 </div>
                             </div>

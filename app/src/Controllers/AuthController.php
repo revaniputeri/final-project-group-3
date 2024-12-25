@@ -84,8 +84,9 @@ class AuthController
             'id' => $user->id,
             'username' => $user->username,
             'fullName' => $user->fullName,
-            'username' => $user->username,
+            'email' => $user->email,
             'role' => (int)$user->role,
+            'phone' => $user->phone,
             'prodi' => ($user->fullName == 'Admin Program Studi Sistem Informasi Bisnis') ? 2 : 1
         ];
 

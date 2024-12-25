@@ -23,18 +23,8 @@ class ProfileController
         }
     }
 
-    public function viewProfile()
-    {   
-        // Check if the session is already started before calling session_start()
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        
-        View::render('profileEdit', []);
-    }
-
     // Profile method for handling profile rendering
-    public function profile()
+    public function viewProfile()
     {
         // Ensure session is started
         if (session_status() == PHP_SESSION_NONE) {
@@ -52,10 +42,14 @@ class ProfileController
 
         // Default profile array if no data found
         $profile = [
-            'name' => $_SESSION['user']['fullName'] ?? ($profileData['fullName'] ?? 'Nama tidak ditemukan'),
-            'nim' => $_SESSION['user']['username'] ?? ($profileData['username'] ?? 'NIM tidak ditemukan'),
-            'email' => $_SESSION['user']['email'] ?? ($profileData['email'] ?? ''),
-            'profile_image' => $_SESSION['user']['profile_image'] ?? ($profileData['profile_image'] ?? '/path/to/default-image.jpg'),
+            'name' => $_SESSION['user']['fullName'] ?? ($profileData['fullName'] ?? 'blom login banh'),
+            'nim' => $_SESSION['user']['username'] ?? ($profileData['username'] ?? 'blom login banh'),
+            'email' => $_SESSION['user']['email'] ?? ($profileData['email'] ?? 'blom login banh'),
+            'phone' => $_SESSION['user']['phone'] ?? ($profileData['phone'] ?? 'blom login banh'),
+            'studentMajor' => $profileData['StudentMajor'] ?? 'unknown',
+            'studentStatus' => $profileData['StudentStatus'] ?? 'unknown',
+            'points' => $profileData['CompetitionPoints'] ?? 'yahahah gada point',
+            'prestasi' => $profileData['AchievementCount'] ?? 'yahahaha gadue prestasi'
         ];
 
         // Render the profile view with the profile data

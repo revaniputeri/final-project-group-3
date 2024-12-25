@@ -26,15 +26,23 @@ class Student
                     WHEN s.StudentStatus = 1 THEN 'Aktif'
                     WHEN s.StudentStatus = 2 THEN 'Pasif'
                     ELSE 'Unknown'
-                END AS StudentStatus
+                END AS StudentStatus,
+                a.CompetitionPoints,
+                COUNT(a.Id) AS AchievementCount
             FROM
                 [User] u
             INNER JOIN
                 [Student] s
             ON
                 u.Id = s.UserId
+            INNER JOIN
+                [Achievement] a
+            ON
+                u.Id = a.UserId
             WHERE
                 u.Id = :userId
+            GROUP BY
+                u.Id, u.FullName, u.Username, u.Email, u.Phone, u.Role, s.StudentMajor, s.StudentStatus, a.CompetitionPoints
         ");
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);

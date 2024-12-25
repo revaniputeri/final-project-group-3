@@ -259,22 +259,5 @@ Router::add(
     dependencies: []
 );
 
-// For viewing the profile edit form
-Router::add(
-    method: "GET",
-    path: "/dashboard/profile",
-    controller: ProfileController::class,
-    function: "viewProfile",
-    dependencies: ['db' => $connection] // Tambahkan dependency 'db'
-);
-
-// For processing the profile update (maybe with an action like '/submit' or '/update')
-Router::add(
-    method: "POST",
-    path: "/edit/profile",  // New distinct path
-    controller: ProfileController::class,
-    function: "profile",
-    dependencies: ['db' => $connection]
-);
 
 Router::run();
