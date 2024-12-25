@@ -4,6 +4,7 @@ namespace PrestaC\Controllers;
 
 use PDO;
 use PrestaC\App\View;
+use PrestaC\Models\Student;
 
 class ProfileController
 {
@@ -21,14 +22,34 @@ class ProfileController
             session_start();
         }
     }
-
+    
     public function viewProfile()
     {   
-        // Check if the session is already started before calling session_start()
+        // Mulai sesi jika belum berjalan
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        
-        View::render('profileEdit', []);
+
+        // Pastikan user telah login
+        if (!isset($_SESSION['user']['id'])) {
+            header('Location: /login');
+            exit();
+        }
+
+        // Ambil ID user dari sesi
+        $userId = $_SESSION['user']['id'];
+
+        // Ambil data student dari database
+        $student = Student::getStudentById($this->db, $userId);
+
+        // Jika data tidak ditemukan, arahkan ke halaman error
+        if (!$student) {
+            header('Location: /error');
+            exit();
+        }
+
+        // Tampilkan view dan kirimkan data student
+        View::render('profileEdit', ['student' => $student]);
     }
+
 }

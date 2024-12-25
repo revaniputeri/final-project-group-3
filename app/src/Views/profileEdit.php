@@ -5,7 +5,7 @@
 </head>
 <div class="container-fluid page-body-wrapper">
     <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
         <div class="content-wrapper">   
             <div class="row justify-content-center pt-5">
@@ -17,16 +17,6 @@
                             color: white; 
                             text-align: center; 
                             border-radius: 20px;">
-                        <!-- Ikon Sunting Background -->
-                        <i class="fas fa-edit" style="position: absolute; 
-                                top: 10px; right: 10px; 
-                                font-size: 18px; 
-                                color: white; 
-                                cursor: pointer; 
-                                background: rgba(0, 0, 0, 0.5); 
-                                padding: 8px; 
-                                border-radius: 50%;" data-bs-toggle="modal"
-                            data-bs-target="#changeProfileBackgroundModal"></i>
 
                         <!-- Container Foto Profil -->
                         <div style="position: relative; 
@@ -100,26 +90,32 @@
                         </div>
 
                         <!-- Formulir Profil -->
-                        <form method="POST" action="/edit/profile" enctype="multipart/form-data">
+                        <form method="GET" action="/profile/view" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="col-6 mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                        value="<?= htmlspecialchars($profile['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                                        required>
+                                    <div class="form-control">
+                                        <?= htmlspecialchars($student['Email'], ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
                                 </div>
                                 <div class="col-6 mb-3">
                                     <label for="jurusan" class="form-label">Jurusan</label>
-                                    <input type="text" class="form-control" id="jurusan" name="jurusan"
-                                        value="<?= htmlspecialchars($profile['jurusan'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                                        required>
+                                    <div class="form-control">
+                                        <?= htmlspecialchars($student['StudentMajor'], ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
                                 </div>
-                            </div>
-                            <div style="text-align: right;">
-                                <button type="submit" class="btn btn-primary"
-                                    style="border-radius: 8px; font-weight: bold">
-                                    Simpan Perubahan
-                                </button>
+                                 <div class="col-6 mb-3">
+                                    <label for="email" class="form-label">No. Telepon</label>
+                                    <div class="form-control">
+                                        <?= htmlspecialchars($student['Phone'], ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label for="jurusan" class="form-label">Status</label>
+                                    <div class="form-control">
+                                        <?= htmlspecialchars($student['StudentStatus'], ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -152,33 +148,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Modal Ganti Background -->
-        <div class="modal fade" id="changeProfileBackgroundModal" tabindex="-1"
-            aria-labelledby="changeProfileBackgroundLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="changeProfileBackgroundLabel">Ganti Background Profil</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="POST" action="/dashboard/update-profile-background" enctype="multipart/form-data">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="newProfileBackground" class="form-label">Pilih Background Baru</label>
-                                <input type="file" class="form-control" id="newProfileBackground"
-                                    name="profile_background" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
         <?php include __DIR__ . '/partials/footer-page.php'; ?>
     </div>
 </div>

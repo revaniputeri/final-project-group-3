@@ -269,13 +269,4 @@ Router::add(
     dependencies: ['db' => $connection] // Tambahkan dependency 'db'
 );
 
-// // For processing the profile update (maybe with an action like '/submit' or '/update')
-// Router::add(
-//     method: "POST",
-//     path: "/profile/edit",  // New distinct path
-//     controller: ProfileController::class,
-//     function: "profile",
-//     dependencies: ['db' => $connection]
-// );
-
 Router::run();

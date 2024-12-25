@@ -92,3 +92,4 @@ ALTER TABLE [dbo].[UserAchievement]
 ALTER TABLE [dbo].[UserAchievement]
     ADD CONSTRAINT [FK_UserAchievement_Achievement]
         FOREIGN KEY ([AchievementId]) REFERENCES [dbo].[Achievement] ([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+        

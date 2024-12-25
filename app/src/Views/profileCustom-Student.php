@@ -17,8 +17,8 @@
                     <div class="profile-header" style="position: relative; 
                             background: linear-gradient(to right, #7b77f4, #7dcef5); 
                             padding: 40px; 
-                            color: white; t
-                            ext-align: center; 
+                            color: white;
+                            text-align: center; 
                             border-radius: 20px;">
                         <!-- Ikon Sunting Background -->
                         <i class="fas fa-edit" style="position: absolute; 
