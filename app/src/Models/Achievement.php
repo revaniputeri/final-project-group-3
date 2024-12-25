@@ -115,24 +115,43 @@ class Achievement
 
         return $achievement;
     }
-    public static function getAchievementsByUserId(PDO $db, int $userId, $period = null)
+    public static function getAchievementsByUserId(PDO $db, int $userId, $filter = null)
     {
         $sql = 'SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL';
         $params = [':userId' => $userId];
 
-
-        if ($period) {
+        if ($filter) {
             // Ensure the period dates are in the correct format and valid
-            $startDate = date('Y-m-d', strtotime($period['start']));
-            $endDate = date('Y-m-d', strtotime($period['end']));
-    
-            if ($startDate && $endDate) {
+            if ($filter['start'] && $filter['end']) {
+                $startDate = date('Y-m-d', strtotime($filter['start']));
+                $endDate = date('Y-m-d', strtotime($filter['end']));
                 $sql .= ' AND CreatedAt BETWEEN :start AND :end';
                 $params[':start'] = $startDate;
                 $params[':end'] = $endDate;
-            } else {
-                throw new InvalidArgumentException("Invalid period dates provided.");
             }
+
+            if ($filter['status']) {
+                $selectedStatus = $filter['status'];
+                $sql .= ' AND AdminValidationStatus = :status';
+                $params[':status'] = $selectedStatus;
+            }
+        }
+
+        $sql .= ' ORDER BY UpdatedAt DESC';
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getAchievementsByStatus(PDO $db, int $userId, ?string $status = null)
+    {
+        $sql = 'SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL';
+        $params = [':userId' => $userId];
+
+        if ($status) {
+            $sql .= ' AND AdminValidationStatus = :status';
+            $params[':status'] = $status;
         }
 
         $sql .= ' ORDER BY UpdatedAt DESC';

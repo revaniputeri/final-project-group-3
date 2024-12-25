@@ -39,6 +39,19 @@ class AchievementController
         View::render('guest', ['topAchievements' => $topAchievements]);
     }
 
+    public function getStatusAchievementStudent()
+    {
+        $this->validateUser();
+        
+        $statusAchievement = [
+            'PENDING',
+            'APPROVED',
+            'REJECTED'
+        ];
+
+        return $statusAchievement;
+    }
+
     private function getStudentPeriods($username)
     {
         $startYear = (int)substr($username, 0, 2) + 2000;
@@ -51,7 +64,7 @@ class AchievementController
             //based on 2023/2024 academic year
             // Odd semester: Aug 28 to Jan 26
             $oddSemesterStart = new DateTime("$year-08-28");
-            $oddSemesterEnd = new DateTime("$year-01-26");
+            $oddSemesterEnd = new DateTime(($year + 1) . "-01-26");
 
             // Even semester: Feb 12 to Aug 02
             $evenSemesterStart = new DateTime(($year + 1) . "-02-12");
@@ -85,18 +98,13 @@ class AchievementController
         $username = $_SESSION['user']['username'];
 
         $periods = $this->getStudentPeriods($username);
+        $statusAchievement = $this->getStatusAchievementStudent();
 
-        $start = $_GET['start'];
-        $end = $_GET['end'];
-        $hasPeriod = $start != null && $end != null;
-
-        $achievements = [];
-
-        if (! $hasPeriod) {
-            $achievements = Achievement::getAchievementsByUserId($this->db, $id);
-        } else {
-            $achievements = Achievement::getAchievementsByUserId($this->db, $id, ['start' => $start, 'end' => $end]);
-        }
+        $achievements = Achievement::getAchievementsByUserId($this->db, $id, [
+            'start' => isset($_GET['start']) ? $_GET['start'] : null, 
+            'end' => isset($_GET['end']) ? $_GET['end'] : null,
+            'status' => isset($_GET['status']) ? $_GET['status'] : null
+        ]);
 
         // Convert rank and level IDs to names
         foreach ($achievements as &$achievement) {
@@ -107,7 +115,8 @@ class AchievementController
         // Render the view with the filtered achievements
         View::render('achievement-history', [
             'achievements' => $achievements,
-            'periods' => $periods
+            'periods' => $periods,
+            'statusAchievement' => $statusAchievement
         ]);
     }
 

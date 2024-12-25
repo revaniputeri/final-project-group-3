@@ -25,10 +25,10 @@
                                             Filter Status
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="statusFilterDropdown">
-                                            <a class="dropdown-item" href="#">Semua</a>
-                                            <a class="dropdown-item" href="#">Pending</a>
-                                            <a class="dropdown-item" href="#">Approved</a>
-                                            <a class="dropdown-item" href="#">Rejected</a>
+                                            <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['status' => null])) ?>">Semua</a>
+                                            <?php foreach ($statusAchievement as $status): ?>
+                                                <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['status' => $status])) ?>"><?= $status ?></a>
+                                            <?php endforeach; ?>
                                         </div>
                                     </div>
                                     <div class="dropdown">
@@ -36,9 +36,9 @@
                                             Filter Periode
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="periodFilterDropdown">
-                                            <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history">Semua</a>
+                                            <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['start' => null, 'end' => null])) ?>">Semua</a>
                                             <?php foreach ($periods as $period): ?>
-                                                <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?start=<?= $period['start'] ?>&end=<?= $period['end'] ?>"><?= $period['label'] ?></a>
+                                                <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['start' => $period['start'], 'end' => $period['end']])) ?>"><?= $period['label'] ?></a>
                                             <?php endforeach; ?>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@
                                         <tbody>
                                             <?php if (empty($achievements)): ?>
                                                 <tr>
-                                                    <td colspan="7" class="text-center">Belum ada data prestasi yang tersedia</td>
+                                                    <td colspan="8" class="text-center">Belum ada data prestasi yang tersedia</td>
                                                 </tr>
                                             <?php else: ?>
                                                 <?php foreach ($achievements as $achievement): ?>
