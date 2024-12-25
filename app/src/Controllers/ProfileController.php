@@ -47,11 +47,8 @@ class ProfileController
             exit;
         }
 
-        // Get username from session
-        $username = $_SESSION['user']['username'];
-
         // Get student data from the database using getStudentByUsername
-        $profileData = Student::getStudentByUsername($this->db, $username);
+        $profileData = Student::getStudentById($this->db, $_SESSION['user']['id']);
 
         // Default profile array if no data found
         $profile = [
@@ -63,49 +60,5 @@ class ProfileController
 
         // Render the profile view with the profile data
         View::render('profileEdit', ['profile' => $profile]);
-    }
-    public function editProfile()
-    {
-        // Pastikan sesi dimulai
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Periksa apakah pengguna sudah login
-        if (!isset($_SESSION['user']['username'])) {
-            header('Location: /login');
-            exit;
-        }
-
-        // Ambil data dari request POST
-        $email = $_POST['email'] ?? '';
-        $jurusan = $_POST['jurusan'] ?? '';
-
-        // Validasi input (contoh validasi sederhana)
-        if (empty($email) || empty($jurusan)) {
-            $_SESSION['flash'] = 'Email dan jurusan tidak boleh kosong!';
-            header('Location: /profileEdit/');
-            exit;
-        }
-
-        // Ambil username dari sesi
-        $username = $_SESSION['user']['username'];
-
-        // Simpan ke database
-        $updateStatus = Student::updateStudentProfile($this->db, $username, [
-            'email' => $email,
-            'jurusan' => $jurusan,
-        ]);
-
-        // Periksa apakah penyimpanan berhasil
-        if ($updateStatus) {
-            $_SESSION['flash'] = 'Profil berhasil diperbarui.';
-        } else {
-            $_SESSION['flash'] = 'Terjadi kesalahan saat memperbarui profil.';
-        }
-
-        // Redirect kembali ke halaman edit profil
-        header('Location: /profileEdit/');
-        exit;
     }
 }
