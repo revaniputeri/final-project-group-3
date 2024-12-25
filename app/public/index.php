@@ -31,14 +31,6 @@ Router::add(
 Router::add(
     method: "GET",
     path: "/guest",
-    controller: AuthController::class,
-    function: "guest",
-    dependencies: ['db' => $connection]
-);
-
-Router::add(
-    method: "GET",
-    path: "/guest",
     controller: AchievementController::class,
     function: "getTopAchievementsForGuest",
     dependencies: ['db' => $connection]
@@ -142,6 +134,14 @@ Router::add(
     controller: AssetsController::class,
     function: "downloadSkemaPoin",
     dependencies: []
+);
+
+Router::add(
+    method: "GET",
+    path: "/download/laporan",
+    controller: AssetsController::class,
+    function: "downloadLaporanExcel",
+    dependencies: ['db' => $connection]
 );
 
 // submission form within achievement submission

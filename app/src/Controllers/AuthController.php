@@ -30,12 +30,6 @@ class AuthController
         }
     }
 
-    public function guest()
-    {
-        session_start();
-        View::render('guest', []);
-    }
-
     public function login()
     {
         session_start();

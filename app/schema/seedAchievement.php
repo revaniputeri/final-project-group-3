@@ -21,7 +21,7 @@ function getRandomCompetitionRank()
     return $randomCompetitionRank;
 }
 
-function getPoints(int $competitionLevel, int $competitionRank )
+function getPoints($competitionLevel, $competitionRank )
 {
     $levelPoints = [
         1 => 4.0, // Internasional
@@ -41,7 +41,7 @@ function getPoints(int $competitionLevel, int $competitionRank )
         5 => 1.0  // Juara Harapan
     ];
 
-    $totalPoints = $levelPoints[$competitionLevel] + $rankPoints[$competitionRank];
+    $totalPoints = (float)($levelPoints[$competitionLevel] + $rankPoints[$competitionRank]);
     return $totalPoints;
 }
 
@@ -107,10 +107,11 @@ try {
             ) VALUES (?, ?, ?)
         ");
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             $userId = $students[array_rand($students)];
             $competitionType = getRandomCompetitionType();
             $competitionLevel = getRandomCompetitionLevel();
+            $competitionRank = getRandomCompetitionRank();
             $numberOfStudents = getRandomStudents();
             $startDate = new DateTime(date('Y-m-d', strtotime('-' . rand(1, 365) . ' days')));
             $endDate = clone $startDate;
@@ -122,7 +123,7 @@ try {
                 $userId,
                 $competitionType,
                 $competitionLevel,
-                getPoints($competitionLevel, $competitionType),
+                getPoints($competitionLevel, $competitionRank),
                 "Competition Title " . ($i + 1),
                 "Competition Title English " . ($i + 1),
                 "Competition Place " . ($i + 1),
@@ -139,7 +140,7 @@ try {
                 'certificate_' . ($i + 1) . '.pdf',
                 'documentation_' . ($i + 1) . '.jpg',
                 'poster_' . ($i + 1) . '.jpg',
-                'PENDING'
+                ['PENDING', 'APPROVED', 'REJECTED'][rand(0, 2)]
             ]);
 
             $achievementId = $achievementStmt->fetch(PDO::FETCH_COLUMN);

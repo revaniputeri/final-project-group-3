@@ -36,13 +36,22 @@ class AchievementController
     public function getTopAchievementsForGuest()
     {
         $topAchievements = Achievement::getTopAchievementsForGuest($this->db, 10);
-        View::render('guest', ['topAchievements' => $topAchievements]);
+        $topThreeAchievements = Achievement::getTopThreeAchievements($this->db);
+        $levelChartData = Achievement::getCompetitionLevelCounts($this->db);
+        $monthlyCompetitions = Achievement::getMonthlyCompetitionsCount($this->db);
+        
+        View::render('guest', [
+            'topAchievements' => $topAchievements,
+            'topThreeAchievements' => $topThreeAchievements,
+            'levelChartData' => $levelChartData,
+            'monthlyCompetitions' => $monthlyCompetitions,
+        ]);
     }
 
     public function getStatusAchievementStudent()
     {
         $this->validateUser();
-        
+
         $statusAchievement = [
             'PENDING',
             'APPROVED',
@@ -101,7 +110,7 @@ class AchievementController
         $statusAchievement = $this->getStatusAchievementStudent();
 
         $achievements = Achievement::getAchievementsByUserId($this->db, $id, [
-            'start' => isset($_GET['start']) ? $_GET['start'] : null, 
+            'start' => isset($_GET['start']) ? $_GET['start'] : null,
             'end' => isset($_GET['end']) ? $_GET['end'] : null,
             'status' => isset($_GET['status']) ? $_GET['status'] : null
         ]);
@@ -627,12 +636,21 @@ class AchievementController
             exit;
         }
 
+        $statusAchievement = $this->getStatusAchievementStudent();
+        $filter = [
+            'status' => isset($_GET['status']) ? $_GET['status'] : null,
+            'start' => isset($_GET['start']) ? $_GET['start'] : null,
+            'end' => isset($_GET['end']) ? $_GET['end'] : null,
+        ];
+
         if ($_SESSION['user']['fullName'] == 'Admin Pusat') {
-            $achievements = Achievement::getAllAchievements($this->db);
+            $achievements = Achievement::getAllAchievements($this->db, $filter);
         } elseif ($_SESSION['user']['fullName'] == 'Admin Program Studi Sistem Informasi Bisnis') {
-            $achievements = Achievement::getAchievementsByProdi($this->db, prodi: 2);
+            $filter['studentMajor'] = 2;
+            $achievements = Achievement::getAllAchievements($this->db, $filter);
         } else {
-            $achievements = Achievement::getAchievementsByProdi($this->db, 1);
+            $filter['studentMajor'] = 1;
+            $achievements = Achievement::getAllAchievements($this->db, $filter);
         }
 
         foreach ($achievements as &$achievement) {
@@ -640,7 +658,10 @@ class AchievementController
             $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
         }
 
-        View::render('achievement-history-admin', ['achievements' => $achievements]);
+        View::render('achievement-history-admin', [
+            'achievements' => $achievements,
+            'statusAchievement' => $statusAchievement,
+        ]);
     }
 
     public function adminView($data)

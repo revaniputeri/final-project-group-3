@@ -229,22 +229,34 @@
     <div class="leaderboard">
         <h2 style="text-align:center;">Leaderboard</h2>
         <div class="podium">
-            <div class="rank second">
-                <img src="./assets/img/foto1.jpg" alt="User 2">
-                <h2>Ahmad Fauzi</h2>
-                <p class="points">18</p>
-            </div>
-            <div class="rank first">
-                <img src="./assets/img/foto1.jpg" alt="User 1">
-                <div class="medal"></div>
-                <h2>Revani Nanda Putri</h2>
-                <p class="points">20</p>
-            </div>
-            <div class="rank third">
-                <img src="./assets/img/foto1.jpg" alt="User 3">
-                <h2>Alya Putri</h2>
-                <p class="points">15</p>
-            </div>
+            <?php if (!empty($topThreeAchievements)): ?>
+                <?php if (isset($topThreeAchievements[1])): ?>
+                    <div class="rank second">
+                        <img src="https://api.dicebear.com/9.x/lorelei/svg?seed=<?= urlencode(htmlspecialchars($topThreeAchievements[1]['FullName'])) ?>&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9" alt="User 2">
+                        <h2><?= htmlspecialchars($topThreeAchievements[1]['FullName']) ?></h2>
+                        <p class="points"><?= number_format($topThreeAchievements[1]['TotalPoints'], 0, ',', '.') ?></p>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($topThreeAchievements[0])): ?>
+                    <div class="rank first">
+                        <img src="https://api.dicebear.com/9.x/lorelei/svg?seed=<?= urlencode(htmlspecialchars($topThreeAchievements[0]['FullName'])) ?>&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9" alt="User 1">
+                        <div class="medal"></div>
+                        <h2><?= htmlspecialchars($topThreeAchievements[0]['FullName']) ?></h2>
+                        <p class="points"><?= number_format($topThreeAchievements[0]['TotalPoints'], 0, ',', '.') ?></p>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($topThreeAchievements[2])): ?>
+                    <div class="rank third">
+                        <img src="https://api.dicebear.com/9.x/lorelei/svg?seed=<?= urlencode(htmlspecialchars($topThreeAchievements[2]['FullName'])) ?>&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9" alt="User 3">
+                        <h2><?= htmlspecialchars($topThreeAchievements[2]['FullName']) ?></h2>
+                        <p class="points"><?= number_format($topThreeAchievements[2]['TotalPoints'], 0, ',', '.') ?></p>
+                    </div>
+                <?php endif; ?>
+            <?php else: ?>
+                <p>Belum ada data prestasi yang tersedia</p>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -271,13 +283,15 @@
                                         <td colspan="7" class="text-center">Belum ada data prestasi yang tersedia</td>
                                     </tr>
                                 <?php else: ?>
+                                    <?php $no = 1; ?>
                                     <?php foreach ($topAchievements as $achievement): ?>
                                         <tr>
-                                            <td style="text-align: center; font-family: Poppins; font-size: 16px !important;"><?= $no++ ?></td>
+                                            <td style="text-align: center; font-family: Poppins; font-size: 16px !important;"><?= $no ?></td>
                                             <td style="text-align: center; font-family: Poppins; font-size: 16px !important;"><?= htmlspecialchars($achievement['FullName']) ?></td>
                                             <td style="text-align: center; font-family: Poppins; font-size: 16px !important;"><?= htmlspecialchars($achievement['StudentMajor']) ?></td>
-                                            <td style="text-align: center; font-family: Poppins; font-size: 16px !important;"><?= number_format($achievement['CompetitionPoints'], 0, ',', '.') ?></td>
+                                            <td style="text-align: center; font-family: Poppins; font-size: 16px !important;"><?= number_format($achievement['TotalPoints'], 0, ',', '.') ?></td>
                                         </tr>
+                                        <?php $no++; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
@@ -361,21 +375,17 @@
 </html>
 
 <script>
-    // Labels untuk berbagai kategori kompetisi
-    const labels = ['Internasional', 'Nasional', 'Provinsi', 'Kabupaten/Kota', 'Kecamatan', 'Sekolah', 'Jurusan'];
+    const labels = <?php echo json_encode($levelChartData['labels']); ?>;
+    const kompetisiData = <?php echo json_encode($levelChartData['values']); ?>;
 
-    // Data poin untuk setiap kategori kompetisi
-    const kompetisiData = [100, 80, 60, 40, 20, 15, 10]; // Poin yang didapatkan mahasiswa
-
-    // Membuat grafik bar
     const ctx = document.getElementById('combinedChart').getContext('2d');
     new Chart(ctx, {
-        type: 'bar', // Menggunakan bar chart untuk visualisasi
+        type: 'bar',
         data: {
-            labels: labels, // Kategori kompetisi
+            labels: labels,
             datasets: [{
                 label: 'Total Poin Kompetisi',
-                data: kompetisiData, // Data poin untuk masing-masing kategori
+                data: kompetisiData,
                 backgroundColor: [
                     'rgba(75, 192, 192, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -431,10 +441,10 @@
     });
 
     // Data for the two lines (points for each category per month)
-    const lineDataSistemInformasiBisnis = [50, 70, 55, 40, 30, 20, 10]; // Data for "Sistem Informasi Bisnis"
-    const lineDataTeknikInformatika = [40, 60, 45, 35, 25, 15, 5]; // Data for "Teknik Informatika"
+    const lineDataSistemInformasiBisnis = <?php echo json_encode($monthlyCompetitions['sib'] ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); ?>;
+    const lineDataTeknikInformatika = <?php echo json_encode($monthlyCompetitions['ti'] ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); ?>;
 
-    const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const bulan = <?php echo json_encode($monthlyCompetitions['months'] ?? ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']); ?>;
 
     // Membuat grafik line
     const lineCtx = document.getElementById('lineChart').getContext('2d');

@@ -144,17 +144,46 @@ class Achievement
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getAchievementsByStatus(PDO $db, int $userId, ?string $status = null)
+    public static function getAllAchievements(PDO $db, $filter = null)
     {
-        $sql = 'SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL';
-        $params = [':userId' => $userId];
+        $sql = '
+            SELECT a.*, 
+                   u.username,
+                   u.Fullname,
+                   s.*
+            FROM [dbo].[Achievement] a
+            JOIN [dbo].[User] u ON a.UserId = u.Id
+            JOIN [dbo].[Student] s ON a.UserId = s.UserId
+            WHERE a.DeletedAt IS NULL';
 
-        if ($status) {
-            $sql .= ' AND AdminValidationStatus = :status';
-            $params[':status'] = $status;
+        $hasPeriod = isset($filter['start']) && isset($filter['end']);
+        $hasStatus = isset($filter['status']);
+        $hasStudentMajor = isset($filter['studentMajor']);
+
+        $params = [];
+
+        if ($filter) {
+            if ($hasPeriod) {
+                $startDate = date('Y-m-d', strtotime($filter['start']));
+                $endDate = date('Y-m-d', strtotime($filter['end']));
+                $sql .= ' AND a.CreatedAt BETWEEN :start AND :end';
+                $params[':start'] = $startDate;
+                $params[':end'] = $endDate;
+            }
+
+            if ($hasStatus) {
+                $selectedStatus = $filter['status'];
+                $sql .= ' AND a.AdminValidationStatus = :status';
+                $params[':status'] = $selectedStatus;
+            }
+
+            if ($hasStudentMajor) {
+                $sql .= ' AND s.StudentMajor = :studentMajor';
+                $params[':studentMajor'] = $filter['studentMajor'];
+            }
         }
 
-        $sql .= ' ORDER BY UpdatedAt DESC';
+        $sql .= ' ORDER BY a.UpdatedAt DESC';
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
@@ -188,19 +217,187 @@ class Achievement
 
     public static function getTopAchievementsForGuest(PDO $db, int $limit)
     {
+        // Get current date and calculate period based on academic year rules
+        $currentDate = new DateTime();
+        $currentYear = (int)$currentDate->format('Y');
+        
+        // Determine current period based on academic year rules
+        // Odd semester: Aug 28 to Jan 26
+        $oddSemesterStart = new DateTime("$currentYear-08-28");
+        $oddSemesterEnd = new DateTime(($currentYear + 1) . "-01-26");
+        
+        // Even semester: Feb 12 to Aug 02
+        $evenSemesterStart = new DateTime(($currentYear + 1) . "-02-12");
+        $evenSemesterEnd = new DateTime(($currentYear + 1) . "-08-02");
+        
+        // Determine which period we're in
+        if ($currentDate >= $oddSemesterStart && $currentDate <= $oddSemesterEnd) {
+            $startDate = $oddSemesterStart->format('Y-m-d');
+            $endDate = $oddSemesterEnd->format('Y-m-d');
+        } elseif ($currentDate >= $evenSemesterStart && $currentDate <= $evenSemesterEnd) {
+            $startDate = $evenSemesterStart->format('Y-m-d');
+            $endDate = $evenSemesterEnd->format('Y-m-d');
+        } else {
+            // If we're between periods, use the previous even semester
+            $startDate = $evenSemesterStart->format('Y-m-d');
+            $endDate = $evenSemesterEnd->format('Y-m-d');
+        }
+
         $sql = '
-        SELECT TOP (:limit) a.CompetitionPoints, u.FullName, s.StudentMajor 
+        SELECT TOP (:limit) 
+            SUM(a.CompetitionPoints) AS TotalPoints,
+            u.FullName, 
+            u.Id AS UserId,
+            CASE s.StudentMajor
+                WHEN 1 THEN \'Teknik Informatika\'
+                WHEN 2 THEN \'Sistem Informasi Bisnis\'
+                ELSE \'-\'
+            END AS StudentMajor
         FROM [dbo].[Achievement] a
         JOIN [dbo].[User] u ON a.UserId = u.Id
         JOIN [dbo].[Student] s ON a.UserId = s.UserId
         WHERE a.DeletedAt IS NULL 
         AND a.AdminValidationStatus = \'APPROVED\'
-        ORDER BY a.CompetitionPoints DESC';
+        AND a.CreatedAt BETWEEN :startDate AND :endDate
+        GROUP BY u.Id, u.FullName, s.StudentMajor
+        ORDER BY TotalPoints DESC';
 
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':startDate', $startDate);
+        $stmt->bindParam(':endDate', $endDate);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getCompetitionLevelCounts(PDO $db): array
+    {
+        $sql = '
+        SELECT 
+            a.CompetitionLevel,
+            COUNT(*) AS TotalCount
+        FROM [dbo].[Achievement] a
+        WHERE a.DeletedAt IS NULL
+        AND a.AdminValidationStatus = \'APPROVED\'
+        GROUP BY a.CompetitionLevel
+        ORDER BY a.CompetitionLevel ASC';
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $labels = [];
+        $values = [];
+        foreach ($results as $row) {
+            $levelName = self::getCompetitionLevelName((int)$row['CompetitionLevel']);
+            $labels[] = $levelName;
+            $values[] = (int)$row['TotalCount'];
+        }
+
+        return [
+            'labels' => $labels,
+            'values' => $values
+        ];
+    }
+
+    public static function getTopThreeAchievements(PDO $db)
+    {
+        // Get current date and calculate period based on academic year rules
+        $currentDate = new DateTime();
+        $currentYear = (int)$currentDate->format('Y');
+        
+        // Determine current period based on academic year rules
+        // Odd semester: Aug 28 to Jan 26
+        $oddSemesterStart = new DateTime("$currentYear-08-28");
+        $oddSemesterEnd = new DateTime(($currentYear + 1) . "-01-26");
+        
+        // Even semester: Feb 12 to Aug 02
+        $evenSemesterStart = new DateTime(($currentYear + 1) . "-02-12");
+        $evenSemesterEnd = new DateTime(($currentYear + 1) . "-08-02");
+        
+        // Determine which period we're in
+        if ($currentDate >= $oddSemesterStart && $currentDate <= $oddSemesterEnd) {
+            $startDate = $oddSemesterStart->format('Y-m-d');
+            $endDate = $oddSemesterEnd->format('Y-m-d');
+        } elseif ($currentDate >= $evenSemesterStart && $currentDate <= $evenSemesterEnd) {
+            $startDate = $evenSemesterStart->format('Y-m-d');
+            $endDate = $evenSemesterEnd->format('Y-m-d');
+        } else {
+            // If we're between periods, use the previous even semester
+            $startDate = $evenSemesterStart->format('Y-m-d');
+            $endDate = $evenSemesterEnd->format('Y-m-d');
+        }
+
+        $sql = '
+        SELECT TOP 3 
+            SUM(a.CompetitionPoints) AS TotalPoints,
+            u.FullName, 
+            u.Id AS UserId,
+            CASE s.StudentMajor
+                WHEN 1 THEN \'Teknik Informatika\'
+                WHEN 2 THEN \'Sistem Informasi Bisnis\'
+                ELSE \'-\'
+            END AS StudentMajor
+        FROM [dbo].[Achievement] a
+        JOIN [dbo].[User] u ON a.UserId = u.Id
+        JOIN [dbo].[Student] s ON a.UserId = s.UserId
+        WHERE a.DeletedAt IS NULL 
+        AND a.AdminValidationStatus = \'APPROVED\'
+        AND a.CreatedAt BETWEEN :startDate AND :endDate
+        GROUP BY u.Id, u.FullName, s.StudentMajor
+        ORDER BY TotalPoints DESC';
+
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':startDate', $startDate);
+        $stmt->bindParam(':endDate', $endDate);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getMonthlyCompetitionsCount(PDO $db): array
+    {
+        // Get current year
+        $currentYear = date('Y');
+        
+        // Initialize result array
+        $result = [
+            'sib' => array_fill(0, 12, 0), // Sistem Informasi Bisnis
+            'ti' => array_fill(0, 12, 0),  // Teknik Informatika
+            'months' => ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+        ];
+
+        // Query to get monthly competition counts per program
+        $sql = "
+            SELECT 
+                DATEPART(MONTH, a.CompetitionStartDate) AS month,
+                s.StudentMajor,
+                COUNT(*) AS count
+            FROM [dbo].[Achievement] a
+            JOIN [dbo].[Student] s ON a.UserId = s.UserId
+            WHERE YEAR(a.CompetitionStartDate) = :year
+            AND a.DeletedAt IS NULL
+            AND a.AdminValidationStatus = 'APPROVED'
+            GROUP BY DATEPART(MONTH, a.CompetitionStartDate), s.StudentMajor
+            ORDER BY month
+        ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':year' => $currentYear]);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Populate the result array
+        foreach ($data as $row) {
+            $monthIndex = (int)$row['month'] - 1; // Convert to 0-based index
+            if ($row['StudentMajor'] == 1) { // Teknik Informatika
+                $result['ti'][$monthIndex] = (int)$row['count'];
+            } elseif ($row['StudentMajor'] == 2) { // Sistem Informasi Bisnis
+                $result['sib'][$monthIndex] = (int)$row['count'];
+            }
+        }
+
+        return $result;
     }
 
     public static function getAchievementsByProdi(PDO $db, int $prodi)
@@ -212,16 +409,9 @@ class Achievement
             JOIN [dbo].[User] u ON a.UserId = u.Id
             WHERE s.StudentMajor = :prodi 
             AND a.DeletedAt IS NULL 
-            ORDER BY CreatedAt DESC
+            ORDER BY UpdatedAt DESC
         ');
         $stmt->execute([':prodi' => $prodi]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public static function getAllAchievements(PDO $db)
-    {
-        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE DeletedAt IS NULL ORDER BY UpdatedAt DESC');
-        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -481,23 +671,6 @@ class Achievement
         }
     }
 
-    private function restructureFilesArray($fileInput)
-    {
-        $files = [];
-        foreach ($fileInput['tmp_name'] as $key => $tmpName) {
-            if ($tmpName === '') continue;
-
-            $files[] = [
-                'name' => $fileInput['name'][$key],
-                'type' => $fileInput['type'][$key],
-                'tmp_name' => $tmpName,
-                'error' => $fileInput['error'][$key],
-                'size' => $fileInput['size'][$key]
-            ];
-        }
-        return $files;
-    }
-
     private function validateFileSize($file)
     {
         if (filesize($file) > self::MAX_FILE_SIZE) {
@@ -526,65 +699,6 @@ class Achievement
         if (!in_array($mimeType, self::ALLOWED_FILE_TYPES)) {
             throw new InvalidArgumentException("Invalid file type. Allowed types are PDF, JPEG, and PNG.");
         }
-    }
-
-    private function storeFile($file, $fileType)
-    {
-        $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
-        $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
-
-        if (!file_exists($uploadPath)) {
-            mkdir($uploadPath, 0755, true);
-        }
-
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = $folder . '_' . ($this->id ?? 'temp_' . uniqid()) . '.' . $extension;
-
-        // Save full path for moving the file
-        $destination = $uploadPath . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            throw new InvalidArgumentException("Failed to upload file.");
-        }
-
-        // Return relative path to store in database
-        return $folder . '/' . $filename;
-    }
-
-    public static function handleFileUpload(array $file, string $folder): string
-    {
-        $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
-
-        // Create directory if it doesn't exist
-        if (!file_exists($uploadDir)) {
-            if (!mkdir($uploadDir, 0755, true)) {
-                throw new \Exception('Failed to create upload directory');
-            }
-        }
-
-        // Validate file size
-        if ($file['size'] > 5 * 1024 * 1024) { // 5MB limit
-            throw new \Exception('File size exceeds maximum limit of 5MB');
-        }
-
-        // Validate file type
-        $allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
-
-        if (!in_array($mimeType, $allowedTypes)) {
-            throw new \Exception('Invalid file type. Only PDF, JPEG and PNG files are allowed');
-        }
-
-        $fileName = uniqid() . '_' . basename($file['name']);
-        $targetPath = $uploadDir . $fileName;
-
-        if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-            throw new \Exception('Failed to upload file');
-        }
-
-        return $folder . '/' . $fileName;
     }
 
     public static function updateAdminValidation(PDO $db, int $achievementId, string $status, string $note)
@@ -692,4 +806,81 @@ class Achievement
         $stmt = $db->prepare('UPDATE [dbo].[Achievement] SET DeletedAt = :deletedAt WHERE Id = :id AND DeletedAt IS NULL');
         return $stmt->execute([':id' => $id, ':deletedAt' => $deletedAt]);
     }
+
+    private function storeFile($file, $fileType)
+    {
+        $folder = self::UPLOAD_FOLDERS[$fileType] ?? 'others';
+        $uploadPath = str_replace('@storage', $_SERVER['DOCUMENT_ROOT'] . '/public/storage', self::UPLOAD_BASE_PATH) . $folder . '/';
+
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = $folder . '_' . ($this->id ?? 'temp_' . uniqid()) . '.' . $extension;
+
+        // Save full path for moving the file
+        $destination = $uploadPath . $filename;
+
+        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+            throw new InvalidArgumentException("Failed to upload file.");
+        }
+
+        // Return relative path to store in database
+        return $folder . '/' . $filename;
+    }
+
+    public static function handleFileUpload(array $file, string $folder): string
+    {
+        $uploadDir = __DIR__ . '/../../../app/public/storage/achievements/' . $folder . '/';
+
+        // Create directory if it doesn't exist
+        if (!file_exists($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true)) {
+                throw new \Exception('Failed to create upload directory');
+            }
+        }
+
+        // Validate file size
+        if ($file['size'] > 5 * 1024 * 1024) { // 5MB limit
+            throw new \Exception('File size exceeds maximum limit of 5MB');
+        }
+
+        // Validate file type
+        $allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        if (!in_array($mimeType, $allowedTypes)) {
+            throw new \Exception('Invalid file type. Only PDF, JPEG and PNG files are allowed');
+        }
+
+        $fileName = uniqid() . '_' . basename($file['name']);
+        $targetPath = $uploadDir . $fileName;
+
+        if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+            throw new \Exception('Failed to upload file');
+        }
+
+        return $folder . '/' . $fileName;
+    }
+
+    private function restructureFilesArray($fileInput)
+    {
+        $files = [];
+        foreach ($fileInput['tmp_name'] as $key => $tmpName) {
+            if ($tmpName === '') continue;
+
+            $files[] = [
+                'name' => $fileInput['name'][$key],
+                'type' => $fileInput['type'][$key],
+                'tmp_name' => $tmpName,
+                'error' => $fileInput['error'][$key],
+                'size' => $fileInput['size'][$key]
+            ];
+        }
+        return $files;
+    }
+
 }

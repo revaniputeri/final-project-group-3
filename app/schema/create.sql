@@ -54,7 +54,7 @@ CREATE TABLE [dbo].[Achievement] (
     [CertificateFile]            VARCHAR(255) NOT NULL,
     [DocumentationFile]          VARCHAR(255) NOT NULL,
     [PosterFile]                 VARCHAR(255) NOT NULL,
-    [CompetitionPoints]          DECIMAL      NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank]
+    [CompetitionPoints]          DECIMAL(5,2) NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank] with 2 decimal places precision
     -- admin validation
     [AdminValidationStatus]      VARCHAR(20)  NOT NULL DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED
     [AdminValidationDate]        DATETIME     NULL,     -- When admin validated

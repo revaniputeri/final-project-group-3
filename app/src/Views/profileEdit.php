@@ -26,24 +26,12 @@
                             <!-- Foto Profil -->
                             <div style="width: 100%; 
                                 height: 100%; 
-                                background: white; 
                                 border-radius: 50%; 
                                 overflow: hidden; 
                                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
-                                <img src="<?= $profile['profile_image'] ?? '/path/to/default-image.jpg' ?>"
+                                <img src="https://api.dicebear.com/9.x/lorelei/svg?seed=<?= isset($_SESSION['user']['fullName']) ? urlencode(htmlspecialchars($_SESSION['user']['fullName'])) : 'default' ?>&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9"
                                     alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <!-- Ikon Kamera -->
-                            <i class="fas fa-camera" style="position: absolute; 
-                                    bottom: 0px; 
-                                    right: 10px; 
-                                    font-size: 18px; 
-                                    color: white; 
-                                    cursor: pointer; 
-                                    background: rgba(0, 0, 0, 0.5); 
-                                    padding: 5px; 
-                                    border-radius: 50%;" data-bs-toggle="modal"
-                                data-bs-target="#changeProfilePictureModal"></i>
                         </div>
                         
                         <!-- Nama dan NIM -->
