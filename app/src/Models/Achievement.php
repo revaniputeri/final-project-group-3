@@ -117,14 +117,25 @@ class Achievement
     }
     public static function getAchievementsByUserId(PDO $db, int $userId, $period = null)
     {
-        $sql = 'SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL ORDER BY UpdatedAt DESC';
+        $sql = 'SELECT * FROM [dbo].[Achievement] WHERE UserId = :userId AND DeletedAt IS NULL';
         $params = [':userId' => $userId];
 
+
         if ($period) {
-            $sql .= ' AND CompetitionStartDate BETWEEN :start AND :end';
-            $params[':start'] = $period['start'];
-            $params[':end'] = $period['end'];
+            // Ensure the period dates are in the correct format and valid
+            $startDate = date('Y-m-d', strtotime($period['start']));
+            $endDate = date('Y-m-d', strtotime($period['end']));
+    
+            if ($startDate && $endDate) {
+                $sql .= ' AND CreatedAt BETWEEN :start AND :end';
+                $params[':start'] = $startDate;
+                $params[':end'] = $endDate;
+            } else {
+                throw new InvalidArgumentException("Invalid period dates provided.");
+            }
         }
+
+        $sql .= ' ORDER BY UpdatedAt DESC';
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);

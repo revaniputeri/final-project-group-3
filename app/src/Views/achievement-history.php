@@ -36,9 +36,9 @@
                                             Filter Periode
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="periodFilterDropdown">
-                                            <a class="dropdown-item" href="/achievement/history?period=all">Semua</a>
+                                            <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history">Semua</a>
                                             <?php foreach ($periods as $period): ?>
-                                                <a class="dropdown-item" href="/achievement/history?period=<?= urlencode($period['label']) ?>"><?= $period['label'] ?></a>
+                                                <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?start=<?= $period['start'] ?>&end=<?= $period['end'] ?>"><?= $period['label'] ?></a>
                                             <?php endforeach; ?>
                                         </div>
                                     </div>

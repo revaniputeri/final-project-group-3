@@ -34,6 +34,9 @@ class Router
             $path = rtrim($path, '/');
         }
 
+        // Remove any query parameter
+        $path = explode('?', $path)[0];
+
         foreach (self::$routes as $route) {
             $pattern = "#^" . $route['path'] . "$#";
             if (preg_match($pattern, $path, $variables) && $method == $route['method']) {

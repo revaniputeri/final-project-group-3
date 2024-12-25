@@ -83,16 +83,28 @@ class AchievementController
 
         $id = $_SESSION['user']['id'];
         $username = $_SESSION['user']['username'];
+
         $periods = $this->getStudentPeriods($username);
 
-        $filterPeriod = $_GET['period'] ?? null;
-        $achievements = Achievement::getAchievementsByUserId($this->db, $id, $filterPeriod);
+        $start = $_GET['start'];
+        $end = $_GET['end'];
+        $hasPeriod = $start != null && $end != null;
 
-        foreach ($achievements as &$achievement) {
-            $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
-            $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);
+        $achievements = [];
+
+        if (! $hasPeriod) {
+            $achievements = Achievement::getAchievementsByUserId($this->db, $id);
+        } else {
+            $achievements = Achievement::getAchievementsByUserId($this->db, $id, ['start' => $start, 'end' => $end]);
         }
 
+        // Convert rank and level IDs to names
+        foreach ($achievements as &$achievement) {
+            $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']) ?? 'Unknown';
+            $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']) ?? 'Unknown';
+        }
+
+        // Render the view with the filtered achievements
         View::render('achievement-history', [
             'achievements' => $achievements,
             'periods' => $periods
