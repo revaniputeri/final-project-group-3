@@ -1,0 +1,249 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.jumbotron {
+    position: relative;
+    height: 93vh;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    background: linear-gradient(to bottom, rgba(106, 90, 205, 2), rgba(255, 255, 255, 1));
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.right-side {
+    flex: 0;
+    width: 900px;
+    height: 200%;
+    display: block ruby;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.login-vector {
+    position: relative;
+    width: 80%;
+    height: auto;
+    margin-top: 28%;
+    margin-left: 20%;
+}
+
+.leaderboard {
+    max-width: 1000px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 15px;
+    padding: -50px;
+}
+
+.podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 30px;
+    margin-top: 120px;
+}
+
+.rank {
+    text-align: center;
+    width: 170px;
+    position: relative;
+    border-radius: 5px 5px 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+.rank.first {
+    height: 270px;
+    background-color: #FFCE34;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    border: 5px solid #e6b800;
+}
+
+.rank.second {
+    height: 220px;
+    background-color: #C0C0C0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    border: 5px solid #a8a8a8;
+}
+
+.rank.third {
+    height: 170px;
+    background-color: #CD7F32;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    border: 5px solid #b0652e;
+}
+
+.rank img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid white;
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.rank h2 {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 1em;
+    font-family: 'Poppins', sans-serif;
+    color: black;
+    width: 100%;
+}
+
+.rank .points {
+    font-size: 2em;
+    font-weight: bold;
+    color: black;
+    margin: 5px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.card-img-top {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title.top-achievements-title {
+    font-size: 25px;
+    font-weight: bold;
+    color: #3b5998;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 5px;
+}
+
+.container-fluid.px-0 {
+    background: rgba(255, 255, 255, 1);
+    padding: 30px 0;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    color: #333;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.right-side {
+    text-align: right;
+}
+
+.jumbotron-content {
+    text-align: left;
+    margin-top: 4%;
+    padding: 10%;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+}
+
+.jumbotron-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 4em;
+    font-weight: 700;
+    color: #fff;
+}
+
+.jumbotron-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5em;
+    font-weight: 600;
+    color: #f2f2f2;
+}
+
+.jumbotron-description {
+    font-size: 1.8em;
+    color: #f7f7f7;
+    line-height: 1.5;
+    color: black;
+}
+
+.jumbotron-button {
+    font-size: 1.5em;
+    padding: 10px 20px;
+    background-color: #0066cc;
+    border-color: #0066cc;
+}
+
+.leaderboard-title {
+    text-align: center;
+}
+
+.achievements-header {
+    text-align: center;
+}
+
+.achievements-table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-header {
+    text-align: center;
+    font-family: Poppins;
+    font-size: 16px !important;
+}
+
+.table-data {
+    text-align: center;
+    font-family: Poppins;
+    font-size: 16px !important;
+}
+
+.chart-title {
+    text-align: center;
+}
+
+.chart-canvas {
+    max-height: 450px;
+}
+
+.achievements-info-title {
+    text-align: center;
+}
+
+.achievement-card {
+    border-radius: 20px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.achievement-image {
+    height: 250px;
+    object-fit: cover;
+}
+
+.achievement-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    color: #333;
+}
