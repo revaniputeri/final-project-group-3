@@ -131,7 +131,7 @@ try {
                 "https://competition" . ($i + 1) . ".example.com",
                 $startDate->format('Y-m-d H:i:s'),
                 $endDate->format('Y-m-d H:i:s'),
-                getRandomCompetitionRank(),
+                $competitionRank,
                 getRandomInstitutions(),
                 $numberOfStudents,
                 getRandomLetterNumber(),
