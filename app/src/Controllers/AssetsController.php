@@ -283,17 +283,17 @@ class AssetsController
             $statusCell = 'G' . $rowNum;
 
             switch ($achievement['status']) {
-                case 'APPROVED':
+                case 'DITERIMA':
                     $sheet->getStyle($statusCell)->getFill()
                         ->setFillType(Fill::FILL_SOLID)
                         ->setStartColor(new \PhpOffice\PhpSpreadsheet\Style\Color('90EE90'));
                     break;
-                case 'REJECTED':
+                case 'DITOLAK':
                     $sheet->getStyle($statusCell)->getFill()
                         ->setFillType(Fill::FILL_SOLID)
                         ->setStartColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFB6C1'));
                     break;
-                case 'PENDING':
+                case 'PROSES':
                     $sheet->getStyle($statusCell)->getFill()
                         ->setFillType(Fill::FILL_SOLID)
                         ->setStartColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFD700'));

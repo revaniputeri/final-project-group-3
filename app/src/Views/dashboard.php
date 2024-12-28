@@ -1,5 +1,8 @@
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
 <?php include __DIR__ . '/partials/navbar.php'; ?>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <div class="container-fluid page-body-wrapper">
     <?php include __DIR__ . '/partials/sidebar-student.php'; ?>
     <div class="main-panel" id="mainPanel" style="margin-left: 235px;">
@@ -113,15 +116,29 @@
                     </div>
                 </div>
                 <div class="col-md-5 grid-margin stretch-card">
-                    <div class="card">
+                    <div class="card" style="height: 410px;">
                         <div class="card-body-top">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
                                 <h4 class="card-title">Status Data Prestasi</h4>
                             </div>
                             <div class="row">
-                                <canvas id="pieChart">
-                                    
-                                </canvas>
+                                <div class="chart-container" style="position: relative; height:300px; width:100%;">
+                                    <canvas id="doughnutChart" class="chart-canvas" style="max-width: 100%; height: 100%;"></canvas>
+                                    <div class="chart-legend mt-2" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; font-size: 14px;">
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <span style="display: inline-block; width: 12px; height: 12px; background: rgba(255, 215, 0, 0.9); border-radius: 50%;"></span>
+                                            PROSES
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <span style="display: inline-block; width: 12px; height: 12px; background: rgba(50, 205, 50, 0.9); border-radius: 50%;"></span>
+                                            DITERIMA
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <span style="display: inline-block; width: 12px; height: 12px; background: rgba(220, 20, 60, 0.9); border-radius: 50%;"></span>
+                                            DITOLAK
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -133,13 +150,113 @@
 </div>
 
 <script>
-    document.getElementById('tahun').addEventListener('change', updateTopAchievements);
+    // document.getElementById('tahun').addEventListener('change', updateTopAchievements);
 
-    function updateTopAchievements() {
-        const tahun = document.getElementById('tahun').value;
+    // function updateTopAchievements() {
+    //     const tahun = document.getElementById('tahun').value;
 
-        // Redirect or Ajax call
-        window.location.href = `/dashboard?tahun=${tahun}`;
+    //     // Redirect or Ajax call
+    //     window.location.href = `/dashboard?tahun=${tahun}`;
+    // }
+
+    // Data for the chart
+    const statusLabels = ['PROSES', 'DITERIMA', 'DITOLAK'];
+    const statusData = [
+        <?= $statusCount['PROSES'] ?? 0 ?>,
+        <?= $statusCount['DITERIMA'] ?? 0 ?>,
+        <?= $statusCount['DITOLAK'] ?? 0 ?>
+    ];
+
+    // Ensure the canvas element exists before creating the chart
+    const chartCanvas = document.getElementById('doughnutChart');
+    if (chartCanvas) {
+        const ctx = chartCanvas.getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    label: 'Jumlah Prestasi: ',
+                    data: statusData,
+                    backgroundColor: [
+                        'rgba(255, 215, 0, 0.9)', // PROSES - vibrant gold
+                        'rgba(50, 205, 50, 0.9)', // DITERIMA - vibrant lime green
+                        'rgba(220, 20, 60, 0.9)' // DITOLAK - vibrant crimson
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                family: 'Poppins, sans-serif',
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(2);
+                                return `Jumlah: ${value} prestasi (${percentage}%)`;
+                            }
+                        }
+                    },
+                    centerText: {
+                        total: statusData.reduce((a, b) => a + b, 0),
+                        color: '#000',
+                        fontStyle: 'Poppins',
+                        sidePadding: 20,
+                        lineHeight: 1.2
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            },
+            plugins: [{
+                id: 'centerText',
+                beforeDraw: function(chart) {
+                    if (chart.config.options.plugins.centerText) {
+                        const width = chart.width,
+                            height = chart.height,
+                            ctx = chart.ctx;
+
+                        ctx.restore();
+
+                        ctx.font = `${height / 20}px Poppins, ${chart.config.options.plugins.centerText.fontStyle}`;
+                        const labelText = "Total Prestasi";
+                        const labelX = Math.round((width - ctx.measureText(labelText).width) / 2);
+                        const labelY = height / 2 - 25;
+                        ctx.fillText(labelText, labelX, labelY);
+
+                        const total = chart.config.options.plugins.centerText.total;
+                        ctx.font = `bold ${height / 6}px Poppins, ${chart.config.options.plugins.centerText.fontStyle}`;
+                        ctx.textBaseline = "middle";
+                        const totalText = total.toString();
+                        const totalX = Math.round((width - ctx.measureText(totalText).width) / 2);
+                        const totalY = height / 2 + 15;
+                        ctx.fillStyle = chart.config.options.plugins.centerText.color;
+                        ctx.fillText(totalText, totalX, totalY);
+
+                        ctx.save();
+                    }
+                }
+            }]
+        });
+    } else {
+        console.error('Chart canvas element not found');
     }
 </script>
 <style>
@@ -165,5 +282,3 @@
         font-family: 'Poppins', sans-serif;
     }
 </style>
-<script src="../../public/assets/vendors/chart.js/Chart.min.js"></script>
-<script src="../../public/assets/js/chart.js"></script>

@@ -56,7 +56,7 @@ CREATE TABLE [dbo].[Achievement] (
     [PosterFile]                 VARCHAR(255) NOT NULL,
     [CompetitionPoints]          DECIMAL(5,2) NOT NULL, -- SUM of [CompetitionLevel] and [CompetitionRank] with 2 decimal places precision
     -- admin validation
-    [AdminValidationStatus]      VARCHAR(20)  NOT NULL DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED
+    [AdminValidationStatus]      VARCHAR(20)  NOT NULL DEFAULT 'PROSES', -- PROSES, DITERIMA, DITOLAK
     [AdminValidationDate]        DATETIME     NULL,     -- When admin validated
     [AdminValidationNote]        TEXT         NULL,     -- Admin feedback/notes
     [CreatedAt]                  DATETIME     NOT NULL DEFAULT GETDATE(),

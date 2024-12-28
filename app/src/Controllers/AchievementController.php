@@ -73,9 +73,9 @@ class AchievementController
         $this->validateUser();
 
         $statusAchievement = [
-            'PENDING',
-            'APPROVED',
-            'REJECTED'
+            'PROSES',
+            'DITERIMA',
+            'DITOLAK'
         ];
 
         return $statusAchievement;
@@ -251,7 +251,7 @@ class AchievementController
                 new \DateTime(),
                 new \DateTime(),
                 null,
-                'PENDING',
+                'PROSES',
                 null,
                 null,
                 null
@@ -449,9 +449,9 @@ class AchievementController
                     throw new \Exception('Anda tidak memiliki akses untuk mengedit prestasi ini.');
                 }
 
-                // Check if achievement is still in PENDING or REJECTED status
-                if ($achievement['AdminValidationStatus'] != 'PENDING' && $achievement['AdminValidationStatus'] != 'REJECTED') {
-                    throw new \Exception('Hanya prestasi dengan status PENDING atau REJECTED yang dapat diedit.');
+                // Check if achievement is still in PROSES or DITOLAK status
+                if ($achievement['AdminValidationStatus'] != 'PROSES' && $achievement['AdminValidationStatus'] != 'DITOLAK') {
+                    throw new \Exception('Hanya prestasi dengan status PROSES atau DITOLAK yang dapat diedit.');
                 }
 
                 // Prepare update data
@@ -529,8 +529,8 @@ class AchievementController
                         Achievement::updateTeamMembers($this->db, $achievementId, $teamData);
                     }
 
-                    if ($achievement['AdminValidationStatus'] === 'REJECTED') {
-                        Achievement::updateRejectedAdminValidation($this->db, $achievementId, 'PENDING');
+                    if ($achievement['AdminValidationStatus'] === 'DITOLAK') {
+                        Achievement::updateRejectedAdminValidation($this->db, $achievementId, 'PROSES');
                     }
 
                     $_SESSION['success'] = 'Prestasi berhasil diperbarui.';
@@ -567,8 +567,8 @@ class AchievementController
                 throw new \Exception('Anda tidak memiliki akses untuk menghapus prestasi ini.');
             }
 
-            if ($_SESSION['user']['role'] !== 1 && $achievement['AdminValidationStatus'] !== 'PENDING') {
-                throw new \Exception('Hanya prestasi dengan status PENDING yang dapat dihapus.');
+            if ($_SESSION['user']['role'] !== 1 && $achievement['AdminValidationStatus'] !== 'PROSES') {
+                throw new \Exception('Hanya prestasi dengan status PROSES yang dapat dihapus.');
             }
 
             if (Achievement::deleteAchievement($this->db, $achievementId)) {
@@ -639,7 +639,7 @@ class AchievementController
         }
 
         $achievementId = (int)$_POST['achievementId'];
-        $status = $_POST['APPROVED'] ? 'APPROVED' : 'REJECTED';
+        $status = $_POST['DITERIMA'] ? 'DITERIMA' : 'DITOLAK';
         $note = trim($_POST['adminComment']);
 
         try {

@@ -78,9 +78,9 @@
                                                         <td>
                                                             <?php
                                                             $statusClasses = [
-                                                                'PENDING' => 'badge-warning',
-                                                                'APPROVED' => 'badge-success',
-                                                                'REJECTED' => 'badge-danger'
+                                                                'PROSES' => 'badge-warning',
+                                                                'DITERIMA' => 'badge-success',
+                                                                'DITOLAK' => 'badge-danger'
                                                             ];
 
                                                             $adminBadgeClass = $statusClasses[$achievement['AdminValidationStatus']] ?? 'badge-secondary';
@@ -93,13 +93,13 @@
                                                         </td>
                                                         <td>
                                                             <div class="btn-group" role="group">
-                                                                <a href="/dashboard/achievement/view/<?= $achievement['Id'] ?>" class="btn btn-info btn-sm" title="View">
+                                                                <a href="/dashboard/achievement/view/<?= $achievement['Id'] ?>" class="btn btn-info btn-sm" title="Lihat">
                                                                     <i class="ti-eye"></i>
                                                                 </a>
-                                                                <?= ($achievement['AdminValidationStatus'] === 'APPROVED')
+                                                                <?= ($achievement['AdminValidationStatus'] === 'DITERIMA')
                                                                     ? '<a href="#" class="btn btn-warning btn-sm disabled" title="Edit" aria-disabled="true"><i class="ti-pencil"></i></a>'
                                                                     : '<a href="/dashboard/achievement/edit/' . $achievement['Id'] . '" class="btn btn-warning btn-sm" title="Edit"><i class="ti-pencil"></i></a>'; ?>
-                                                                <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete(<?= $achievement['Id'] ?>)">
+                                                                <button type="button" class="btn btn-danger btn-sm" title="Hapus" onclick="confirmDelete(<?= $achievement['Id'] ?>)">
                                                                     <i class="ti-trash"></i>
                                                                 </button>
                                                             </div>
@@ -159,16 +159,4 @@
             }
         });
     </script>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .truncate-text {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 120px;
-        }
-    </style>
     <script defer src="/assets/js/achievement-history.js"></script>

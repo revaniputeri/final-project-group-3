@@ -63,17 +63,17 @@ class IndexController
         ]);
     }
 
-    public function dashboardLecturer()
-    {
-        View::render('dashboard-lecturer', []);
-    }
-
     public function getDataTableAchievements()
     {
         $this->ensureSession();
         $this->validateUser();
 
         $topAchievements = Achievement::getTopAchievements($this->db, 10, $_SESSION['user']['id']);
+        $statusCount = [
+            'PROSES' => Achievement::getAchievementCountByStatus($this->db, 'PROSES', $_SESSION['user']['id']),
+            'DITERIMA' => Achievement::getAchievementCountByStatus($this->db, 'DITERIMA', $_SESSION['user']['id']),
+            'DITOLAK' => Achievement::getAchievementCountByStatus($this->db, 'DITOLAK', $_SESSION['user']['id'])
+        ];
 
         foreach ($topAchievements as &$achievement) {
             $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']) ?? 'Unknown';
@@ -81,7 +81,8 @@ class IndexController
         }
 
         View::render('dashboard', [
-            'topAchievements' => $topAchievements
+            'topAchievements' => $topAchievements,
+            'statusCount' => $statusCount
         ]);
     }
 
@@ -99,13 +100,13 @@ class IndexController
 
         foreach ($achievements as $achievement) {
             switch ($achievement['AdminValidationStatus']) {
-                case 'APPROVED':
+                case 'DITERIMA':
                     $approvedCount++;
                     break;
-                case 'PENDING':
+                case 'PROSES':
                     $pendingCount++;
                     break;
-                case 'REJECTED':
+                case 'DITOLAK':
                     $rejectedCount++;
                     break;
             }

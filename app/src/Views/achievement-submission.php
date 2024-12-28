@@ -43,7 +43,7 @@ if (isset($_SESSION['form_data'])) {
                   </li>
                   <li id="step4-indicator">
                     <span>4</span>
-                    <p>Dokumen Pendukun</p>
+                    <p>Dokumen Pendukung</p>
                   </li>
                   <li id="step5-indicator">
                     <span>5</span>

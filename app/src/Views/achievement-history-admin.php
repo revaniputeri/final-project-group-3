@@ -107,9 +107,9 @@
                                                     <td class="text-center">
                                                         <?php
                                                         $statusClasses = [
-                                                            'PENDING' => 'badge-warning',
-                                                            'APPROVED' => 'badge-success',
-                                                            'REJECTED' => 'badge-danger'
+                                                            'PROSES' => 'badge-warning',
+                                                            'DITERIMA' => 'badge-success',
+                                                            'DITOLAK' => 'badge-danger'
                                                         ];
                                                         $badgeClass = $statusClasses[$achievement['AdminValidationStatus']] ?? 'badge-secondary';
                                                         ?>

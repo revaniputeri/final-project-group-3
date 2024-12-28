@@ -140,7 +140,7 @@ try {
                 'certificate_' . ($i + 1) . '.pdf',
                 'documentation_' . ($i + 1) . '.jpg',
                 'poster_' . ($i + 1) . '.jpg',
-                ['PENDING', 'APPROVED', 'REJECTED'][rand(0, 2)]
+                ['PROSES', 'DITERIMA', 'DITOLAK'][rand(0, 2)]
             ]);
 
             $achievementId = $achievementStmt->fetch(PDO::FETCH_COLUMN);

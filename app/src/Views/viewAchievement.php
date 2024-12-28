@@ -317,7 +317,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <?php if ($achievement['AdminValidationStatus'] === 'REJECTED' || $achievement['AdminValidationStatus'] === 'APPROVED'): ?>
+                            <?php if ($achievement['AdminValidationStatus'] === 'DITOLAK' || $achievement['AdminValidationStatus'] === 'DITERIMA'): ?>
                                 <div class="row mt-4">
                                     <div class="col-12">
                                         <div class="card shadow-sm mb-4">
@@ -334,7 +334,7 @@
                             <div class="row mt-4"></div>
                             <form method="POST" action="/admin/achievement/update-validation">
                                 <input type="hidden" name="achievementId" value="<?= $achievement['Id'] ?>">
-                                <?php if ($_SESSION['user']['role'] === 1 && $achievement['AdminValidationStatus'] === 'PENDING'): ?>
+                                <?php if ($_SESSION['user']['role'] === 1 && $achievement['AdminValidationStatus'] === 'PROSES'): ?>
                                     <div class="row mt-4">
                                         <div class="col-12">
                                             <div class="card shadow-sm mb-4">
@@ -351,10 +351,10 @@
                                 <div class="row mt-4">
                                     <div class="col-12 text-right">
                                         <?php if ($_SESSION['user']['role'] === 1): ?>
-                                            <button type="submit" name="APPROVED" value="APPROVED" class="btn btn-success btn-md px-3" <?= $achievement['AdminValidationStatus'] !== 'PENDING' ? 'disabled' : '' ?>>
+                                            <button type="submit" name="DITERIMA" value="DITERIMA" class="btn btn-success btn-md px-3" <?= $achievement['AdminValidationStatus'] !== 'PROSES' ? 'disabled' : '' ?>>
                                                 <i class="fas fa-check"></i> Terima
                                             </button>
-                                            <button type="submit" name="REJECTED" value="REJECTED" class="btn btn-danger btn-md px-3" <?= $achievement['AdminValidationStatus'] !== 'PENDING' ? 'disabled' : '' ?>>
+                                            <button type="submit" name="DITOLAK" value="DITOLAK" class="btn btn-danger btn-md px-3" <?= $achievement['AdminValidationStatus'] !== 'PROSES' ? 'disabled' : '' ?>>
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>
                                             <button onclick="window.history.back()" class="btn btn-secondary btn-md px-3">

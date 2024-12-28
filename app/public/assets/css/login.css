@@ -1,0 +1,166 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.container-fluid {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/assets/img/background-pict-login.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.auth-form-light {
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    min-height: 650px;
+    position: relative;
+    z-index: 1;
+    margin-left: 70%;
+}
+
+
+/* Khusus bagian kiri form login 
+.right-side{
+
+}
+*/
+.left-side {
+    flex: 0;
+    background: rgba(255, 255, 255, 0.6);
+    width: 675px;
+    height: 100%;
+    display: block ruby;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.login-vector {
+    position: relative;
+    max-width: 145%;
+    height: auto;
+    margin-top: 68px;
+    margin-bottom: 0px;
+    margin-left: 40px;
+    transition: transform 0.3s ease;
+}
+
+.login-vector:hover {
+    transform: translateX(-40px);
+}
+
+.auth-form-light h3 {
+    font-size: 24px;
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+.auth-form-light h6 {
+    font-size: 15px;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #d1d8e0;
+    transition: all 0.3s;
+    width: 100%;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #4facfe;
+}
+
+.mt-4 {
+    margin-top: 2.4rem;
+}
+
+.btn {
+    border-radius: 12px;
+    padding: 12px;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsif untuk layar kecil */
+@media (max-width: 768px) {
+    .auth-form-light {
+        padding: 30px;
+        margin-top: 2vh;
+        max-width: 90%;
+    }
+
+    .auth-form-light h3 {
+        font-size: 24px;
+    }
+
+    .auth-form-light h6 {
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-form-light {
+        padding: 20px;
+        margin-top: 1vh;
+        max-width: 100%;
+    }
+
+    .auth-form-light h3 {
+        font-size: 20px;
+    }
+
+    .auth-form-light h6 {
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .form-control {
+        padding: 12px;
+        font-size: 14px;
+    }
+}

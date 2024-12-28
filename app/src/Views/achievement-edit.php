@@ -437,7 +437,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <?php if ($achievement['AdminValidationStatus'] === 'REJECTED'): ?>
+                                <?php if ($achievement['AdminValidationStatus'] === 'DITOLAK'): ?>
                                     <div class="row mt-4">
                                         <div class="col-12">
                                             <div class="card shadow-sm mb-4">

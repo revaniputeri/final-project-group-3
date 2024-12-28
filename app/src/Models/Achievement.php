@@ -65,7 +65,7 @@ class Achievement
         public DateTime $createdAt,
         public DateTime $updatedAt,
         public $id = null,
-        public $adminValidationStatus = 'PENDING',
+        public $adminValidationStatus = 'PROSES',
         public ?DateTime $adminValidationDate = null,
         public ?string $adminValidationNote = null,
         public ?DateTime $deletedAt = null
@@ -77,6 +77,18 @@ class Achievement
         $levelPoints = self::COMPETITION_LEVELS[$this->competitionLevel]['points'] ?? 0;
 
         return $rankPoints + $levelPoints;
+    }
+
+    public static function getAchievementCountByStatus(PDO $db, string $status, int $userId): int
+    {
+        $sql = 'SELECT COUNT(*) AS total FROM [dbo].[Achievement] WHERE UserId = :userId AND AdminValidationStatus = :status AND DeletedAt IS NULL';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            ':status' => $status,
+            ':userId' => $userId
+        ]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$result['total'];
     }
 
     public static function getCompetitionRanks(): array //enkapsulasi - method utk dpt data
@@ -195,7 +207,7 @@ class Achievement
         SELECT TOP (:limit) * 
         FROM [dbo].[Achievement] 
         WHERE DeletedAt IS NULL 
-        AND AdminValidationStatus = \'APPROVED\'';
+        AND AdminValidationStatus = \'DITERIMA\'';
 
         if ($userId) {
             $sql .= ' AND UserId = :userId';
@@ -219,16 +231,16 @@ class Achievement
         // Get current date and calculate period based on academic year rules
         $currentDate = new DateTime();
         $currentYear = (int)$currentDate->format('Y');
-        
+
         // Determine current period based on academic year rules
         // Odd semester: Aug 28 to Jan 26
         $oddSemesterStart = new DateTime("$currentYear-08-28");
         $oddSemesterEnd = new DateTime(($currentYear + 1) . "-01-26");
-        
+
         // Even semester: Feb 12 to Aug 02
         $evenSemesterStart = new DateTime(($currentYear + 1) . "-02-12");
         $evenSemesterEnd = new DateTime(($currentYear + 1) . "-08-02");
-        
+
         // Determine which period we're in
         if ($currentDate >= $oddSemesterStart && $currentDate <= $oddSemesterEnd) {
             $startDate = $oddSemesterStart->format('Y-m-d');
@@ -256,7 +268,7 @@ class Achievement
         JOIN [dbo].[User] u ON a.UserId = u.Id
         JOIN [dbo].[Student] s ON a.UserId = s.UserId
         WHERE a.DeletedAt IS NULL 
-        AND a.AdminValidationStatus = \'APPROVED\'
+        AND a.AdminValidationStatus = \'DITERIMA\'
         AND a.CreatedAt BETWEEN :startDate AND :endDate
         GROUP BY u.Id, u.FullName, s.StudentMajor
         ORDER BY TotalPoints DESC';
@@ -277,15 +289,15 @@ class Achievement
             COUNT(*) AS TotalCount
         FROM [dbo].[Achievement] a
         WHERE a.DeletedAt IS NULL
-        AND a.AdminValidationStatus = \'APPROVED\'
+        AND a.AdminValidationStatus = \'DITERIMA\'
         GROUP BY a.CompetitionLevel
         ORDER BY a.CompetitionLevel ASC';
 
         $stmt = $db->prepare($sql);
         $stmt->execute();
-        
+
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $labels = [];
         $values = [];
         foreach ($results as $row) {
@@ -305,16 +317,16 @@ class Achievement
         // Get current date and calculate period based on academic year rules
         $currentDate = new DateTime();
         $currentYear = (int)$currentDate->format('Y');
-        
+
         // Determine current period based on academic year rules
         // Odd semester: Aug 28 to Jan 26
         $oddSemesterStart = new DateTime("$currentYear-08-28");
         $oddSemesterEnd = new DateTime(($currentYear + 1) . "-01-26");
-        
+
         // Even semester: Feb 12 to Aug 02
         $evenSemesterStart = new DateTime(($currentYear + 1) . "-02-12");
         $evenSemesterEnd = new DateTime(($currentYear + 1) . "-08-02");
-        
+
         // Determine which period we're in
         if ($currentDate >= $oddSemesterStart && $currentDate <= $oddSemesterEnd) {
             $startDate = $oddSemesterStart->format('Y-m-d');
@@ -342,7 +354,7 @@ class Achievement
         JOIN [dbo].[User] u ON a.UserId = u.Id
         JOIN [dbo].[Student] s ON a.UserId = s.UserId
         WHERE a.DeletedAt IS NULL 
-        AND a.AdminValidationStatus = \'APPROVED\'
+        AND a.AdminValidationStatus = \'DITERIMA\'
         AND a.CreatedAt BETWEEN :startDate AND :endDate
         GROUP BY u.Id, u.FullName, s.StudentMajor
         ORDER BY TotalPoints DESC';
@@ -358,13 +370,25 @@ class Achievement
     {
         // Get current year
         $currentYear = date('Y');
-        
+
         // Initialize result array
         $result = [
             'sib' => array_fill(0, 12, 0), // Sistem Informasi Bisnis
             'ti' => array_fill(0, 12, 0),  // Teknik Informatika
-            'months' => ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+            'months' => [
+                'Januari',
+                'Februari',
+                'Maret',
+                'April',
+                'Mei',
+                'Juni',
+                'Juli',
+                'Agustus',
+                'September',
+                'Oktober',
+                'November',
+                'Desember'
+            ]
         ];
 
         // Query to get monthly competition counts per program
@@ -377,7 +401,7 @@ class Achievement
             JOIN [dbo].[Student] s ON a.UserId = s.UserId
             WHERE YEAR(a.CompetitionStartDate) = :year
             AND a.DeletedAt IS NULL
-            AND a.AdminValidationStatus = 'APPROVED'
+            AND a.AdminValidationStatus = 'DITERIMA'
             GROUP BY DATEPART(MONTH, a.CompetitionStartDate), s.StudentMajor
             ORDER BY month
         ";
@@ -455,42 +479,42 @@ class Achievement
 
     public static function getPendingCount(PDO $db, int $prodi)
     {
-        $stmt = $db->prepare('SELECT COUNT(DISTINCT a.Id) FROM [dbo].[Achievement] a JOIN [dbo].[Student] s ON a.UserId = s.UserId WHERE s.StudentMajor = :prodi AND a.AdminValidationStatus = \'PENDING\' AND a.DeletedAt IS NULL');
+        $stmt = $db->prepare('SELECT COUNT(DISTINCT a.Id) FROM [dbo].[Achievement] a JOIN [dbo].[Student] s ON a.UserId = s.UserId WHERE s.StudentMajor = :prodi AND a.AdminValidationStatus = \'PROSES\' AND a.DeletedAt IS NULL');
         $stmt->execute([':prodi' => $prodi]);
         return $stmt->fetchColumn();
     }
 
     public static function getAcceptedCount(PDO $db, int $prodi)
     {
-        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'APPROVED\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'DITERIMA\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
         $stmt->execute([':prodi' => $prodi]);
         return $stmt->fetchColumn();
     }
 
     public static function getRejectedCount(PDO $db, int $prodi)
     {
-        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'REJECTED\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'DITOLAK\' AND DeletedAt IS NULL AND UserId IN (SELECT UserId FROM [dbo].[Student] WHERE StudentMajor = :prodi)');
         $stmt->execute([':prodi' => $prodi]);
         return $stmt->fetchColumn();
     }
 
     public static function getAcceptedCountPusat(PDO $db)
     {
-        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'APPROVED\' AND DeletedAt IS NULL');
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'DITERIMA\' AND DeletedAt IS NULL');
         $stmt->execute();
         return $stmt->fetchColumn();
     }
 
     public static function getRejectedCountPusat(PDO $db)
     {
-        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'REJECTED\' AND DeletedAt IS NULL');
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'DITOLAK\' AND DeletedAt IS NULL');
         $stmt->execute();
         return $stmt->fetchColumn();
     }
 
     public static function getPendingCountPusat(PDO $db)
     {
-        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'PENDING\' AND DeletedAt IS NULL');
+        $stmt = $db->prepare('SELECT COUNT(*) FROM [dbo].[Achievement] WHERE AdminValidationStatus = \'PROSES\' AND DeletedAt IS NULL');
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -881,5 +905,4 @@ class Achievement
         }
         return $files;
     }
-
 }
