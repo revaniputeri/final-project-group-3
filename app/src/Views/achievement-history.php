@@ -22,7 +22,7 @@
                                 <div class="d-flex align-items-center">
                                     <div class="dropdown mr-2">
                                         <button class="btn btn-white btn-sm dropdown-toggle shadow-sm" type="button" id="statusFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Filter Status
+                                            <?= isset($_GET['status']) ? "Status: " . htmlspecialchars($_GET['status']) : 'Filter Status' ?>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="statusFilterDropdown">
                                             <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['status' => null])) ?>">Semua</a>
@@ -33,7 +33,10 @@
                                     </div>
                                     <div class="dropdown">
                                         <button class="btn btn-white btn-sm dropdown-toggle shadow-sm" type="button" id="periodFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Filter Periode
+                                            <?= isset($_GET['start']) && isset($_GET['end']) ?
+                                                "Periode: " . date('M Y', strtotime($_GET['start'])) . " - " . date('M Y', strtotime($_GET['end'])) :
+                                                'Filter Periode'
+                                            ?>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="periodFilterDropdown">
                                             <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['start' => null, 'end' => null])) ?>">Semua</a>
@@ -65,7 +68,7 @@
                                                 </tr>
                                             <?php else: ?>
                                                 <?php foreach ($achievements as $achievement): ?>
-                                                    <tr>
+                                                    <tr style="text-align: center;">
                                                         <td><?= date('d/m/y', strtotime($achievement['CreatedAt'])) ?></td>
                                                         <td><?= date('d/m/y', strtotime($achievement['UpdatedAt'])) ?></td>
                                                         <td class="truncate-text"><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>

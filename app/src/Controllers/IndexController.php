@@ -23,6 +23,14 @@ class IndexController
         }
     }
 
+    private function validateUser()
+    {
+        if (!isset($_SESSION['user']['id'])) {
+            header('Location: /login');
+            exit;
+        }
+    }
+
     public function dashboardAdmin()
     {
         //each prodi
@@ -63,15 +71,52 @@ class IndexController
     public function getDataTableAchievements()
     {
         $this->ensureSession();
-        if (!isset($_SESSION['user']['id'])) {
-            header('Location: /login');
-            exit;
-        }
+        $this->validateUser();
 
         $topAchievements = Achievement::getTopAchievements($this->db, 10, $_SESSION['user']['id']);
+
+        foreach ($topAchievements as &$achievement) {
+            $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']) ?? 'Unknown';
+            $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']) ?? 'Unknown';
+        }
+
         View::render('dashboard', [
             'topAchievements' => $topAchievements
         ]);
+    }
+
+    public function getStudentAchievementCount()
+    {
+        $this->validateUser();
+
+        $userId = $_SESSION['user']['id'];
+        $achievements = Achievement::getAchievementsByUserId($this->db, $userId);
+
+        $totalAchievements = count($achievements);
+        $approvedCount = 0;
+        $pendingCount = 0;
+        $rejectedCount = 0;
+
+        foreach ($achievements as $achievement) {
+            switch ($achievement['AdminValidationStatus']) {
+                case 'APPROVED':
+                    $approvedCount++;
+                    break;
+                case 'PENDING':
+                    $pendingCount++;
+                    break;
+                case 'REJECTED':
+                    $rejectedCount++;
+                    break;
+            }
+        }
+
+        return [
+            'totalAchievements' => $totalAchievements,
+            'approvedCount' => $approvedCount,
+            'pendingCount' => $pendingCount,
+            'rejectedCount' => $rejectedCount
+        ];
     }
 
     public function info()

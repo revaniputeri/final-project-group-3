@@ -29,7 +29,7 @@
                                 border-radius: 50%; 
                                 overflow: hidden; 
                                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
-                                <img src="https://api.dicebear.com/9.x/lorelei/svg?seed=<?= isset($_SESSION['user']['fullName']) ? urlencode(htmlspecialchars($_SESSION['user']['fullName'])) : 'default' ?>&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9"
+                                <img src="https://api.dicebear.com/9.x/big-smile/svg?seed=<?= isset($_SESSION['user']['fullName']) ? urlencode(htmlspecialchars($_SESSION['user']['fullName'])) : 'default' ?>&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9"
                                     alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                         </div>

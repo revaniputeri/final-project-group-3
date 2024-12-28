@@ -457,9 +457,15 @@
                                             class="btn btn-primary btn-lg px-4 mr-3">
                                             <i class="fas fa-save mr-2"></i> Simpan Perubahan
                                         </button>
-                                        <a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
-                                            <i class="fas fa-times mr-2"></i> Batal
-                                        </a>
+                                        <?php if ($_SESSION['user']['role'] == 1): ?>
+                                            <button type="button" onclick="window.history.back()" class="btn btn-light btn-lg px-4">
+                                                <i class="fas fa-times mr-2"></i> Batal
+                                            </button>
+                                        <?php else: ?>
+                                            <a href="/dashboard/achievement/history" class="btn btn-light btn-lg px-4">
+                                                <i class="fas fa-times mr-2"></i> Batal
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </form>

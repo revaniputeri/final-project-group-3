@@ -110,53 +110,9 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Add Top 10 Achievement Section -->
-                    <div class="row mt-4 ml-1" style="width: 801px;">
-                        <div class="col-md-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <h4 class="card-title">Top 10 Prestasi Tertinggi</h4>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Nama</th>
-                                                    <th>Program Studi</th>
-                                                    <th>Total Poin</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                if (!empty($topAchievements)) {
-                                                    $no = 1;
-                                                    foreach ($topAchievements as $achievement) {
-                                                        ?>
-                                                        <tr>
-                                                            <td><?= $no++ ?></td>
-                                                            <td><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>
-                                                            <td><?= htmlspecialchars($achievement['CompetitionLevel']) ?></td>
-                                                            <td><?= number_format($achievement['CompetitionPoints'], 0, ',', '.') ?>
-                                                            </td>
-                                                        </tr>
-                                                        <?php
-                                                    }
-                                                } else {
-                                                    echo '<tr><td colspan="4" class="text-center">Tidak ada prestasi yang ditemukan.</td></tr>';
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <?php require __DIR__ . '/partials/footer-page.php'; ?>
             </div>
+            <?php require __DIR__ . '/partials/footer-page.php'; ?>
         </div>
 </body>
 

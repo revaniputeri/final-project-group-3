@@ -39,13 +39,33 @@ class AchievementController
         $topThreeAchievements = Achievement::getTopThreeAchievements($this->db);
         $levelChartData = Achievement::getCompetitionLevelCounts($this->db);
         $monthlyCompetitions = Achievement::getMonthlyCompetitionsCount($this->db);
-        
+
+        $currentPeriod = $this->getCurrentPeriod();
+
         View::render('guest', [
             'topAchievements' => $topAchievements,
             'topThreeAchievements' => $topThreeAchievements,
             'levelChartData' => $levelChartData,
             'monthlyCompetitions' => $monthlyCompetitions,
+            'currentPeriod' => $currentPeriod
         ]);
+    }
+
+    public static function getCurrentPeriod(): ?array
+    {
+        $currentDate = new DateTime();
+        $periods = self::getStudentPeriods(date('y') . '000000');
+
+        foreach ($periods as $period) {
+            $start = new DateTime($period['start']);
+            $end = new DateTime($period['end']);
+
+            if ($currentDate >= $start && $currentDate <= $end) {
+                return $period;
+            }
+        }
+
+        return null;
     }
 
     public function getStatusAchievementStudent()
@@ -61,7 +81,7 @@ class AchievementController
         return $statusAchievement;
     }
 
-    private function getStudentPeriods($username)
+    public static function getStudentPeriods($username)
     {
         $startYear = (int)substr($username, 0, 2) + 2000;
         $currentDate = new DateTime();
@@ -265,9 +285,9 @@ class AchievementController
                 $achievement = Achievement::getAchievementById($this->db, $id);
 
                 // Verify if achievement exists and belongs to the user
-                if (!$achievement || $achievement['UserId'] != $_SESSION['user']['id']) {
-                    throw new \Exception('Prestasi tidak ditemukan atau Anda tidak memiliki akses.');
-                }
+                // if (!$achievement || $achievement['UserId'] != $_SESSION['user']['id']) {
+                //     throw new \Exception('Prestasi tidak ditemukan atau Anda tidak memiliki akses.');
+                // }
 
                 // Fetch related data
                 $supervisors = Achievement::getSupervisorsByAchievementId($this->db, $id);
@@ -543,11 +563,11 @@ class AchievementController
                 throw new \Exception('Prestasi tidak ditemukan.');
             }
 
-            if ($achievement['UserId'] != $_SESSION['user']['id']) {
+            if ($_SESSION['user']['role'] !== 1 && $achievement['UserId'] != $_SESSION['user']['id']) {
                 throw new \Exception('Anda tidak memiliki akses untuk menghapus prestasi ini.');
             }
 
-            if ($achievement['AdminValidationStatus'] !== 'PENDING') {
+            if ($_SESSION['user']['role'] !== 1 && $achievement['AdminValidationStatus'] !== 'PENDING') {
                 throw new \Exception('Hanya prestasi dengan status PENDING yang dapat dihapus.');
             }
 
@@ -560,7 +580,11 @@ class AchievementController
             $_SESSION['error'] = $e->getMessage();
         }
 
-        header('Location: /dashboard/achievement/history');
+        if ($_SESSION['user']['role'] === 1) {
+            header('Location: /admin/achievement/history');
+        } else {
+            header('Location: /dashboard/achievement/history');
+        }
         exit;
     }
 

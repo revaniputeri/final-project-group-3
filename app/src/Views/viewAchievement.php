@@ -357,13 +357,13 @@
                                             <button type="submit" name="REJECTED" value="REJECTED" class="btn btn-danger btn-md px-3" <?= $achievement['AdminValidationStatus'] !== 'PENDING' ? 'disabled' : '' ?>>
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>
-                                            <a href="/admin/achievement/history" class="btn btn-secondary btn-md px-3">
+                                            <button onclick="window.history.back()" class="btn btn-secondary btn-md px-3">
                                                 <i class="fas fa-arrow-left"></i> Kembali
-                                            </a>
+                                            </but>
                                         <?php else: ?>
-                                            <a href="/dashboard/achievement/history" class="btn btn-primary btn-md px-3">
+                                            <button onclick="window.history.back()" class="btn btn-primary btn-md px-3">
                                                 <i class="fas fa-arrow-left"></i> Kembali
-                                            </a>
+                                            </button>
                                         <?php endif; ?>
                                     </div>
                                 </div>

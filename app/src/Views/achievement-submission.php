@@ -26,289 +26,379 @@ if (isset($_SESSION['form_data'])) {
         <div class="col-12 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
-              <h4 class="card-title mb-4">Formulir Pengajuan Prestasi</h4>
+              <!-- Progress Bar -->
+              <div class="form-wizard mt-4">
+                <ul class="form-wizard-steps">
+                  <li id="step1-indicator" class="active">
+                    <span>1</span>
+                    <p>Informasi Dasar Kompetisi</p>
+                  </li>
+                  <li id="step2-indicator">
+                    <span>2</span>
+                    <p>Detail Kompetisi</p>
+                  </li>
+                  <li id="step3-indicator">
+                    <span>3</span>
+                    <p>Informasi Partisipasi</p>
+                  </li>
+                  <li id="step4-indicator">
+                    <span>4</span>
+                    <p>Dokumen Pendukun</p>
+                  </li>
+                  <li id="step5-indicator">
+                    <span>5</span>
+                    <p>Tim Terlibat</p>
+                  </li>
+                  <li id="step6-indicator">
+                    <span>6</span>
+                    <p>Verifikasi Data</p>
+                  </li>
+                </ul>
+              </div>
+              <!-- <h4 class="card-title mb-4">Formulir Pengajuan Prestasi</h4>
               <p class="card-description mb-4">
                 Masukkan detail prestasi Anda. Tanda <span class="text-danger">*</span> menandakan wajib diisi.
-              </p>
+              </p> -->
 
               <form class="forms-sample" method="POST" action="/dashboard/achievement/form"
                 enctype="multipart/form-data">
-                <div class="row">
-                  <!-- Kolom Kiri -->
-                  <div class="col-md-6">
-                    <!-- Informasi Dasar Kompetisi -->
-                    <div class="card shadow-sm mb-4">
-                      <div class="card-body">
-                        <h5 class="card-title text-primary mb-4">Informasi Dasar</h5>
 
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionTitle">Judul Kompetisi <span
-                              class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionTitle" name="competitionTitle"
-                            value="<?= isset($formData['competitionTitle']) ? htmlspecialchars($formData['competitionTitle']) : '' ?>"
-                            placeholder="Judul Kompetisi dalam Bahasa Indonesia" required>
-                        </div>
+                <!-- Step 1: Informasi Dasar Kompetisi -->
+                <div class="step" id="step1">
+                  <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary mb-4">Informasi Dasar</h5>
 
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionTitleEnglish">Judul Kompetisi (Bahasa Inggris)
-                            <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionTitleEnglish"
-                            name="competitionTitleEnglish"
-                            value="<?= isset($formData['competitionTitleEnglish']) ? htmlspecialchars($formData['competitionTitleEnglish']) : '' ?>"
-                            placeholder="Judul Kompetisi dalam Bahasa Inggris" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionType">Jenis Kompetisi <span
-                              class="text-danger">*</span></label>
-                          <select class="form-control" id="competitionType" name="competitionType" required>
-                            <option value="">Pilih Jenis Kompetisi</option>
-                            <option value="Sains" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Sains') ? 'selected' : '' ?>>Sains</option>
-                            <option value="Seni" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Seni') ? 'selected' : '' ?>>Seni</option>
-                            <option value="Olahraga" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Olahraga') ? 'selected' : '' ?>>Olahraga</option>
-                            <option value="Lain-Lain" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Lain-Lain') ? 'selected' : '' ?>>Lain-Lain</option>
-                          </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionLevel">Tingkat Kompetisi <span
-                              class="text-danger">*</span></label>
-                          <select class="form-control" id="competitionLevel" name="competitionLevel" required>
-                            <option value="">Pilih Tingkat Kompetisi</option>
-                            <?php foreach ($competitionLevels as $id => $level): ?>
-                              <option value="<?= $id ?>" <?= (isset($formData['competitionLevel']) && $formData['competitionLevel'] == $id) ? 'selected' : '' ?>>
-                                <?= $level['name'] ?>
-                              </option>
-                            <?php endforeach; ?>
-                          </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionRank">Peringkat Kompetisi <span
-                              class="text-danger">*</span></label>
-                          <select class="form-control" id="competitionRank" name="competitionRank" required>
-                            <option value="">Pilih Peringkat Kompetisi</option>
-                            <?php foreach ($competitionRanks as $id => $rank): ?>
-                              <option value="<?= $id ?>" <?= (isset($formData['competitionRank']) && $formData['competitionRank'] == $id) ? 'selected' : '' ?>>
-                                <?= $rank['name'] ?>
-                              </option>
-                            <?php endforeach; ?>
-                          </select>
-                        </div>
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionTitle">Judul Kompetisi <span
+                            class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="competitionTitle" name="competitionTitle"
+                          value="<?= isset($formData['competitionTitle']) ? htmlspecialchars($formData['competitionTitle']) : '' ?>"
+                          placeholder="Judul Kompetisi dalam Bahasa Indonesia" required>
                       </div>
-                    </div>
 
-                    <!-- Detail Kompetisi -->
-                    <div class="card shadow-sm mb-4">
-                      <div class="card-body">
-                        <h5 class="card-title text-primary mb-4">Detail Kompetisi</h5>
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionTitleEnglish">Judul Kompetisi (Bahasa Inggris)
+                          <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="competitionTitleEnglish"
+                          name="competitionTitleEnglish"
+                          value="<?= isset($formData['competitionTitleEnglish']) ? htmlspecialchars($formData['competitionTitleEnglish']) : '' ?>"
+                          placeholder="Judul Kompetisi dalam Bahasa Inggris" required>
+                      </div>
 
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionPlace">Tempat/Penyelenggara Kompetisi <span
-                              class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionPlace" name="competitionPlace"
-                            value="<?= isset($formData['competitionPlace']) ? htmlspecialchars($formData['competitionPlace']) : '' ?>"
-                            placeholder="Tempat Kompetisi dalam Bahasa Indonesia" required>
-                        </div>
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionType">Jenis Kompetisi <span
+                            class="text-danger">*</span></label>
+                        <select class="form-control" id="competitionType" name="competitionType" required>
+                          <option value="">Pilih Jenis Kompetisi</option>
+                          <option value="Sains" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Sains') ? 'selected' : '' ?>>Sains</option>
+                          <option value="Seni" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Seni') ? 'selected' : '' ?>>Seni</option>
+                          <option value="Olahraga" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Olahraga') ? 'selected' : '' ?>>Olahraga</option>
+                          <option value="Lain-Lain" <?= (isset($formData['competitionType']) && $formData['competitionType'] == 'Lain-Lain') ? 'selected' : '' ?>>Lain-Lain</option>
+                        </select>
+                      </div>
 
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionPlaceEnglish">Tempat/Penyelenggara Kompetisi
-                            (Bahasa Inggris) <span class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="competitionPlaceEnglish"
-                            name="competitionPlaceEnglish"
-                            value="<?= isset($formData['competitionPlaceEnglish']) ? htmlspecialchars($formData['competitionPlaceEnglish']) : '' ?>"
-                            placeholder="Tempat Kompetisi dalam Bahasa Inggris" required>
-                        </div>
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionLevel">Tingkat Kompetisi <span
+                            class="text-danger">*</span></label>
+                        <select class="form-control" id="competitionLevel" name="competitionLevel" required>
+                          <option value="">Pilih Tingkat Kompetisi</option>
+                          <?php foreach ($competitionLevels as $id => $level): ?>
+                            <option value="<?= $id ?>" <?= (isset($formData['competitionLevel']) && $formData['competitionLevel'] == $id) ? 'selected' : '' ?>>
+                              <?= $level['name'] ?>
+                            </option>
+                          <?php endforeach; ?>
+                        </select>
+                      </div>
 
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="competitionUrl">URL Kompetisi <span
-                              class="text-danger">*</span></label>
-                          <input type="url" class="form-control" id="competitionUrl" name="competitionUrl"
-                            value="<?= isset($formData['competitionUrl']) ? htmlspecialchars($formData['competitionUrl']) : '' ?>"
-                            placeholder="Alamat Website Kompetisi" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label">Periode Kompetisi <span class="text-danger">*</span></label>
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label class="form-label" for="competitionStartDate">Tanggal Mulai</label>
-                                <input type="date" class="form-control" id="competitionStartDate"
-                                  name="competitionStartDate"
-                                  value="<?= isset($formData['competitionStartDate']) ? htmlspecialchars($formData['competitionStartDate']) : '' ?>"
-                                  required>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label class="form-label" for="competitionEndDate">Tanggal Selesai</label>
-                                <input type="date" class="form-control" id="competitionEndDate"
-                                  name="competitionEndDate"
-                                  value="<?= isset($formData['competitionEndDate']) ? htmlspecialchars($formData['competitionEndDate']) : '' ?>"
-                                  required>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionRank">Peringkat Kompetisi <span
+                            class="text-danger">*</span></label>
+                        <select class="form-control" id="competitionRank" name="competitionRank" required>
+                          <option value="">Pilih Peringkat Kompetisi</option>
+                          <?php foreach ($competitionRanks as $id => $rank): ?>
+                            <option value="<?= $id ?>" <?= (isset($formData['competitionRank']) && $formData['competitionRank'] == $id) ? 'selected' : '' ?>>
+                              <?= $rank['name'] ?>
+                            </option>
+                          <?php endforeach; ?>
+                        </select>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Kolom Kanan -->
-                  <div class="col-md-6">
-                    <!-- Informasi Partisipasi -->
-                    <div class="card shadow-sm mb-4">
-                      <div class="card-body">
-                        <h5 class="card-title text-primary mb-4">Informasi Partisipasi</h5>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="numberOfInstitutions">Jumlah Institusi Peserta <span
-                              class="text-danger">*</span></label>
-                          <input type="number" class="form-control" id="numberOfInstitutions"
-                            name="numberOfInstitutions"
-                            value="<?= isset($formData['numberOfInstitutions']) ? htmlspecialchars($formData['numberOfInstitutions']) : '' ?>"
-                            placeholder="Total jumlah institusi" min="0" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="numberOfStudents">Jumlah Siswa Peserta <span
-                              class="text-danger">*</span></label>
-                          <input type="number" class="form-control" id="numberOfStudents" name="numberOfStudents"
-                            value="<?= isset($formData['numberOfStudents']) ? htmlspecialchars($formData['numberOfStudents']) : '' ?>"
-                            placeholder="Total jumlah siswa" min="1" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="letterNumber">Nomor Surat <span
-                              class="text-danger">*</span></label>
-                          <input type="text" class="form-control" id="letterNumber" name="letterNumber"
-                            value="<?= isset($formData['letterNumber']) ? htmlspecialchars($formData['letterNumber']) : '' ?>"
-                            placeholder="Nomor Surat Resmi" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="letterDate">Tanggal Surat <span
-                              class="text-danger">*</span></label>
-                          <input type="date" class="form-control" id="letterDate" name="letterDate"
-                            value="<?= isset($formData['letterDate']) ? htmlspecialchars($formData['letterDate']) : '' ?>"
-                            required>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Dokumen Pendukung -->
-                    <div class="card shadow-sm mb-4">
-                      <div class="card-body">
-                        <h5 class="card-title text-primary mb-4">Dokumen Pendukung</h5>
-                        <div class="alert alert-info">
-                          <small>Format file yang diizinkan: PDF, JPEG, PNG (Maks 5MB)</small>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="letterFile">File Surat <span
-                              class="text-danger">*</span></label>
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="letterFile" name="letterFile"
-                              accept=".pdf,.jpeg,.jpg,.png" required>
-                            <label class="custom-file-label" for="letterFile">Pilih file</label>
-                          </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="certificateFile">File Sertifikat <span
-                              class="text-danger">*</span></label>
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="certificateFile" name="certificateFile"
-                              accept=".pdf,.jpeg,.jpg,.png" required>
-                            <label class="custom-file-label" for="certificateFile">Pilih file</label>
-                          </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="documentationFile">File Dokumentasi <span
-                              class="text-danger">*</span></label>
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="documentationFile"
-                              name="documentationFile" accept=".pdf,.jpeg,.jpg,.png" required>
-                            <label class="custom-file-label" for="documentationFile">Pilih file</label>
-                          </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                          <label class="form-label" for="posterFile">File Poster <span
-                              class="text-danger">*</span></label>
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="posterFile" name="posterFile"
-                              accept=".pdf,.jpeg,.jpg,.png" required>
-                            <label class="custom-file-label" for="posterFile">Pilih file</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Dosen Pembimbing dan Anggota Tim -->
-                    <div class="card shadow-sm mb-4">
-                      <div class="card-body">
-                        <h5 class="card-title text-primary mb-4">Dosen Pembimbing & Anggota Tim</h5>
-
-                        <!-- Dosen Pembimbing -->
-                        <div class="form-group mb-4">
-                          <label class="form-label">Dosen Pembimbing</label>
-                          <div id="supervisorContainer">
-                            <div class="input-group mb-2">
-                              <select class="form-control dosen-pembimbing" name="supervisors[]">
-                                <option value="">Pilih Dosen Pembimbing</option>
-                                <?php foreach ($lecturers as $lecturer): ?>
-                                  <option value="<?= $lecturer['Id'] ?>" <?= (isset($formData['supervisors']) && in_array($lecturer['Id'], $formData['supervisors'])) ? 'selected' : '' ?>>
-                                    <?= $lecturer['FullName'] ?>
-                                  </option>
-                                <?php endforeach; ?>
-                              </select>
-                              <div class="input-group-append">
-                                <button type="button" class="btn btn-success"
-                                  onclick="achievementForm.addSupervisor()">
-                                  <i class="fas fa-plus">+</i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Anggota Tim -->
-                        <div class="form-group mb-3">
-                          <label class="form-label">Anggota Tim</label>
-                          <div id="teamMemberContainer">
-                            <div class="input-group mb-2">
-                              <select class="form-control anggota-tim" name="teamMembers[]" required>
-                                <option value="">Pilih Anggota Tim</option>
-                                <?php foreach ($students as $student): ?>
-                                  <option value="<?= $student['Id'] ?>" <?= (isset($formData['teamMembers']) && in_array($student['Id'], $formData['teamMembers'])) ? 'selected' : '' ?>>
-                                    <?= $student['FullName'] ?>
-                                  </option>
-                                <?php endforeach; ?>
-                              </select>
-                              <select class="form-control anggota-tim-peran" name="teamMemberRoles[]" required>
-                                <option value="">Pilih Peran</option>
-                                <option value="Ketua" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Ketua') ? 'selected' : '' ?>>Ketua</option>
-                                <option value="Anggota" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Anggota') ? 'selected' : '' ?>>Anggota</option>
-                                <option value="Personal" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Personal') ? 'selected' : '' ?>>Personal</option>
-                              </select>
-                              <div class="input-group-append">
-                                <button type="button" class="btn btn-success"
-                                  onclick="achievementForm.addTeamMember()">
-                                  <i class="fas fa-plus">+</i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div class="col-12 text-right">
+                    <button type="button" class="next-step btn btn-primary btn-lg px-4 mr-3">
+                      <i class="fas fa-arrow-right"></i> Berikutnya >
+                    </button>
                   </div>
                 </div>
 
-                <div class="row mt-4">
+                <!-- Step 2: Detail Kompetisi -->
+                <div class="step" id="step2" style="display: none;">
+                  <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary mb-4">Detail Kompetisi</h5>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionPlace">Tempat/Penyelenggara Kompetisi <span
+                            class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="competitionPlace" name="competitionPlace"
+                          value="<?= isset($formData['competitionPlace']) ? htmlspecialchars($formData['competitionPlace']) : '' ?>"
+                          placeholder="Tempat Kompetisi dalam Bahasa Indonesia" required>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionPlaceEnglish">Tempat/Penyelenggara Kompetisi
+                          (Bahasa Inggris) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="competitionPlaceEnglish"
+                          name="competitionPlaceEnglish"
+                          value="<?= isset($formData['competitionPlaceEnglish']) ? htmlspecialchars($formData['competitionPlaceEnglish']) : '' ?>"
+                          placeholder="Tempat Kompetisi dalam Bahasa Inggris" required>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="competitionUrl">URL Kompetisi <span
+                            class="text-danger">*</span></label>
+                        <input type="url" class="form-control" id="competitionUrl" name="competitionUrl"
+                          value="<?= isset($formData['competitionUrl']) ? htmlspecialchars($formData['competitionUrl']) : '' ?>"
+                          placeholder="Alamat Website Kompetisi" required>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label">Periode Kompetisi <span class="text-danger">*</span></label>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-label" for="competitionStartDate">Tanggal Mulai</label>
+                              <input type="date" class="form-control" id="competitionStartDate"
+                                name="competitionStartDate"
+                                value="<?= isset($formData['competitionStartDate']) ? htmlspecialchars($formData['competitionStartDate']) : '' ?>"
+                                required>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-label" for="competitionEndDate">Tanggal Selesai</label>
+                              <input type="date" class="form-control" id="competitionEndDate"
+                                name="competitionEndDate"
+                                value="<?= isset($formData['competitionEndDate']) ? htmlspecialchars($formData['competitionEndDate']) : '' ?>"
+                                required>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 text-right">
+                    <button type="button" class="prev-step btn btn-light btn-lg px-4">
+                      <i class="fas fa-arrow-left"></i> Sebelumnya
+                    </button>
+                    <button type="button" class="next-step btn btn-primary btn-lg px-4 mr-3">
+                      <i class="fas fa-arrow-right"></i> Berikutnya >
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step 3: Informasi Partisipasi -->
+                <div class="step" id="step3" style="display: none;">
+                  <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary mb-4">Informasi Partisipasi</h5>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="numberOfInstitutions">Jumlah Institusi Peserta <span
+                            class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="numberOfInstitutions"
+                          name="numberOfInstitutions"
+                          value="<?= isset($formData['numberOfInstitutions']) ? htmlspecialchars($formData['numberOfInstitutions']) : '' ?>"
+                          placeholder="Total jumlah institusi" min="0" required>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="numberOfStudents">Jumlah Siswa Peserta <span
+                            class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="numberOfStudents" name="numberOfStudents"
+                          value="<?= isset($formData['numberOfStudents']) ? htmlspecialchars($formData['numberOfStudents']) : '' ?>"
+                          placeholder="Total jumlah siswa" min="1" required>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="letterNumber">Nomor Surat <span
+                            class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="letterNumber" name="letterNumber"
+                          value="<?= isset($formData['letterNumber']) ? htmlspecialchars($formData['letterNumber']) : '' ?>"
+                          placeholder="Nomor Surat Resmi" required>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="letterDate">Tanggal Surat <span
+                            class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="letterDate" name="letterDate"
+                          value="<?= isset($formData['letterDate']) ? htmlspecialchars($formData['letterDate']) : '' ?>"
+                          required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 text-right">
+                    <button type="button" class="prev-step btn btn-light btn-lg px-4">
+                      <i class="fas fa-arrow-left"></i> Sebelumnya
+                    </button>
+                    <button type="button" class="next-step btn btn-primary btn-lg px-4 mr-3">
+                      <i class="fas fa-arrow-right"></i> Berikutnya >
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step 4: Dokumen Pendukung -->
+                <div class="step" id="step4" style="display: none;">
+                  <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary mb-4">Dokumen Pendukung</h5>
+                      <div class="alert alert-info">
+                        <small>Format file yang diizinkan: PDF, JPEG, PNG (Maks 5MB)</small>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="letterFile">File Surat <span
+                            class="text-danger">*</span></label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="letterFile" name="letterFile"
+                            accept=".pdf,.jpeg,.jpg,.png" required>
+                          <label class="custom-file-label" for="letterFile">Pilih file</label>
+                        </div>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="certificateFile">File Sertifikat <span
+                            class="text-danger">*</span></label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="certificateFile" name="certificateFile"
+                            accept=".pdf,.jpeg,.jpg,.png" required>
+                          <label class="custom-file-label" for="certificateFile">Pilih file</label>
+                        </div>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="documentationFile">File Dokumentasi <span
+                            class="text-danger">*</span></label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="documentationFile"
+                            name="documentationFile" accept=".pdf,.jpeg,.jpg,.png" required>
+                          <label class="custom-file-label" for="documentationFile">Pilih file</label>
+                        </div>
+                      </div>
+
+                      <div class="form-group mb-3">
+                        <label class="form-label" for="posterFile">File Poster <span
+                            class="text-danger">*</span></label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="posterFile" name="posterFile"
+                            accept=".pdf,.jpeg,.jpg,.png" required>
+                          <label class="custom-file-label" for="posterFile">Pilih file</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 text-right">
+                    <button type="button" class="prev-step btn btn-light btn-lg px-4">
+                      <i class="fas fa-arrow-left"></i> Sebelumnya
+                    </button>
+                    <button type="button" class="next-step btn btn-primary btn-lg px-4 mr-3">
+                      <i class="fas fa-arrow-right"></i> Berikutnya >
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step 5: Dosen Pembimbing dan Anggota Tim -->
+                <div class="step" id="step5" style="display: none">
+                  <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary mb-4">Dosen Pembimbing & Anggota Tim</h5>
+
+                      <!-- Dosen Pembimbing -->
+                      <div class="form-group mb-4">
+                        <label class="form-label">Dosen Pembimbing</label>
+                        <div id="supervisorContainer">
+                          <div class="input-group mb-2">
+                            <select class="form-control dosen-pembimbing" name="supervisors[]">
+                              <option value="">Pilih Dosen Pembimbing</option>
+                              <?php foreach ($lecturers as $lecturer): ?>
+                                <option value="<?= $lecturer['Id'] ?>" <?= (isset($formData['supervisors']) && in_array($lecturer['Id'], $formData['supervisors'])) ? 'selected' : '' ?>>
+                                  <?= $lecturer['FullName'] ?>
+                                </option>
+                              <?php endforeach; ?>
+                            </select>
+                            <div class="input-group-append">
+                              <button type="button" class="btn btn-success"
+                                onclick="achievementForm.addSupervisor()">
+                                <i class="fas fa-plus">+</i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Anggota Tim -->
+                      <div class="form-group mb-3">
+                        <label class="form-label">Anggota Tim</label>
+                        <div id="teamMemberContainer">
+                          <div class="input-group mb-2">
+                            <select class="form-control anggota-tim" name="teamMembers[]" required>
+                              <option value="">Pilih Anggota Tim</option>
+                              <?php foreach ($students as $student): ?>
+                                <option value="<?= $student['Id'] ?>" <?= (isset($formData['teamMembers']) && in_array($student['Id'], $formData['teamMembers'])) ? 'selected' : '' ?>>
+                                  <?= $student['FullName'] ?>
+                                </option>
+                              <?php endforeach; ?>
+                            </select>
+                            <select class="form-control anggota-tim-peran" name="teamMemberRoles[]" required>
+                              <option value="">Pilih Peran</option>
+                              <option value="Ketua" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Ketua') ? 'selected' : '' ?>>Ketua</option>
+                              <option value="Anggota" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Anggota') ? 'selected' : '' ?>>Anggota</option>
+                              <option value="Personal" <?= (isset($formData['teamMemberRoles']) && $formData['teamMemberRoles'][0] == 'Personal') ? 'selected' : '' ?>>Personal</option>
+                            </select>
+                            <div class="input-group-append">
+                              <button type="button" class="btn btn-success"
+                                onclick="achievementForm.addTeamMember()">
+                                <i class="fas fa-plus">+</i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 text-right">
+                    <button type="button" class="prev-step btn btn-light btn-lg px-4">
+                      <i class="fas fa-arrow-left"></i> Sebelumnya
+                    </button>
+                    <button type="button" class="next-step btn btn-primary btn-lg px-4 mr-3">
+                      <i class="fas fa-arrow-right"></i> Berikutnya >
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step 6: Verifikasi Data -->
+                <div class="step" id="step6" style="display: none;">
+                  <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center">
+                      <h5 class="card-title text-primary mb-3">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Verifikasi Data
+                      </h5>
+                      <p class="card-text text-muted">
+                        Silakan periksa kembali data yang telah Anda masukkan sebelum mengirimkan.
+                      </p>
+                    </div>
+                  </div>
+                  <button type="button" class="prev-step btn btn-light btn-lg px-4">
+                    <i class="fas fa-arrow-left"></i> Sebelumnya
+                  </button>
+                  <button type="submit" id="submitButton" class="btn btn-primary btn-lg px-4 mr-3">
+                    <i class="fas fa-check"></i> Kirim
+                  </button>
+                </div>
+
+                <!-- <div class="row mt-4">
                   <div class="col-12 text-right">
                     <button type="submit" id="submitButton" class="btn btn-primary btn-lg px-4 mr-3">
                       <i class="fas fa-paper-plane mr-2"></i> Kirim
@@ -317,7 +407,7 @@ if (isset($_SESSION['form_data'])) {
                       <i class="fas fa-undo mr-2"></i> Batal
                     </a>
                   </div>
-                </div>
+                </div> -->
               </form>
             </div>
           </div>
@@ -342,7 +432,7 @@ if (isset($_SESSION['form_data'])) {
 </script>
 
 <style>
-  body{
+  body {
     font-family: 'Poppins', sans-serif;
   }
 </style>

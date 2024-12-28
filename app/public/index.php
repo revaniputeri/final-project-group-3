@@ -211,10 +211,10 @@ Router::add(
 );
 
 Router::add(
-    method: "POST",
+    method: "GET",
     path: "/dashboard/home",
     controller: IndexController::class,
-    function: "getDataTableAchievements",
+    function: "getSemesterPerformance",
     dependencies: ['db' => $connection]
 );
 

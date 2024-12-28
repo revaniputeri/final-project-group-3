@@ -26,7 +26,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="dropdown mr-2">
                                     <button class="btn btn-white btn-sm dropdown-toggle shadow-sm" type="button" id="statusFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Filter Status
+                                        <?= isset($_GET['status']) ? "Status: " . htmlspecialchars($_GET['status']) : 'Filter Status' ?>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="statusFilterDropdown">
                                         <a class="dropdown-item" href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['status' => null])) ?>">Semua</a>
@@ -53,19 +53,19 @@
                                         const endDate = document.getElementById('endDate').value;
                                         const baseUrl = '<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history';
                                         const queryParams = new URLSearchParams(window.location.search);
-                                        
+
                                         if (startDate) {
                                             queryParams.set('start', startDate);
                                         } else {
                                             queryParams.delete('start');
                                         }
-                                        
+
                                         if (endDate) {
                                             queryParams.set('end', endDate);
                                         } else {
                                             queryParams.delete('end');
                                         }
-                                        
+
                                         window.location.href = baseUrl + '?' + queryParams.toString();
                                     }
                                 </script>
@@ -93,7 +93,7 @@
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($achievements as $index => $achievement): ?>
-                                                <tr>
+                                                <tr style="text-align: center;">
                                                     <td><?= $index + 1 ?></td>
                                                     <td><?= date('d/m/y', strtotime($achievement['CreatedAt'])) ?></td>
                                                     <td><?= date('d/m/y', strtotime($achievement['UpdatedAt'])) ?></td>
@@ -125,7 +125,6 @@
                                                                 </div>
                                                                 <div class="dropdown-menu" aria-labelledby="actionDropdown">
                                                                     <a class="dropdown-item" href="/dashboard/achievement/view/<?= $achievement['Id'] ?>">Lihat</a>
-                                                                    <a class="dropdown-item" href="/dashboard/achievement/edit/<?= $achievement['Id'] ?>">Edit</a>
                                                                     <a class="dropdown-item" onclick="confirmDelete(<?= $achievement['Id'] ?>)">Hapus</a>
                                                                 </div>
                                                             </div>

@@ -1,7 +1,7 @@
 class AchievementForm {
     constructor() {
+        this.currentStep = 1;
         $(document).ready(() => {
-            this.initSelect2();
             this.initEventListeners();
         });
     }
@@ -9,7 +9,7 @@ class AchievementForm {
     initSelect2() {
         $('.dosen-pembimbing').select2({
             placeholder: 'Cari dosen pembimbing...',
-            allowClear: true
+            allowClear: true,
         });
         $('.anggota-tim').select2({
             placeholder: 'Cari anggota tim...',
@@ -62,6 +62,21 @@ class AchievementForm {
                 }
             });
         }
+
+        //prev and next button
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.nextStep();
+            });
+        });
+
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.prevStep();
+            });
+        });
     }
 
     handleFileInput(e) {
@@ -267,26 +282,26 @@ class AchievementForm {
         const numberOfStudentsInput = document.getElementById('numberOfStudents') ?? document.getElementById('numberOfStudentsEdit');
         const teamMemberInputs = document.querySelectorAll('select[name="teamMembers[]"]');
         const roleSelects = document.querySelectorAll('select[name="teamMemberRoles[]"]');
-    
+
         const numberOfStudents = parseInt(numberOfStudentsInput.value) || 0;
         const currentMembers = Array.from(teamMemberInputs).filter(select => select.value !== '').length;
-    
+
         if (currentMembers !== numberOfStudents) {
             alert(`Jumlah anggota tim (${currentMembers}) harus sesuai dengan jumlah siswa peserta (${numberOfStudents}).`);
             return false;
         }
-    
+
         if (currentMembers > 1) {
             const hasLeader = Array.from(roleSelects).some(select => select.value === 'Ketua');
             if (!hasLeader) {
                 alert('Tim yang memiliki lebih dari 1 anggota wajib memiliki ketua.');
-                return false; 
+                return false;
             }
         }
-    
+
         // Retrieve roles of team members
         const roles = Array.from(roleSelects).map(select => select.value);
-    
+
         // Validate number of students for personal achievement
         if (numberOfStudents > 1) {
             if (roles.some(role => role === 'Personal')) {
@@ -294,16 +309,16 @@ class AchievementForm {
                 return false;
             }
         }
-    
+
         // Ensure roles are not mixed between Personal and Team
         let hasPersonal = roles.some(role => role === 'Personal');
         let hasTeam = roles.some(role => role !== 'Personal');
-    
+
         if (hasPersonal && hasTeam) {
             alert('Prestasi tidak dapat berupa personal dan tim secara bersamaan.');
             return false;
         }
-    
+
         // Validate number of leaders
         if (hasTeam) {
             const leaderCount = roles.filter(role => role === 'Ketua').length;
@@ -312,7 +327,7 @@ class AchievementForm {
                 return false;
             }
         }
-    
+
         this.handleNumberOfStudentsChange();
         return true;
     }
@@ -345,6 +360,158 @@ class AchievementForm {
             return false;
         }
 
+        return true;
+    }
+
+    nextStep() {
+        if (!this.validateStep(this.currentStep)) return;
+
+        document.querySelector(`#step${this.currentStep}-indicator`).classList.add("step-done");
+
+        document.getElementById('step' + this.currentStep).style.display = 'none';
+
+        const progressBarItems = document.querySelectorAll('.form-wizard-steps li');
+        progressBarItems[this.currentStep - 1].classList.remove('active');
+        this.currentStep++;
+        progressBarItems[this.currentStep - 1].classList.add('active');
+
+        document.getElementById('step' + this.currentStep).style.display = 'block';
+
+        if (this.currentStep === 5) {
+            this.initSelect2();
+        }
+    }
+
+    prevStep() {
+        document.getElementById('step' + this.currentStep).style.display = 'none';
+
+        document.querySelector(`#step${this.currentStep}-indicator`).classList.remove("step-done");
+
+        const progressBarItems = document.querySelectorAll('.form-wizard-steps li');
+        progressBarItems[this.currentStep - 1].classList.remove('active');
+        this.currentStep--;
+        progressBarItems[this.currentStep - 1].classList.add('active');
+
+        document.getElementById('step' + this.currentStep).style.display = 'block';
+    }
+
+    validateStep(step) {
+        if (step === 1) {
+            // Validate step 1 inputs
+            const competitionTitle = document.getElementById('competitionTitle').value.trim();
+            const competitionTitleEnglish = document.getElementById('competitionTitleEnglish').value.trim();
+            const competitionType = document.getElementById('competitionType').value;
+            const competitionLevel = document.getElementById('competitionLevel').value;
+            const competitionRank = document.getElementById('competitionRank').value;
+
+            if (!competitionTitle) {
+                alert('Judul Kompetisi (Bahasa Indonesia) wajib diisi');
+                return false;
+            }
+            if (!competitionTitleEnglish) {
+                alert('Judul Kompetisi (Bahasa Inggris) wajib diisi');
+                return false;
+            }
+            if (!competitionType) {
+                alert('Jenis Kompetisi wajib dipilih');
+                return false;
+            }
+            if (!competitionLevel) {
+                alert('Tingkat Kompetisi wajib dipilih');
+                return false;
+            }
+            if (!competitionRank) {
+                alert('Peringkat Kompetisi wajib dipilih');
+                return false;
+            }
+            return true;
+
+        } else if (step === 2) {
+            // Validate step 2 inputs
+            const competitionPlace = document.getElementById('competitionPlace').value.trim();
+            const competitionPlaceEnglish = document.getElementById('competitionPlaceEnglish').value.trim();
+            const competitionUrl = document.getElementById('competitionUrl').value.trim();
+            const competitionStartDate = document.getElementById('competitionStartDate').value;
+            const competitionEndDate = document.getElementById('competitionEndDate').value;
+
+            if (!competitionPlace) {
+                alert('Tempat/Penyelenggara Kompetisi (Bahasa Indonesia) wajib diisi');
+                return false;
+            }
+            if (!competitionPlaceEnglish) {
+                alert('Tempat/Penyelenggara Kompetisi (Bahasa Inggris) wajib diisi');
+                return false;
+            }
+            if (!competitionUrl) {
+                alert('URL Kompetisi wajib diisi');
+                return false;
+            }
+            if (!competitionStartDate) {
+                alert('Tanggal Mulai Kompetisi wajib diisi');
+                return false;
+            }
+            if (!competitionEndDate) {
+                alert('Tanggal Selesai Kompetisi wajib diisi');
+                return false;
+            }
+            if (!this.validateDates()) {
+                return false;
+            }
+            return true;
+        } else if (step === 3) {
+            // Validate step 3 inputs
+            const letterNumber = document.getElementById('letterNumber').value.trim();
+            const letterDate = document.getElementById('letterDate').value;
+
+            if (!letterNumber) {
+                alert('Nomor Surat wajib diisi');
+                return false;
+            }
+            if (!letterDate) {
+                alert('Tanggal Surat wajib diisi');
+                return false;
+            }
+            return true;
+        } else if (step === 4) {
+            // Validate step 4 inputs
+            const certificateFile = document.getElementById('certificateFile').files[0];
+            const competitionPhoto = document.getElementById('documentationFile').files[0];
+            const letterFile = document.getElementById('letterFile').files[0];
+            const posterFile = document.getElementById('posterFile').files[0];
+
+            if (!certificateFile) {
+                alert('File Sertifikat wajib diupload');
+                return false;
+            }
+            if (!competitionPhoto) {
+                alert('Foto Kompetisi wajib diupload');
+                return false;
+            }
+            if (!letterFile) {
+                alert('File Surat wajib diupload');
+                return false;
+            }
+            if (!posterFile) {
+                alert('File Poster wajib diupload');
+                return false;
+            }
+            return true;
+        } else if (step === 5) {
+            // Validate step 5 inputs - only team members
+            const teamMembers = document.querySelectorAll('select[name="teamMembers[]"]');
+
+            // Validate at least one team member is selected
+            let teamMemberSelected = false;
+            teamMembers.forEach(select => {
+                if (select.value) teamMemberSelected = true;
+            });
+            if (!teamMemberSelected) {
+                alert('Anggota harus diisi');
+                return false;
+            }
+
+            return true;
+        }
         return true;
     }
 }

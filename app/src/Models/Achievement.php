@@ -100,7 +100,7 @@ class Achievement
 
     public static function getAchievementById(PDO $db, int $id)
     {
-        $stmt = $db->prepare('SELECT * FROM Achievement WHERE Id = :id AND DeletedAt IS NULL ORDER BY UpdatedAt DESC'); //prepare > untuk mengamankan kueri dari sql injection //deletedAt : untuk softdelete
+        $stmt = $db->prepare('SELECT * FROM [dbo].[Achievement] WHERE Id = :id AND DeletedAt IS NULL'); //prepare > untuk mengamankan kueri dari sql injection //deletedAt : untuk softdelete
         $stmt->execute([':id' => $id]);
         $achievement = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -146,11 +146,10 @@ class Achievement
 
     public static function getAllAchievements(PDO $db, $filter = null)
     {
-        $sql = '
-            SELECT a.*, 
-                   u.username,
-                   u.Fullname,
-                   s.*
+        $sql = 'SELECT s.*,
+                    u.username,
+                    u.Fullname,
+                    a.*
             FROM [dbo].[Achievement] a
             JOIN [dbo].[User] u ON a.UserId = u.Id
             JOIN [dbo].[Student] s ON a.UserId = s.UserId
@@ -202,7 +201,7 @@ class Achievement
             $sql .= ' AND UserId = :userId';
         }
 
-        $sql .= ' ORDER BY CreatedAt DESC, CompetitionPoints DESC';
+        $sql .= ' ORDER BY CompetitionPoints DESC';
 
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);

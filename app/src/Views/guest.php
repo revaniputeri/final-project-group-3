@@ -24,9 +24,9 @@
                 Tempat untuk mendokumentasikan dan memantau perkembangan
                 prestasi dan kegiatan non-akademik.</h4><br>
             <button type="button" class="btn btn-primary jumbotron-button" onclick="scrollToBottom()">Pelajari Lebih lanjut</button>
-            <div id="bottomSection"></div>
         </div>
     </div>
+    <div id="bottomSection"></div>
     <br>
     <div class="leaderboard">
         <h2 class="leaderboard-title">Leaderboard</h2>
@@ -54,8 +54,9 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4 achievements-header">
+                    <div class="d-flex justify-content-between align-items-center mb-3 achievements-header">
                         <h4 class="card-title top-achievements-title">10 Prestasi Tertinggi</h4>
+                        <h5 class="card-description mt-2">Periode: <?= date('d M Y', strtotime($currentPeriod['start'])) ?> - <?= date('d M Y', strtotime($currentPeriod['end'])) ?></h5>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover achievements-table">
@@ -94,7 +95,7 @@
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <p class="card-title chart-title">Grafik Prestasi Berdasarkan Tingkat Kategori</p>
+                    <p class="card-title chart-title">Grafik Prestasi Berdasarkan Tingkat Kategori <?= date('Y') ?></p>
                     <canvas id="combinedChart" class="chart-canvas"></canvas>
                 </div>
             </div>
@@ -102,7 +103,7 @@
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <p class="card-title chart-title">Grafik Trend Poin Kompetisi</p>
+                    <p class="card-title chart-title">Grafik Trend Poin Kompetisi <?= date('Y') ?></p>
                     <canvas id="lineChart" class="chart-canvas"></canvas>
                 </div>
             </div>
