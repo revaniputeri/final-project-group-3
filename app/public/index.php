@@ -110,15 +110,6 @@ Router::add(
     dependencies: ['db' => $connection]
 );
 
-// Profile customization process
-Router::add(
-    method: "POST",
-    path: "/dashboard/profile",
-    controller: IndexController::class,
-    function: "profileCustomizationProcess",
-    dependencies: ['db' => $connection]
-);
-
 // assets route
 Router::add(
     method: "GET",

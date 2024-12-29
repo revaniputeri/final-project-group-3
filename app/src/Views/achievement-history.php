@@ -51,6 +51,7 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr class="text-center">
+                                                <th style="width: 20px;">No</th>
                                                 <th>Tanggal<br>Dibuat</th>
                                                 <th>Tanggal<br>Diubah</th>
                                                 <th style="vertical-align: middle;">Judul Kompetisi</th>
@@ -64,11 +65,13 @@
                                         <tbody>
                                             <?php if (empty($achievements)): ?>
                                                 <tr>
-                                                    <td colspan="8" class="text-center">Belum ada data prestasi yang tersedia</td>
+                                                    <td colspan="9" class="text-center">Belum ada data prestasi yang tersedia</td>
                                                 </tr>
                                             <?php else: ?>
+                                                <?php $counter = 1; ?>
                                                 <?php foreach ($achievements as $achievement): ?>
                                                     <tr style="text-align: center;">
+                                                        <td><?= $counter++ ?></td>
                                                         <td><?= date('d/m/y', strtotime($achievement['CreatedAt'])) ?></td>
                                                         <td><?= date('d/m/y', strtotime($achievement['UpdatedAt'])) ?></td>
                                                         <td class="truncate-text"><?= htmlspecialchars($achievement['CompetitionTitle']) ?></td>

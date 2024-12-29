@@ -247,3 +247,8 @@ h2 {
     font-weight: bold;
     color: #333;
 }
+
+.gradient-box {
+    background: linear-gradient(to right, #8490f0, #87b7fd);
+    color: white;
+}

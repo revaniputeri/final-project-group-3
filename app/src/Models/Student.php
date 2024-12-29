@@ -47,5 +47,22 @@ class Student
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+public static function getTotalAchievementsAndPoints(PDO $db, int $userId): array
+{
+    $stmt = $db->prepare("
+        SELECT 
+            COUNT(a.Id) AS TotalAchievements,
+            SUM(a.CompetitionPoints) AS TotalPoints
+        FROM 
+            Achievement a
+        WHERE 
+            a.UserId = :userId
+        AND
+            a.AdminValidationStatus = 'DITERIMA'
+    ");
+    $stmt->execute(['userId' => $userId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC) ?? ['TotalAchievements' => 0, 'TotalPoints' => 0];
+}
 }
 ?>

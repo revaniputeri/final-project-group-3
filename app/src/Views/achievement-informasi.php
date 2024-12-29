@@ -163,10 +163,13 @@ include __DIR__ . '/partials/navbar.php';
             </div><br>
             <!-- Tombol Unduh PDF -->
             <div class="text-center mt-5 mb-5">
-                <a href="/download/skema-poin" class="btn btn-info btn-lg shadow-lg" download>Unduh PDF</a>
+                <p class="mb-3" style="font-size: 1.2rem; font-weight: 500; color: #2c3e50;">Informasi lebih lengkap:</p>
+                <a href="/download/skema-poin" class="btn btn-info btn-lg shadow-lg" download>
+                    <i class="ti-download mr-2 align-middle"></i>Unduh PDF
+                </a>
             </div>
-            <?php require __DIR__ . '/partials/footer-page.php'; ?>
         </div>
+        <?php require __DIR__ . '/partials/footer-page.php'; ?>
     </div>
     <style>
         body {

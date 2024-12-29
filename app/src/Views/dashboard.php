@@ -39,7 +39,7 @@
                         <div class="card-body">
                             <h4 class="card-title" style="color: white;">Riwayat Prestasi</h4>
                             <p class="card-description" style="color: white;">
-                                Lihat riwayat prestasi Anda
+                                Lihat riwayat prestasi kamu
                             </p>
                             <a href="/dashboard/achievement/history" class="btn btn-info btn-lg btn-block">
                                 <i class="ti-list mr-2"></i>
@@ -55,7 +55,7 @@
                         <div class="card-body">
                             <h4 class="card-title" style="color: white;">Buku Panduan Prestasi</h4>
                             <p class="card-description" style="color: white;">
-                                Baca kebijakan dan informasi dibawah!
+                                Jangan lupa baca kebijakan dan informasi dibawah!
                             </p>
                             <a href="/dashboard/info" class="btn btn-info btn-lg btn-block">
                                 <i class="ti-book mr-2"></i>

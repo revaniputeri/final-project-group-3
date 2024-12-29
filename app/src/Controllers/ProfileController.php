@@ -39,6 +39,7 @@ class ProfileController
 
         // Get student data from the database using getStudentByUsername
         $profileData = Student::getStudentById($this->db, $_SESSION['user']['id']);
+        $countData = Student::getTotalAchievementsAndPoints($this->db, $_SESSION['user']['id']);
 
         // Default profile array if no data found
         $profile = [
@@ -48,8 +49,8 @@ class ProfileController
             'phone' => $_SESSION['user']['phone'] ?? ($profileData['phone'] ?? 'blom login banh'),
             'studentMajor' => $profileData['StudentMajor'] ?? 'unknown',
             'studentStatus' => $profileData['StudentStatus'] ?? 'unknown',
-            'points' => $profileData['CompetitionPoints'] ?? 'yahahah gada point',
-            'prestasi' => $profileData['AchievementCount'] ?? 'yahahaha gadue prestasi'
+            'points' => $countData['TotalPoints'] ?? 'yahahah gada point',
+            'prestasi' => $countData['TotalAchievements'] ?? 'yahahaha gadue prestasi'
         ];
 
         // Render the profile view with the profile data
