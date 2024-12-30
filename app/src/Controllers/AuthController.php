@@ -68,7 +68,7 @@ class AuthController
         // Validate password
         $isPasswordCorrect = $user->validatePassword($password);
         if (!$isPasswordCorrect) {
-            $_SESSION['error'] = "Invalid username or password";
+            $_SESSION['error'] = "Invalid username or password!";
             header('Location: /login');
             return;
         }

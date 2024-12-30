@@ -132,7 +132,8 @@ class AchievementController
         $achievements = Achievement::getAchievementsByUserId($this->db, $id, [
             'start' => isset($_GET['start']) ? $_GET['start'] : null,
             'end' => isset($_GET['end']) ? $_GET['end'] : null,
-            'status' => isset($_GET['status']) ? $_GET['status'] : null
+            'status' => isset($_GET['status']) ? $_GET['status'] : null,
+            'search' => isset($_GET['search']) ? $_GET['search'] : null
         ]);
 
         // Convert rank and level IDs to names
@@ -141,12 +142,33 @@ class AchievementController
             $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']) ?? 'Unknown';
         }
 
-        // Render the view with the filtered achievements
-        View::render('achievement-history', [
-            'achievements' => $achievements,
-            'periods' => $periods,
-            'statusAchievement' => $statusAchievement
-        ]);
+        // Check if the request is AJAX
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            // Render only the table rows and return as JSON
+            ob_start();
+            foreach ($achievements as $achievement) {
+                echo "<tr>
+                    <td>{$achievement['Id']}</td>
+                    <td>{$achievement['CreatedAt']}</td>
+                    <td>{$achievement['CompetitionTitle']}</td>
+                    <td>{$achievement['CompetitionLevelName']}</td>
+                    <td>{$achievement['CompetitionRankName']}</td>
+                    <td>{$achievement['CompetitionStartDate']}</td>
+                    <td>{$achievement['CompetitionEndDate']}</td>
+                    <td>{$achievement['Status']}</td>
+                  </tr>";
+            }
+            $html = ob_get_clean();
+            echo json_encode(['html' => $html]);
+            exit;
+        } else {
+            // Render the full view for non-AJAX requests
+            View::render('achievement-history', [
+                'achievements' => $achievements,
+                'periods' => $periods,
+                'statusAchievement' => $statusAchievement
+            ]);
+        }
     }
 
     public function submissionForm()

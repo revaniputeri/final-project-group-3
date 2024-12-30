@@ -147,6 +147,12 @@ class Achievement
                 $sql .= ' AND AdminValidationStatus = :status';
                 $params[':status'] = $selectedStatus;
             }
+
+            if (!empty($filters['search'])) {
+                $search = '%' . $filter['search'] . '%';
+                $sql .= " AND (CompetitionTitle LIKE :search OR CompetitionPlace LIKE :search)";
+                $params['search'] = $search;
+            }
         }
 
         $sql .= ' ORDER BY UpdatedAt DESC';

@@ -45,6 +45,11 @@
                                             <?php endforeach; ?>
                                         </div>
                                     </div>
+                                    <div class="ml-auto mr-2">
+                                        <form method="GET" action="" onsubmit="return handleSearchSubmit(event)">
+                                            <input type="text" class="form-control form-control-sm" id="searchInput" name="searchInput" placeholder="Cari..." style="width: 300px; height: 38px;">
+                                        </form>
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive">
@@ -62,7 +67,7 @@
                                                 <th style="vertical-align: middle;">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="achievementTableBody">
                                             <?php if (empty($achievements)): ?>
                                                 <tr>
                                                     <td colspan="9" class="text-center">Belum ada data prestasi yang tersedia</td>
