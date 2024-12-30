@@ -29,10 +29,11 @@
                     Silahkan masukkan username dan password Anda.
                 </h6>
 
-                <?php if (isset($error)) : ?>
-                    <div class="alert alert-danger" style="border-radius: 10px; border: none; font-size: 14px;">
-                        <?= htmlspecialchars($error) ?>
+                <?php if (isset($_SESSION['error'])) : ?>
+                    <div class="alert alert-danger" style="border-radius: 10px; border: none; font-size: 14px; text-align: center;">
+                        <?= htmlspecialchars($_SESSION['error']) ?>
                     </div>
+                    <?php unset($_SESSION['error']); ?>
                 <?php endif; ?>
 
                 <form action="/login" method="post" style="margin-top: 0px;">
