@@ -13,8 +13,7 @@ The implementation details of this project, including the tech stack, UI designs
 
 This project belongs to group 3. The members are listed as follows:
 
-- Revani Nanda Putri (2341760056) - Backend Developer
+- Revani Nanda Putri (2341760056) - Backend & Frontend Developer
 - Alvi Choirinnikmah (2341760191) - Frontend Developer
-- Ardhelia Putri Maharani (2341760124) - Frontend Developer
-- Ramadhan Maulana (2341760125) - Technical Writer
+- Ardhelia Putri Maharani (2341760124) - Frontend Developer & Documentation
 - Susilowati Syafa Adilah (2341760095) - Backend Developer
