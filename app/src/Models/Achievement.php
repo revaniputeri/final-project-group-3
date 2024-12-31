@@ -148,10 +148,9 @@ class Achievement
                 $params[':status'] = $selectedStatus;
             }
 
-            if (!empty($filters['search'])) {
-                $search = '%' . $filter['search'] . '%';
-                $sql .= " AND (CompetitionTitle LIKE :search OR CompetitionPlace LIKE :search)";
-                $params['search'] = $search;
+            if ($filter['search']) {
+                $sql .= ' AND (CompetitionTitle LIKE :search OR CompetitionTitleEnglish LIKE :search)';
+                $params[':search'] = '%' . $filter['search'] . '%';
             }
         }
 
@@ -176,6 +175,7 @@ class Achievement
         $hasPeriod = isset($filter['start']) && isset($filter['end']);
         $hasStatus = isset($filter['status']);
         $hasStudentMajor = isset($filter['studentMajor']);
+        $hasSearchValue = isset($filter['search']);
 
         $params = [];
 
@@ -197,6 +197,11 @@ class Achievement
             if ($hasStudentMajor) {
                 $sql .= ' AND s.StudentMajor = :studentMajor';
                 $params[':studentMajor'] = $filter['studentMajor'];
+            }
+
+            if ($hasSearchValue) {
+                $sql .= ' AND (a.CompetitionTitle LIKE :search OR a.CompetitionTitleEnglish LIKE :search)';
+                $params[':search'] = '%' . $filter['search'] . '%';
             }
         }
 

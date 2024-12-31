@@ -46,9 +46,20 @@
                                         </div>
                                     </div>
                                     <div class="ml-auto mr-2">
-                                        <form method="GET" action="" onsubmit="return handleSearchSubmit(event)">
-                                            <input type="text" class="form-control form-control-sm" id="searchInput" name="searchInput" placeholder="Cari..." style="width: 300px; height: 38px;">
-                                        </form>
+                                        <div class="input-group">
+                                            <input type="text" 
+                                                   class="form-control form-control-sm" 
+                                                   id="searchInput" 
+                                                   name="search" 
+                                                   placeholder="Cari judul prestasi..." 
+                                                   style="width: 250px; height: 38px;"
+                                                   value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                                            <div class="input-group-append">
+                                                <a href="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history?<?= http_build_query(array_merge($_GET, ['search' => isset($_GET['search']) ? $_GET['search'] : ''])) ?>" class="btn btn-sm btn-primary">
+                                                    <i class="ti-search"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -67,7 +78,7 @@
                                                 <th style="vertical-align: middle;">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="achievementTableBody">
+                                        <tbody>
                                             <?php if (empty($achievements)): ?>
                                                 <tr>
                                                     <td colspan="9" class="text-center">Belum ada data prestasi yang tersedia</td>
