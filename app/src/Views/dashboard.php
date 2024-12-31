@@ -104,7 +104,7 @@
                                                 } else {
                                                     ?>
                                                     <tr>
-                                                        <td colspan="4" class="text-center">Belum ada data prestasi</td>
+                                                        <td colspan="5" class="text-center">Belum ada data prestasi</td>
                                                     </tr>
                                                 <?php } ?>
                                             </tbody>
