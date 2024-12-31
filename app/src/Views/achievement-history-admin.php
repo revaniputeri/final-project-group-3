@@ -47,6 +47,24 @@
                                         Terapkan
                                     </button>
                                 </div>
+                                <div class="ml-auto mr-2">
+                                    <form action="<?= $_SESSION['user']['role'] == 1 ? '/admin' : '/dashboard' ?>/achievement/history" method="get" class="d-flex">
+                                        <div class="input-group">
+                                            <input type="text"
+                                                class="form-control form-control-sm"
+                                                id="searchInput"
+                                                name="search"
+                                                placeholder="Cari..."
+                                                style="width: 250px; height: 38px;"
+                                                value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                    <i class="ti-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                                 <script>
                                     function applyDateFilter() {
                                         const startDate = document.getElementById('startDate').value;
@@ -70,11 +88,10 @@
                                     }
                                 </script>
                             </div>
-
-                            <div class="table-responsive" style="overflow-x: auto;">
+                            <div class="table-responsive rounded mt-3" style="overflow-x: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border: 1px solid #dee2e6;">
                                 <table class="table table-striped">
                                     <thead>
-                                        <tr>
+                                        <tr style="outline: 2px solid #dee2e6;">
                                             <th class="text-center" style="width: 5%; vertical-align: middle;">No</th>
                                             <th class="text-center" style="width: 10%;">Tanggal<br>Dibuat</th>
                                             <th class="text-center" style="width: 10%;">Tanggal<br>Diubah</th>

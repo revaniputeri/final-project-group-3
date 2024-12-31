@@ -150,8 +150,8 @@ class Achievement
             }
 
             if ($filter['search']) {
-                $sql .= ' AND (CompetitionTitle LIKE :search OR CompetitionTitleEnglish LIKE :search)';
-                $params[':search'] = '%' . $filter['search'] . '%';
+                $searchValue = '%' . $filter['search'] . '%';
+                $sql .= ' AND (CompetitionTitle LIKE ' . $db->quote($searchValue) . ' OR CompetitionTitleEnglish LIKE ' . $db->quote($searchValue) . ')';
             }
         }
 
@@ -206,15 +206,24 @@ class Achievement
             }
 
             if ($hasSearchValue) {
-                $sql .= ' AND (a.CompetitionTitle LIKE :search OR a.CompetitionTitleEnglish LIKE :search)';
-                $params[':search'] = '%' . $filter['search'] . '%';
+                $searchValue = '%' . $filter['search'] . '%';
+                $sql .= ' AND (
+                    a.CompetitionTitle LIKE ' . $db->quote($searchValue) . ' OR 
+                    u.username LIKE ' . $db->quote($searchValue) . ' OR 
+                    u.Fullname LIKE ' . $db->quote($searchValue) . '
+                )';
             }
         }
 
         $sql .= ' ORDER BY a.UpdatedAt DESC';
 
         $stmt = $db->prepare($sql);
-        $stmt->execute($params);
+        try {
+            $stmt->execute($params);
+        } catch (PDOException$e) {
+            error_log("Error executing query: " . $e->getMessage());
+            return [];
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

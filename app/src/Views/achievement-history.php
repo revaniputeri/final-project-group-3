@@ -65,11 +65,11 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
+                                <div class="table-responsive rounded mt-3" style="overflow-x: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border: 1px solid #dee2e6;">
                                     <table class="table table-striped">
                                         <thead>
-                                            <tr class="text-center">
-                                                <th style="width: 20px;">No</th>
+                                            <tr class="text-center" style="outline: 2px solid #dee2e6;">
+                                                <th style="vertical-align: middle; width: 20px;">No</th>
                                                 <th>Tanggal<br>Dibuat</th>
                                                 <th>Tanggal<br>Diubah</th>
                                                 <th style="vertical-align: middle;">Judul Kompetisi</th>
