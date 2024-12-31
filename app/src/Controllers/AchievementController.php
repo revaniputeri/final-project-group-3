@@ -679,6 +679,7 @@ class AchievementController
             $achievements = Achievement::getAllAchievements($this->db, $filter);
         }
 
+        
         foreach ($achievements as &$achievement) {
             $achievement['CompetitionRankName'] = Achievement::getCompetitionRankName((int)$achievement['CompetitionRank']);
             $achievement['CompetitionLevelName'] = Achievement::getCompetitionLevelName((int)$achievement['CompetitionLevel']);

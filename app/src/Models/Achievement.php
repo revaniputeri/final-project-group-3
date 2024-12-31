@@ -5,6 +5,7 @@ namespace PrestaC\Models;
 use DateTime;
 use InvalidArgumentException;
 use PDO;
+use PDOException;
 
 class Achievement
 {
@@ -157,7 +158,12 @@ class Achievement
         $sql .= ' ORDER BY UpdatedAt DESC';
 
         $stmt = $db->prepare($sql);
-        $stmt->execute($params);
+        try {
+            $stmt->execute($params);
+        } catch (PDOException$e) {
+            error_log("Error executing query: " . $e->getMessage());
+            return [];
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
