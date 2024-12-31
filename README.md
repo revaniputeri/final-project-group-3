@@ -4,10 +4,11 @@ A repository to keep the documents and source code for the student achievement r
 
 ## Project Overview
 
-The project is a web app that can be used to manage the student achievements state in State Polytechnic of Malang. For more details on this,
-please refer to the [project charter](documents/project-charter.md). This project is part of the new Project Based Learning (PBL) curriculum of State Polytechnic of Malang.
+The project is a web app that can be used to manage the student achievements state in State Polytechnic of Malang. For more details on this, please refer to the [project charter](documents/project-charter.md). This project is part of the new Project Based Learning (PBL) curriculum of State Polytechnic of Malang.
 
-The implementation details of this project, including the tech stack, UI designs, and other technical details can be found in the [project implementation plan].
+The implementation details of this project, including the tech stack, UI designs, and other technical details can be found in the [project implementation plan](documents/project-implementation-plan.md).
+
+For detailed usage instructions, please refer to the [USAGE guide](documents/USAGE.md).
 
 ## Members of the Project
 
